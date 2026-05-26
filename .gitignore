@@ -1,0 +1,71 @@
+# ==========================
+# Environment & Secrets
+# ==========================
+.env
+.env.local
+.env.development
+.env.production
+.env.staging
+.env*.local
+*.pem
+*.key
+*.secret
+
+# ==========================
+# Python / Backend
+# ==========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.whl
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+.coverage.*
+
+# ==========================
+# Node / Frontend
+# ==========================
+node_modules/
+.next/
+out/
+.vercel
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.tsbuildinfo
+next-env.d.ts
+
+# ==========================
+# IDE & OS
+# ==========================
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ==========================
+# Docker
+# ==========================
+*.log
+
+# ==========================
+# Misc
+# ==========================
+.cache/
+tmp/

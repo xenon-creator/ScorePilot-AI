@@ -1,0 +1,581 @@
+'use client'
+
+import React, { useState, useEffect, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { useAuth } from '@/lib/auth-context'
+import {
+  apiGetExams, apiGetSubmissions, apiGetAnalytics, apiGetAuditLogs, apiUploadPaper, apiOverrideScores,
+  type Exam, type Submission, type AnalyticsData, type AuditLog
+} from '@/lib/api'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import {
+  Cpu, LayoutDashboard, FileText, Upload, BarChart3, Shield, LogOut, Loader2,
+  ChevronDown, AlertCircle, CheckCircle, Clock, Eye, X
+} from 'lucide-react'
+
+type Tab = 'overview' | 'exams' | 'submissions' | 'analytics' | 'audit'
+
+const sidebarItems: { key: Tab; label: string; icon: React.ElementType }[] = [
+  { key: 'overview', label: 'Overview', icon: LayoutDashboard },
+  { key: 'exams', label: 'Exams', icon: FileText },
+  { key: 'submissions', label: 'Submissions', icon: Upload },
+  { key: 'analytics', label: 'Analytics', icon: BarChart3 },
+  { key: 'audit', label: 'Audit Logs', icon: Shield },
+]
+
+export default function DashboardPage() {
+  const router = useRouter()
+  const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth()
+  const [activeTab, setActiveTab] = useState<Tab>('overview')
+
+  // Data state
+  const [exams, setExams] = useState<Exam[]>([])
+  const [submissions, setSubmissions] = useState<Submission[]>([])
+  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null)
+  const [auditLogs, setAuditLogs] = useState<AuditLog[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  // Upload state
+  const [uploadOpen, setUploadOpen] = useState(false)
+  const [uploadLoading, setUploadLoading] = useState(false)
+  const [uploadForm, setUploadForm] = useState({ studentName: '', studentId: '', examId: '', file: null as File | null })
+
+  // Override state
+  const [overrideTarget, setOverrideTarget] = useState<Submission | null>(null)
+
+  // Redirect if not authenticated
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      router.push('/login')
+    }
+  }, [authLoading, isAuthenticated, router])
+
+  // Fetch data on mount
+  const fetchData = useCallback(async () => {
+    setLoading(true)
+    setError('')
+    try {
+      const [examsData, subsData] = await Promise.all([
+        apiGetExams(),
+        apiGetSubmissions(),
+      ])
+      setExams(examsData)
+      setSubmissions(subsData)
+
+      if (examsData.length > 0) {
+        const analyticsData = await apiGetAnalytics(examsData[0].id)
+        setAnalytics(analyticsData)
+      }
+
+      try {
+        const logs = await apiGetAuditLogs()
+        setAuditLogs(logs)
+      } catch {
+        // User may not have permission for audit logs
+      }
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to load data')
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (isAuthenticated) fetchData()
+  }, [isAuthenticated, fetchData])
+
+  // Upload handler
+  async function handleUpload(e: React.FormEvent) {
+    e.preventDefault()
+    if (!uploadForm.file || !uploadForm.examId) return
+    setUploadLoading(true)
+    try {
+      await apiUploadPaper(uploadForm.studentName, uploadForm.studentId, uploadForm.examId, uploadForm.file)
+      setUploadOpen(false)
+      setUploadForm({ studentName: '', studentId: '', examId: '', file: null })
+      await fetchData()
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Upload failed')
+    } finally {
+      setUploadLoading(false)
+    }
+  }
+
+  // Override handler
+  async function handleApprove(sub: Submission) {
+    try {
+      const overrides = sub.scores.map(s => ({
+        question_number: s.question_number,
+        override_score: s.final_score,
+        override_reason: 'Approved as-is by reviewer'
+      }))
+      await apiOverrideScores({ submission_id: sub.id, overrides })
+      await fetchData()
+      setOverrideTarget(null)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Override failed')
+    }
+  }
+
+  function handleLogout() {
+    logout()
+    router.push('/')
+  }
+
+  if (authLoading || (!isAuthenticated && !authLoading)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="h-6 w-6 text-cyan-400 animate-spin" />
+      </div>
+    )
+  }
+
+  const scoredCount = submissions.filter(s => s.status === 'Scored').length
+  const flaggedCount = submissions.filter(s => s.status === 'Flagged').length
+  const approvedCount = submissions.filter(s => s.status === 'Approved').length
+  const avgConfidence = submissions.length > 0
+    ? (submissions.reduce((a, s) => a + s.ai_confidence, 0) / submissions.length * 100).toFixed(1)
+    : '0'
+
+  return (
+    <div className="min-h-screen flex bg-background">
+      {/* Sidebar */}
+      <aside className="w-64 border-r border-white/[0.06] flex flex-col py-6 px-4 shrink-0">
+        <Link href="/" className="flex items-center gap-2 px-3 mb-8">
+          <div className="relative flex h-7 w-7 items-center justify-center">
+            <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500 opacity-80" />
+            <Cpu className="relative z-10 h-4 w-4 text-black" />
+          </div>
+          <span className="text-base font-semibold tracking-tight text-white">
+            ScorePilot<span className="text-cyan-400">AI</span>
+          </span>
+        </Link>
+
+        <nav className="flex-1 space-y-1">
+          {sidebarItems.map((item) => (
+            <button
+              key={item.key}
+              onClick={() => setActiveTab(item.key)}
+              className={cn(
+                'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer',
+                activeTab === item.key
+                  ? 'bg-white/[0.06] text-white'
+                  : 'text-slate-500 hover:text-slate-300 hover:bg-white/[0.03]'
+              )}
+            >
+              <item.icon className="h-4 w-4" />
+              {item.label}
+            </button>
+          ))}
+        </nav>
+
+        <div className="mt-auto pt-4 border-t border-white/[0.06] space-y-3">
+          <div className="px-3">
+            <p className="text-sm font-medium text-white">{user?.username}</p>
+            <p className="text-xs text-slate-500">{user?.role}</p>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-slate-500 hover:text-red-400 hover:bg-red-500/5 transition-colors cursor-pointer"
+          >
+            <LogOut className="h-4 w-4" />
+            Logout
+          </button>
+        </div>
+      </aside>
+
+      {/* Main content */}
+      <main className="flex-1 overflow-y-auto">
+        <div className="max-w-6xl mx-auto px-8 py-8">
+          {error && (
+            <div className="flex items-center gap-2 rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400 mb-6">
+              <AlertCircle className="h-4 w-4 flex-shrink-0" />
+              {error}
+              <button onClick={() => setError('')} className="ml-auto cursor-pointer"><X className="h-3.5 w-3.5" /></button>
+            </div>
+          )}
+
+          {loading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="h-6 w-6 text-cyan-400 animate-spin" />
+            </div>
+          ) : (
+            <>
+              {/* OVERVIEW TAB */}
+              {activeTab === 'overview' && (
+                <div className="space-y-8">
+                  <div>
+                    <h1 className="text-2xl font-semibold text-white tracking-tight">Dashboard</h1>
+                    <p className="text-sm text-slate-500 mt-1">Welcome back, {user?.username}</p>
+                  </div>
+
+                  {/* Stats grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {[
+                      { label: 'Active Exams', value: exams.length, icon: FileText, color: 'text-cyan-400' },
+                      { label: 'Total Submissions', value: submissions.length, icon: Upload, color: 'text-blue-400' },
+                      { label: 'Flagged for Review', value: flaggedCount, icon: AlertCircle, color: 'text-yellow-400' },
+                      { label: 'Avg AI Confidence', value: `${avgConfidence}%`, icon: BarChart3, color: 'text-emerald-400' },
+                    ].map((stat) => (
+                      <div key={stat.label} className="glass-card rounded-2xl p-6">
+                        <div className={cn('flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.04] mb-4', stat.color)}>
+                          <stat.icon className="h-5 w-5" />
+                        </div>
+                        <p className="text-3xl font-bold text-white tracking-tight">{stat.value}</p>
+                        <p className="text-sm text-slate-500 mt-1">{stat.label}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Recent submissions */}
+                  <div className="glass-card rounded-2xl overflow-hidden">
+                    <div className="flex items-center justify-between border-b border-white/[0.06] px-6 py-4">
+                      <h2 className="text-sm font-semibold text-white">Recent Submissions</h2>
+                      <Button size="sm" variant="ghost" className="text-slate-400 text-xs" onClick={() => setActiveTab('submissions')}>
+                        View All
+                      </Button>
+                    </div>
+                    <div className="divide-y divide-white/[0.04]">
+                      {submissions.slice(0, 5).map((sub) => (
+                        <div key={sub.id} className="px-6 py-4 flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-medium text-white">{sub.student_name}</p>
+                            <p className="text-xs text-slate-500">{sub.student_id} • {new Date(sub.created_at).toLocaleDateString()}</p>
+                          </div>
+                          <div className="flex items-center gap-4">
+                            <span className="text-sm font-bold text-white">{sub.total_score}<span className="text-xs text-slate-500">/{exams.find(e => e.id === sub.exam_id)?.total_marks || '?'}</span></span>
+                            <span className={cn(
+                              'text-xs px-2.5 py-1 rounded-full font-medium',
+                              sub.status === 'Scored' && 'bg-cyan-500/10 text-cyan-400',
+                              sub.status === 'Flagged' && 'bg-yellow-500/10 text-yellow-400',
+                              sub.status === 'Approved' && 'bg-emerald-500/10 text-emerald-400',
+                            )}>
+                              {sub.status}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* EXAMS TAB */}
+              {activeTab === 'exams' && (
+                <div className="space-y-8">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h1 className="text-2xl font-semibold text-white tracking-tight">Exams</h1>
+                      <p className="text-sm text-slate-500 mt-1">{exams.length} active exams</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    {exams.map((exam) => (
+                      <div key={exam.id} className="glass-card glass-card-hover rounded-2xl p-6">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <div className="flex items-center gap-3 mb-2">
+                              <span className="text-xs font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded">{exam.code}</span>
+                              <span className="text-xs text-slate-500">{exam.subject}</span>
+                            </div>
+                            <h3 className="text-lg font-semibold text-white">{exam.title}</h3>
+                            <p className="text-xs text-slate-500 mt-1">
+                              {exam.questions.length} questions • {exam.total_marks} total marks • Pass: {exam.passing_marks}
+                            </p>
+                          </div>
+                          <span className={cn(
+                            'text-xs px-2.5 py-1 rounded-full font-medium',
+                            exam.status === 'Active' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-slate-500/10 text-slate-400'
+                          )}>
+                            {exam.status}
+                          </span>
+                        </div>
+
+                        {/* Questions preview */}
+                        <div className="mt-4 pt-4 border-t border-white/[0.04] space-y-2">
+                          {exam.questions.map((q) => (
+                            <div key={q.id} className="flex items-center justify-between text-xs">
+                              <span className="text-slate-400">
+                                Q{q.question_number}: {q.question_text.length > 60 ? q.question_text.slice(0, 60) + '...' : q.question_text}
+                              </span>
+                              <div className="flex items-center gap-3 shrink-0">
+                                <span className={cn(
+                                  'px-2 py-0.5 rounded text-[10px] font-medium',
+                                  q.question_type === 'MCQ' && 'bg-blue-500/10 text-blue-400',
+                                  q.question_type === 'Short' && 'bg-violet-500/10 text-violet-400',
+                                  q.question_type === 'Long' && 'bg-cyan-500/10 text-cyan-400',
+                                )}>
+                                  {q.question_type}
+                                </span>
+                                <span className="text-slate-600">{q.max_marks}m</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* SUBMISSIONS TAB */}
+              {activeTab === 'submissions' && (
+                <div className="space-y-8">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h1 className="text-2xl font-semibold text-white tracking-tight">Submissions</h1>
+                      <p className="text-sm text-slate-500 mt-1">
+                        {scoredCount} scored • {flaggedCount} flagged • {approvedCount} approved
+                      </p>
+                    </div>
+                    <Button
+                      size="sm"
+                      className="bg-cyan-500 hover:bg-cyan-400 text-black font-medium"
+                      onClick={() => setUploadOpen(true)}
+                    >
+                      <Upload className="h-4 w-4 mr-2" />
+                      Upload Paper
+                    </Button>
+                  </div>
+
+                  {/* Upload modal */}
+                  {uploadOpen && (
+                    <div className="glass-card rounded-2xl p-6 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-sm font-semibold text-white">Upload Answer Sheet</h3>
+                        <button onClick={() => setUploadOpen(false)} className="text-slate-500 hover:text-white cursor-pointer"><X className="h-4 w-4" /></button>
+                      </div>
+                      <form onSubmit={handleUpload} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <input
+                          type="text" placeholder="Student Name" required
+                          value={uploadForm.studentName}
+                          onChange={(e) => setUploadForm(f => ({ ...f, studentName: e.target.value }))}
+                          className="h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] px-4 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/40"
+                        />
+                        <input
+                          type="text" placeholder="Student ID" required
+                          value={uploadForm.studentId}
+                          onChange={(e) => setUploadForm(f => ({ ...f, studentId: e.target.value }))}
+                          className="h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] px-4 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/40"
+                        />
+                        <select
+                          required value={uploadForm.examId}
+                          onChange={(e) => setUploadForm(f => ({ ...f, examId: e.target.value }))}
+                          className="h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] px-4 text-sm text-white focus:outline-none focus:border-cyan-500/40 cursor-pointer"
+                        >
+                          <option value="" className="bg-zinc-900">Select Exam</option>
+                          {exams.map(ex => (
+                            <option key={ex.id} value={ex.id} className="bg-zinc-900">{ex.code} — {ex.title}</option>
+                          ))}
+                        </select>
+                        <input
+                          type="file" required accept="image/*,.pdf"
+                          onChange={(e) => setUploadForm(f => ({ ...f, file: e.target.files?.[0] || null }))}
+                          className="h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] px-4 text-sm text-slate-400 file:mr-4 file:text-xs file:text-cyan-400 file:bg-transparent file:border-0 cursor-pointer"
+                        />
+                        <div className="sm:col-span-2">
+                          <Button type="submit" disabled={uploadLoading} className="bg-cyan-500 hover:bg-cyan-400 text-black font-medium">
+                            {uploadLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Upload className="h-4 w-4 mr-2" />}
+                            Submit for AI Grading
+                          </Button>
+                        </div>
+                      </form>
+                    </div>
+                  )}
+
+                  {/* Submissions list */}
+                  <div className="space-y-3">
+                    {submissions.map((sub) => (
+                      <div key={sub.id} className="glass-card rounded-2xl p-6">
+                        <div className="flex items-start justify-between mb-4">
+                          <div>
+                            <div className="flex items-center gap-3 mb-1">
+                              <h3 className="text-base font-semibold text-white">{sub.student_name}</h3>
+                              <span className={cn(
+                                'text-xs px-2.5 py-0.5 rounded-full font-medium',
+                                sub.status === 'Scored' && 'bg-cyan-500/10 text-cyan-400',
+                                sub.status === 'Flagged' && 'bg-yellow-500/10 text-yellow-400',
+                                sub.status === 'Approved' && 'bg-emerald-500/10 text-emerald-400',
+                              )}>
+                                {sub.status}
+                              </span>
+                            </div>
+                            <p className="text-xs text-slate-500">
+                              {sub.student_id} • {exams.find(e => e.id === sub.exam_id)?.code} • {new Date(sub.created_at).toLocaleString()}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-2xl font-bold text-white">{sub.total_score}</p>
+                            <p className="text-xs text-slate-500">AI Confidence: {(sub.ai_confidence * 100).toFixed(0)}%</p>
+                          </div>
+                        </div>
+
+                        {/* Score breakdown */}
+                        <div className="space-y-2 mb-4">
+                          {sub.scores.map((sc) => (
+                            <div key={sc.question_number} className="flex items-center justify-between py-2 border-t border-white/[0.04] first:border-0">
+                              <div className="flex-1 min-w-0">
+                                <p className="text-xs text-slate-400">Q{sc.question_number}</p>
+                                <p className="text-xs text-slate-600 truncate">{sc.feedback}</p>
+                              </div>
+                              <div className="flex items-center gap-4 shrink-0">
+                                <span className="text-sm font-semibold text-white">{sc.final_score}</span>
+                                <span className={cn(
+                                  'text-[10px] font-mono',
+                                  sc.ai_confidence >= 0.9 ? 'text-emerald-400' :
+                                  sc.ai_confidence >= 0.7 ? 'text-yellow-400' : 'text-orange-400'
+                                )}>
+                                  {(sc.ai_confidence * 100).toFixed(0)}%
+                                </span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Actions */}
+                        {sub.status === 'Flagged' && (
+                          <div className="flex gap-2">
+                            <Button size="sm" className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20" onClick={() => handleApprove(sub)}>
+                              <CheckCircle className="h-4 w-4 mr-1" /> Approve
+                            </Button>
+                            <Button size="sm" variant="ghost" className="text-slate-400" onClick={() => setOverrideTarget(sub)}>
+                              <Eye className="h-4 w-4 mr-1" /> Review Details
+                            </Button>
+                          </div>
+                        )}
+                        {sub.status === 'Approved' && sub.reviewer_id && (
+                          <p className="text-xs text-slate-600">Reviewed by {sub.reviewer_id} on {sub.reviewed_at ? new Date(sub.reviewed_at).toLocaleString() : 'N/A'}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ANALYTICS TAB */}
+              {activeTab === 'analytics' && analytics && (
+                <div className="space-y-8">
+                  <div>
+                    <h1 className="text-2xl font-semibold text-white tracking-tight">Analytics</h1>
+                    <p className="text-sm text-slate-500 mt-1">{analytics.exam_title}</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="glass-card rounded-2xl p-6 text-center">
+                      <p className="text-3xl font-bold text-white">{analytics.papers_processed}</p>
+                      <p className="text-sm text-slate-500 mt-1">Papers Processed</p>
+                    </div>
+                    <div className="glass-card rounded-2xl p-6 text-center">
+                      <p className="text-3xl font-bold text-white">{analytics.average_score}</p>
+                      <p className="text-sm text-slate-500 mt-1">Average Score</p>
+                    </div>
+                    <div className="glass-card rounded-2xl p-6 text-center">
+                      <p className="text-3xl font-bold text-cyan-400">{analytics.pass_count > 0 ? ((analytics.pass_count / analytics.papers_processed) * 100).toFixed(0) : 0}%</p>
+                      <p className="text-sm text-slate-500 mt-1">Pass Rate ({analytics.pass_count}P / {analytics.fail_count}F)</p>
+                    </div>
+                  </div>
+
+                  {/* Score distribution */}
+                  <div className="glass-card rounded-2xl p-8">
+                    <h3 className="text-lg font-semibold text-white mb-6">Score Distribution</h3>
+                    <div className="space-y-3">
+                      {Object.entries(analytics.score_distribution).map(([range, count]) => (
+                        <div key={range} className="flex items-center gap-4">
+                          <span className="text-xs text-slate-500 w-16 text-right font-mono">{range}</span>
+                          <div className="flex-1 h-6 rounded-lg bg-white/[0.04] overflow-hidden">
+                            <div
+                              className="h-full rounded-lg bg-gradient-to-r from-cyan-500/40 to-cyan-400/60 flex items-center justify-end pr-3"
+                              style={{ width: `${analytics.papers_processed > 0 ? (count / analytics.papers_processed * 100) : 0}%`, minWidth: count > 0 ? '30px' : '0' }}
+                            >
+                              <span className="text-[10px] font-medium text-white/80">{count}</span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Question difficulty */}
+                  <div className="glass-card rounded-2xl p-8">
+                    <h3 className="text-lg font-semibold text-white mb-6">Question Difficulty Index</h3>
+                    <div className="space-y-3">
+                      {analytics.question_difficulty.map((q) => (
+                        <div key={q.question_number} className="flex items-center gap-4">
+                          <span className="text-xs text-slate-500 w-8 font-mono">Q{q.question_number}</span>
+                          <div className="flex-1">
+                            <div className="flex justify-between mb-1">
+                              <span className="text-xs text-slate-400 truncate max-w-xs">{q.question_text_short}</span>
+                              <span className={cn(
+                                'text-xs font-medium',
+                                q.difficulty_percentage >= 80 ? 'text-emerald-400' :
+                                q.difficulty_percentage >= 50 ? 'text-yellow-400' : 'text-orange-400'
+                              )}>
+                                {q.difficulty_percentage}%
+                              </span>
+                            </div>
+                            <div className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden">
+                              <div
+                                className={cn(
+                                  'h-full rounded-full',
+                                  q.difficulty_percentage >= 80 ? 'bg-emerald-500' :
+                                  q.difficulty_percentage >= 50 ? 'bg-yellow-500' : 'bg-orange-500'
+                                )}
+                                style={{ width: `${q.difficulty_percentage}%` }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* AUDIT TAB */}
+              {activeTab === 'audit' && (
+                <div className="space-y-8">
+                  <div>
+                    <h1 className="text-2xl font-semibold text-white tracking-tight">Audit Logs</h1>
+                    <p className="text-sm text-slate-500 mt-1">{auditLogs.length} events recorded</p>
+                  </div>
+
+                  <div className="glass-card rounded-2xl overflow-hidden divide-y divide-white/[0.04]">
+                    {auditLogs.map((log) => (
+                      <div key={log.id} className="px-6 py-4 flex items-start justify-between">
+                        <div className="flex items-start gap-4">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/[0.04] shrink-0 mt-0.5">
+                            <Clock className="h-3.5 w-3.5 text-slate-500" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-white">{log.action}</p>
+                            <p className="text-xs text-slate-500 mt-0.5">
+                              by <span className="text-cyan-400">{log.user}</span> • {new Date(log.timestamp).toLocaleString()}
+                            </p>
+                            {log.details && (
+                              <p className="text-xs text-slate-600 mt-1 font-mono">
+                                {JSON.stringify(log.details).slice(0, 120)}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    {auditLogs.length === 0 && (
+                      <div className="px-6 py-12 text-center text-sm text-slate-600">
+                        No audit logs available (requires Admin/Teacher role)
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </main>
+    </div>
+  )
+}
