@@ -5,7 +5,8 @@
 ### The Future Operating System for AI-Powered Academic Evaluation
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.2-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.110-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org/)
@@ -64,18 +65,24 @@
 ```
 ScorePilot-AI/
 ├── backend/                    # FastAPI Python Backend
+│   ├── alembic/                # Database migration system
+│   │   ├── versions/           # Auto-generated migration scripts
+│   │   ├── env.py              # Alembic config (imports from app)
+│   │   └── script.py.mako      # Migration template
+│   ├── alembic.ini             # Alembic settings
 │   ├── app/
 │   │   ├── core/
 │   │   │   ├── config.py       # Environment & app settings
 │   │   │   └── security.py     # JWT, password hashing, RBAC
 │   │   ├── models/
-│   │   │   └── database.py     # SQLAlchemy models
+│   │   │   └── database.py     # SQLAlchemy 2.0 models & get_db()
 │   │   ├── services/
 │   │   │   ├── ocr_service.py  # OCR extraction engine
 │   │   │   └── scoring_service.py  # AI scoring pipeline
 │   │   ├── workers/
 │   │   │   └── tasks.py        # Celery async task simulation
-│   │   └── main.py             # FastAPI app + all REST endpoints
+│   │   ├── main.py             # FastAPI app + all REST endpoints
+│   │   └── seed.py             # Demo user seeder (idempotent)
 │   ├── tests/                  # Pytest test suite
 │   ├── Dockerfile
 │   └── requirements.txt
@@ -124,6 +131,7 @@ ScorePilot-AI/
 | **Node.js** | 18+ |
 | **Python** | 3.11+ |
 | **npm** | 9+ |
+| **Docker** | 20+ (for PostgreSQL) |
 
 ### 1. Clone the Repository
 
@@ -132,7 +140,16 @@ git clone https://github.com/xenon-creator/ScorePilot-AI.git
 cd ScorePilot-AI
 ```
 
-### 2. Setup Backend
+### 2. Start PostgreSQL
+
+```bash
+# From project root — starts Postgres 15 on port 5432
+docker compose up -d db
+```
+
+> This creates the `aegis_grading` database with user `postgres` / password `postgres`.
+
+### 3. Setup Backend
 
 ```bash
 cd backend
@@ -146,22 +163,31 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 3. Setup Frontend
+### 4. Run Database Migrations & Seed
 
 ```bash
-cd frontend
+# Apply all migrations (creates 6 tables)
+alembic upgrade head
+
+# Insert demo users (admin, teacher, reviewer)
+python -m app.seed
+```
+
+### 5. Setup Frontend
+
+```bash
+cd ../frontend
 npm install
 ```
 
-### 4. Configure Environment
+### 6. Configure Environment (Optional)
 
 ```bash
-# From project root
+# From project root — defaults work out of the box for local dev
 cp .env.example .env
-# Edit .env with your values (or use defaults for local dev)
 ```
 
-### 5. Run the Platform
+### 7. Run the Platform
 
 **Terminal 1 — Backend API:**
 ```bash
@@ -175,7 +201,7 @@ cd frontend
 npm run dev
 ```
 
-### 6. Open in Browser
+### 8. Open in Browser
 
 | Service | URL |
 |---------|-----|
@@ -264,6 +290,87 @@ Built on **shadcn/ui** architecture with custom dark theme:
 
 ---
 
+## 🗄️ Database
+
+### Schema (6 tables)
+
+```mermaid
+erDiagram
+    users ||--o{ exams : creates
+    users ||--o{ audit_logs : triggers
+    exams ||--|{ questions : contains
+    exams ||--o{ submissions : receives
+    submissions ||--|{ answers : has
+    questions ||--o{ answers : graded_by
+    users ||--o{ answers : overrides
+
+    users {
+        string id PK
+        string email UK
+        string name
+        enum role "admin | teacher | reviewer"
+        string password
+        datetime created_at
+    }
+    exams {
+        string id PK
+        string title
+        text description
+        string created_by FK
+        datetime created_at
+    }
+    questions {
+        string id PK
+        string exam_id FK
+        text text
+        enum question_type "mcq | short | long"
+        text model_answer
+        float max_marks
+    }
+    submissions {
+        string id PK
+        string exam_id FK
+        string student_name
+        enum status "pending | graded | flagged | reviewed"
+        float total_score
+        float ai_confidence
+        datetime uploaded_at
+    }
+    answers {
+        string id PK
+        string submission_id FK
+        string question_id FK
+        int question_number
+        float ai_score
+        float final_score
+        float ai_confidence
+        text ai_reasoning
+        string overridden_by FK
+    }
+    audit_logs {
+        int id PK
+        string user_id FK
+        string action
+        text detail
+        datetime timestamp
+    }
+```
+
+### Migrations
+
+```bash
+# Generate a new migration after model changes
+alembic revision --autogenerate -m "describe_change"
+
+# Apply all pending migrations
+alembic upgrade head
+
+# Rollback one migration
+alembic downgrade -1
+```
+
+---
+
 ## 🐳 Docker Deployment
 
 ```bash
@@ -273,7 +380,7 @@ docker-compose up --build
 
 The `docker-compose.yml` orchestrates:
 - **Backend API** (FastAPI + Uvicorn)
-- **PostgreSQL** database
+- **PostgreSQL 15** database (data persisted in Docker volume)
 - **Redis** for Celery task queue
 - **MinIO** for object storage (scanned papers)
 - **Celery Worker** for async grading pipeline
@@ -303,10 +410,12 @@ The `docker-compose.yml` orchestrates:
 | Technology | Purpose |
 |-----------|---------|
 | FastAPI | REST API framework |
+| PostgreSQL 15 | Relational database |
+| SQLAlchemy 2.0 | ORM + query layer |
+| Alembic | Schema migrations |
+| psycopg 3 | PostgreSQL driver |
 | Pydantic | Data validation |
 | PyJWT | Authentication |
-| bcrypt | Password hashing |
-| SQLAlchemy | ORM (models ready) |
 | Celery | Async task queue |
 
 </td>
@@ -323,8 +432,9 @@ Copy `.env.example` to `.env` and configure:
 # JWT
 JWT_SECRET=your-secret-key-here
 
-# Database
+# Database (PostgreSQL)
 DB_HOST=localhost
+DB_PORT=5432
 DB_USER=postgres
 DB_PASSWORD=postgres
 DB_NAME=aegis_grading
@@ -345,7 +455,8 @@ S3_BUCKET=exam-papers
 
 ## 🗺️ Roadmap
 
-- [ ] Real PostgreSQL integration with Alembic migrations
+- [x] Real PostgreSQL integration with Alembic migrations
+- [x] Demo user seeding with idempotent seed script
 - [ ] Celery worker with Redis for production async grading
 - [ ] MinIO file storage for scanned papers
 - [ ] Real OCR integration (Tesseract / Google Vision API)
