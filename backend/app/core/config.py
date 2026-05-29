@@ -10,10 +10,14 @@ class Settings(BaseSettings):
 
     # Database Settings
     POSTGRES_SERVER: str = os.getenv("DB_HOST", "localhost")
+    POSTGRES_PORT: str = os.getenv("DB_PORT", "5432")
     POSTGRES_USER: str = os.getenv("DB_USER", "postgres")
     POSTGRES_PASSWORD: str = os.getenv("DB_PASSWORD", "postgres")
     POSTGRES_DB: str = os.getenv("DB_NAME", "aegis_grading")
-    DATABASE_URL: str = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}/{POSTGRES_DB}"
+
+    @property
+    def DATABASE_URL(self) -> str:
+        return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
 
     # Redis/Celery Settings
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
