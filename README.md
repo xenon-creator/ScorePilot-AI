@@ -502,7 +502,7 @@ S3_BUCKET=exam-papers
 - [x] Real PostgreSQL integration with Alembic migrations
 - [x] Demo user seeding with idempotent seed script
 - [x] Real AI scoring with sentence-transformers ✅
-- [ ] Celery worker with Redis for production async grading
+- [x] Celery worker with Redis for production async grading ✅
 - [ ] MinIO file storage for scanned papers
 - [ ] Real OCR integration (Tesseract / Google Vision API)
 - [ ] Student portal with self-service score viewing
