@@ -76,6 +76,7 @@ class User(Base):
     # Relationships
     exams = relationship("Exam", back_populates="creator", foreign_keys="Exam.created_by")
     audit_logs = relationship("AuditLog", back_populates="user")
+    lms_settings = relationship("LMSSettings", back_populates="user", cascade="all, delete-orphan")
 
 
 class Exam(Base):
@@ -84,6 +85,7 @@ class Exam(Base):
     id = Column(String, primary_key=True, default=_uuid)
     title = Column(String, nullable=False)
     description = Column(Text, nullable=True, default="")
+    language = Column(String, nullable=False, default="en")
     created_by = Column(String, ForeignKey("users.id"), nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
@@ -160,6 +162,21 @@ class AuditLog(Base):
 
     # Relationships
     user = relationship("User", back_populates="audit_logs")
+
+
+class LMSSettings(Base):
+    __tablename__ = "lms_settings"
+
+    id = Column(String, primary_key=True, default=_uuid)
+    user_id = Column(String, ForeignKey("users.id"), nullable=False)
+    lms_type = Column(String, nullable=False)  # "canvas" or "moodle"
+    api_url = Column(String, nullable=False)
+    api_token = Column(String, nullable=False)
+    is_active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    # Relationships
+    user = relationship("User", back_populates="lms_settings")
 
 
 # ============================================

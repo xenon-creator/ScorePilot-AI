@@ -66,7 +66,7 @@ class OCRService:
         return answers
 
     @classmethod
-    def simulate_scanning_pipeline(cls, file_content: bytes, filename: str) -> Dict[str, Any]:
+    def simulate_scanning_pipeline(cls, file_content: bytes, filename: str, language: str = "en") -> Dict[str, Any]:
         """
         Main entrypoint router for real OCR.
         Autodetects file format and runs the best available OCR/extraction engine:
@@ -114,7 +114,8 @@ class OCRService:
                     image = vision.Image(content=file_content)
                     
                     # Handles both standard images and document pages
-                    response = client.document_text_detection(image=image)
+                    image_context = vision.ImageContext(language_hints=[language])
+                    response = client.document_text_detection(image=image, image_context=image_context)
                     if response.full_text_annotation:
                         raw_text = response.full_text_annotation.text
                         ocr_engine = "GoogleVision-CloudAPI"
@@ -141,9 +142,14 @@ class OCRService:
                 # Attempt quick dummy version check to verify availability
                 pytesseract.get_tesseract_version()
                 
-                logger.info("[OCR Engine] Triggering offline Tesseract OCR...")
+                mapped_lang = {"es": "spa", "de": "deu", "fr": "fra", "en": "eng"}.get(language, "eng")
+                logger.info(f"[OCR Engine] Triggering offline Tesseract OCR with lang: {mapped_lang}...")
                 image = Image.open(io.BytesIO(file_content))
-                raw_text = pytesseract.image_to_string(image)
+                try:
+                    raw_text = pytesseract.image_to_string(image, lang=mapped_lang)
+                except Exception as lang_err:
+                    logger.warning(f"[OCR Engine] Tesseract failed with lang {mapped_lang}: {lang_err}. Retrying with default 'eng'...")
+                    raw_text = pytesseract.image_to_string(image, lang="eng")
                 
                 if raw_text and len(raw_text.strip()) > 5:
                     ocr_engine = "Tesseract-Offline"
@@ -154,38 +160,134 @@ class OCRService:
 
         # --- ENGINE 4: Fallback Simulation ---
         if not raw_text:
-            logger.info("[OCR Engine] No real OCR engines active or file empty. Falling back to high-fidelity simulation...")
-            if "biology" in filename.lower() or filename.endswith(".pdf"):
-                raw_text = (
-                    "Q1: A\n"
-                    "Q2: C\n"
-                    "Q3: Mitochondria is the powerhouse of the cell. It generates energy in the form of ATP "
-                    "through cellular respiration. It has a double membrane structure with its own DNA.\n"
-                    "Q4: Photosynthesis is the process used by plants to convert light energy into chemical energy. "
-                    "It takes place in the chloroplasts. Carbon dioxide and water are reacted using solar energy to "
-                    "produce glucose and oxygen. Light reactions occur in the thylakoid, and Dark reactions (Calvin cycle) "
-                    "take place in the stroma. This is the foundation of energy flow in almost all ecosystems."
-                )
-            elif "history" in filename.lower():
-                raw_text = (
-                    "Q1: B\n"
-                    "Q2: D\n"
-                    "Q3: The French Revolution started in 1789 because of economic crisis, high taxation on the poor third estate, "
-                    "and the lavish lifestyle of King Louis XVI and Marie Antoinette. People wanted equality and freedom.\n"
-                    "Q4: The Industrial Revolution began in Great Britain during the 18th century due to abundant coal resources, "
-                    "technological innovations like the steam engine, and a stable political environment. It shifted agricultural societies "
-                    "into urban industrial hubs, fundamentally restructuring global labor, trade, and standard of living."
-                )
-            else:
-                raw_text = (
-                    "Q1: C\n"
-                    "Q2: B\n"
-                    "Q3: Photosynthesis happens in green leaves where chlorophyll captures sunlight to synthesize glucose.\n"
-                    "Q4: The ecosystem is a community of living organisms interacting with non-living components. "
-                    "It maintains ecological balance through energy transfers and nutrient recycling systems."
-                )
-            ocr_engine = "Simulation-Fallback"
-            confidence_score = 0.90
+             logger.info(f"[OCR Engine] No real OCR engines active or file empty. Falling back to localized simulation ({language})...")
+             
+             # Spanish (es)
+             if language == "es":
+                 if "biology" in filename.lower() or filename.endswith(".pdf"):
+                     raw_text = (
+                         "Q1: A\n"
+                         "Q2: C\n"
+                         "Q3: La mitocondria es la central energética de la célula. Genera energía en forma de ATP "
+                         "a través de la respiración celular. Tiene una estructura de doble membrana con su propio ADN.\n"
+                         "Q4: La fotosíntesis es el proceso utilizado por las plantas para convertir la energía luminosa en energía química. "
+                         "Tiene lugar en los cloroplastos. El dióxido de carbono y el agua reaccionan utilizando energía solar para "
+                         "producir glucosa y oxígeno. Las reacciones luminosas ocurren en el tilacoide y las reacciones oscuras "
+                         "(ciclo de Calvin) tienen lugar en el estroma. Es la base del flujo de energía en los ecosistemas."
+                     )
+                 elif "history" in filename.lower():
+                     raw_text = (
+                         "Q1: B\n"
+                         "Q2: D\n"
+                         "Q3: La Revolución Francesa comenzó en 1789 debido a la crisis económica, los altos impuestos al tercer estado pobre "
+                         "y el estilo de vida lujoso del rey Luis XVI y María Antonieta. El pueblo quería igualdad y libertad.\n"
+                         "Q4: La Revolución Industrial comenzó en Gran Bretaña durante el siglo XVIII debido a los abundantes recursos de carbón, "
+                         "las innovaciones tecnológicas como la máquina de vapor y un entorno político estable. Transformó las sociedades "
+                         "agrícolas en centros industriales urbanos, reestructurando el comercio y el nivel de vida global."
+                     )
+                 else:
+                     raw_text = (
+                         "Q1: C\n"
+                         "Q2: B\n"
+                         "Q3: La fotosíntesis ocurre en las hojas verdes donde la clorofila captura la luz solar para sintetizar glucosa.\n"
+                         "Q4: El ecosistema es una comunidad de organismos vivos que interactúan con componentes no vivos. "
+                         "Mantiene el equilibrio ecológico a través de la transferencia de energía y el reciclaje de nutrientes."
+                     )
+             # French (fr)
+             elif language == "fr":
+                 if "biology" in filename.lower() or filename.endswith(".pdf"):
+                     raw_text = (
+                         "Q1: A\n"
+                         "Q2: C\n"
+                         "Q3: La mitochondrie est la centrale énergétique de la cellule. Elle génère de l'énergie sous forme d'ATP "
+                         "par la respiration cellulaire. Elle possède une structure à double membrane avec son propre ADN.\n"
+                         "Q4: La photosynthèse est le processus utilisé par les plantes pour transformer l'énergie lumineuse en énergie chimique. "
+                         "Elle se déroule dans les chloroplastes. Le diélectrique de carbone et l'eau réagissent en utilisant l'énergie solaire pour "
+                         "produire du glucose et de l'oxygène. Les réactions lumineuses se produisent dans le thylakoïde et les réactions sombres "
+                         "(cycle de Calvin) ont lieu dans le stroma. C'est la base du flux d'énergie dans les écosystèmes."
+                     )
+                 elif "history" in filename.lower():
+                     raw_text = (
+                         "Q1: B\n"
+                         "Q2: D\n"
+                         "Q3: La Révolution française a commencé en 1789 en raison de la crise économique, des impôts élevés sur le tiers état pauvre "
+                         "et du mode de vie luxueux du roi Louis XVI et de Marie-Antoinette. Le peuple voulait l'égalité et la liberté.\n"
+                         "Q4: La Révolution industrielle a commencé en Grande-Bretagne au XVIIIe siècle grâce aux ressources abondantes en charbon, "
+                         "aux innovations technologiques comme la machine à vapeur et à un environnement politique stable. Elle a transformé les "
+                         "sociétés agricoles en centres industriels urbains, restructurant le commerce et le niveau de vie."
+                     )
+                 else:
+                     raw_text = (
+                         "Q1: C\n"
+                         "Q2: B\n"
+                         "Q3: La photosynthèse se produit dans les feuilles vertes où la chlorophylle capte la lumière du soleil pour synthétiser du glucose.\n"
+                         "Q4: L'écosystème est une communauté d'organismes vivants interagissant avec des composants non vivants. "
+                         "Il maintient l'équilibre écologique par le transfert d'énergie et les systèmes de recyclage."
+                     )
+             # German (de)
+             elif language == "de":
+                 if "biology" in filename.lower() or filename.endswith(".pdf"):
+                     raw_text = (
+                         "Q1: A\n"
+                         "Q2: C\n"
+                         "Q3: Das Mitochondrium ist das Kraftwerk der Zelle. Es erzeugt Energie in Form von ATP durch Zellatmung. "
+                         "Es hat eine Doppelmembranstruktur mit eigener DNA.\n"
+                         "Q4: Die Photosynthese ist der Prozess, mit dem Pflanzen Lichtenergie in chemische Energie umwandeln. "
+                         "Sie findet in den Chloroplasten statt. Kohlendioxid und Wasser reagieren unter Nutzung von Sonnenenergie zu "
+                         "Glukose und Sauerstoff. Lichtreaktionen finden in den Thylakoiden statt, und Dunkelreaktionen (Calvin-Zyklus) "
+                         "finden im Stroma statt. Das ist das Fundament des Energieflusses in Ökosystemen."
+                     )
+                 elif "history" in filename.lower():
+                     raw_text = (
+                         "Q1: B\n"
+                         "Q2: D\n"
+                         "Q3: Die Französische Revolution begann 1789 aufgrund einer Wirtschaftskrise, hoher Steuern für den armen dritten Stand "
+                         "und des verschwenderischen Lebensstils von König Ludwig XVI. und Marie-Antoinette. Das Volk forderte Gleichheit und Freiheit.\n"
+                         "Q4: Die Industrielle Revolution begann in Großbritannien im 18. Jahrhundert aufgrund reichlicher Kohlevorkommen, "
+                         "technologischer Innovationen wie der Dampfmaschine und eines stabilen politischen Umfelds. Sie verlagerte landwirtschaftliche "
+                         "Gesellschaften in urbane Industriezentren, was Handel und Lebensstandard veränderte."
+                     )
+                 else:
+                     raw_text = (
+                         "Q1: C\n"
+                         "Q2: B\n"
+                         "Q3: Die Photosynthese findet in grünen Blättern statt, wo Chlorophyll das Sonnenlicht einfängt, um Glukose zu synthetisieren.\n"
+                         "Q4: Das Ökosystem ist eine Gemeinschaft lebender Organismen, die mit nichtlebenden Komponenten interagieren. "
+                         "Es erhält das ökologische Gleichgewicht durch Energieübertragung und Nährstoffrecycling aufrecht."
+                     )
+             # English (en) / Default
+             else:
+                 if "biology" in filename.lower() or filename.endswith(".pdf"):
+                     raw_text = (
+                         "Q1: A\n"
+                         "Q2: C\n"
+                         "Q3: Mitochondria is the powerhouse of the cell. It generates energy in the form of ATP "
+                         "through cellular respiration. It has a double membrane structure with its own DNA.\n"
+                         "Q4: Photosynthesis is the process used by plants to convert light energy into chemical energy. "
+                         "It takes place in the chloroplasts. Carbon dioxide and water are reacted using solar energy to "
+                         "produce glucose and oxygen. Light reactions occur in the thylakoid, and Dark reactions (Calvin cycle) "
+                         "take place in the stroma. This is the foundation of energy flow in almost all ecosystems."
+                     )
+                 elif "history" in filename.lower():
+                     raw_text = (
+                         "Q1: B\n"
+                         "Q2: D\n"
+                         "Q3: The French Revolution started in 1789 because of economic crisis, high taxation on the poor third estate, "
+                         "and the lavish lifestyle of King Louis XVI and Marie Antoinette. People wanted equality and freedom.\n"
+                         "Q4: The Industrial Revolution began in Great Britain during the 18th century due to abundant coal resources, "
+                         "technological innovations like the steam engine, and a stable political environment. It shifted agricultural societies "
+                         "into urban industrial hubs, fundamentally restructuring global labor, trade, and standard of living."
+                     )
+                 else:
+                     raw_text = (
+                         "Q1: C\n"
+                         "Q2: B\n"
+                         "Q3: Photosynthesis happens in green leaves where chlorophyll captures sunlight to synthesize glucose.\n"
+                         "Q4: The ecosystem is a community of living organisms interacting with non-living components. "
+                         "It maintains ecological balance through energy transfers and nutrient recycling systems."
+                     )
+             ocr_engine = "Simulation-Fallback"
+             confidence_score = 0.90
 
         # Parse the extracted raw text into standard question blocks
         extracted_blocks = cls.extract_answers_from_text(raw_text)

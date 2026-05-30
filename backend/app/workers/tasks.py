@@ -65,9 +65,11 @@ def process_and_score_submission(submission_id: str, object_key: str, filename: 
                 logger.error(f"[Worker] Could not download file '{object_key}' from S3: {se}")
 
         # Run OCR simulation pipeline
+        exam_lang = exam.language if hasattr(exam, "language") and exam.language else "en"
         ocr_result = OCRService.simulate_scanning_pipeline(
             file_content=file_bytes,
-            filename=filename or "paper.pdf"
+            filename=filename or "paper.pdf",
+            language=exam_lang
         )
         
         submission.extracted_text = ocr_result.get("raw_text", "")

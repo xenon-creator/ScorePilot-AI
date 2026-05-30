@@ -45,6 +45,7 @@ export interface Exam {
   status: string
   created_at: string
   questions: Question[]
+  language: string
 }
 
 export interface ScoreDetail {
@@ -185,6 +186,7 @@ export async function apiCreateExam(data: {
   code: string
   total_marks: number
   passing_marks: number
+  language?: string
   questions: Array<{
     question_number: number
     question_text: string
@@ -306,4 +308,51 @@ export async function apiExportSubmissionPdf(submissionId: string, studentName: 
   a.click()
   a.remove()
   window.URL.revokeObjectURL(url)
+}
+
+export interface LmsSettings {
+  configured: boolean
+  lms_type?: 'canvas' | 'moodle'
+  api_url?: string
+}
+
+export interface LmsCourse {
+  id: string
+  name: string
+  code: string
+  assignments: Array<{
+    id: string
+    name: string
+    max_points: number
+  }>
+}
+
+export async function apiGetLmsSettings(): Promise<LmsSettings> {
+  return apiFetch<LmsSettings>('/api/v1/lms/settings')
+}
+
+export async function apiSaveLmsSettings(data: {
+  lms_type: string
+  api_url: string
+  api_token: string
+}): Promise<{ status: string, message: string }> {
+  return apiFetch<{ status: string, message: string }>('/api/v1/lms/settings', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  })
+}
+
+export async function apiGetLmsCourses(): Promise<LmsCourse[]> {
+  return apiFetch<LmsCourse[]>('/api/v1/lms/courses')
+}
+
+export async function apiSyncExamGradesToLms(
+  examId: string,
+  courseId: string,
+  assignmentId: string
+): Promise<{ status: string, synced_count: number, details: any }> {
+  return apiFetch<{ status: string, synced_count: number, details: any }>(`/api/v1/exams/${examId}/sync-lms`, {
+    method: 'POST',
+    body: JSON.stringify({ course_id: courseId, assignment_id: assignmentId }),
+  })
 }

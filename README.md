@@ -508,8 +508,8 @@ S3_BUCKET=exam-papers
 - [x] Student portal with self-service score viewing ✅
 - [x] Email notifications for score release ✅
 - [x] Export results to CSV/PDF ✅
-- [ ] Multi-language OCR support
-- [ ] LMS integration (Moodle, Canvas)
+- [x] Multi-language OCR support ✅
+- [x] LMS integration (Moodle, Canvas) ✅
 
 ---
 

@@ -6,23 +6,25 @@ import Link from 'next/link'
 import { useAuth } from '@/lib/auth-context'
 import {
   apiGetExams, apiGetSubmissions, apiGetAnalytics, apiGetAuditLogs, apiUploadPaper, apiOverrideScores,
-  apiExportExamCsv, apiExportSubmissionPdf,
-  type Exam, type Submission, type AnalyticsData, type AuditLog
+  apiExportExamCsv, apiExportSubmissionPdf, apiCreateExam,
+  apiGetLmsSettings, apiSaveLmsSettings, apiGetLmsCourses, apiSyncExamGradesToLms,
+  type Exam, type Submission, type AnalyticsData, type AuditLog, type LmsSettings, type LmsCourse
 } from '@/lib/api'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import {
   Cpu, LayoutDashboard, FileText, Upload, BarChart3, Shield, LogOut, Loader2,
-  ChevronDown, AlertCircle, CheckCircle, Clock, Eye, X
+  ChevronDown, AlertCircle, CheckCircle, Clock, Eye, X, Plus, Trash2
 } from 'lucide-react'
 
-type Tab = 'overview' | 'my-grades' | 'exams' | 'submissions' | 'analytics' | 'audit'
+type Tab = 'overview' | 'my-grades' | 'exams' | 'submissions' | 'analytics' | 'audit' | 'lms'
 
 const sidebarItems: { key: Tab; label: string; icon: React.ElementType }[] = [
   { key: 'overview', label: 'Overview', icon: LayoutDashboard },
   { key: 'my-grades', label: 'My Grades', icon: LayoutDashboard },
   { key: 'exams', label: 'Exams', icon: FileText },
   { key: 'submissions', label: 'Submissions', icon: Upload },
+  { key: 'lms', label: 'LMS Connect', icon: Cpu },
   { key: 'analytics', label: 'Analytics', icon: BarChart3 },
   { key: 'audit', label: 'Audit Logs', icon: Shield },
 ]
@@ -57,6 +59,33 @@ export default function DashboardPage() {
 
   // Override state
   const [overrideTarget, setOverrideTarget] = useState<Submission | null>(null)
+
+  // Create Exam state
+  const [createExamOpen, setCreateExamOpen] = useState(false)
+  const [createExamLoading, setCreateExamLoading] = useState(false)
+  const [createExamForm, setCreateExamForm] = useState({
+    title: '',
+    subject: '',
+    code: '',
+    language: 'en',
+    questions: [
+      { question_number: 1, question_text: '', question_type: 'Short', max_marks: 10, model_answer: '' }
+    ]
+  })
+
+  // LMS Integration state
+  const [lmsType, setLmsType] = useState<'canvas' | 'moodle'>('canvas')
+  const [lmsUrl, setLmsUrl] = useState('')
+  const [lmsToken, setLmsToken] = useState('')
+  const [lmsConfigured, setLmsConfigured] = useState(false)
+  const [lmsCourses, setLmsCourses] = useState<LmsCourse[]>([])
+  const [lmsLoading, setLmsLoading] = useState(false)
+
+  const [syncModalOpen, setSyncModalOpen] = useState(false)
+  const [syncTargetExam, setSyncTargetExam] = useState<Exam | null>(null)
+  const [selectedLmsCourseId, setSelectedLmsCourseId] = useState('')
+  const [selectedLmsAssignmentId, setSelectedLmsAssignmentId] = useState('')
+  const [syncLoading, setSyncLoading] = useState(false)
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -98,6 +127,20 @@ export default function DashboardPage() {
           setAuditLogs(logs)
         } catch {
           // User may not have permission for audit logs
+        }
+
+        // Fetch LMS settings
+        try {
+          const lmsSet = await apiGetLmsSettings()
+          setLmsConfigured(lmsSet.configured)
+          if (lmsSet.configured) {
+            setLmsType(lmsSet.lms_type || 'canvas')
+            setLmsUrl(lmsSet.api_url || '')
+            const coursesData = await apiGetLmsCourses()
+            setLmsCourses(coursesData)
+          }
+        } catch (lmsErr) {
+          console.error("LMS config fetch failed:", lmsErr)
         }
       }
     } catch (err: unknown) {
@@ -141,6 +184,102 @@ export default function DashboardPage() {
       setOverrideTarget(null)
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Override failed')
+    }
+  }
+
+  // Create Exam handler
+  async function handleCreateExam(e: React.FormEvent) {
+    e.preventDefault()
+    if (!createExamForm.title || !createExamForm.subject || !createExamForm.code) {
+      setError('Please fill in all basic exam details.')
+      return
+    }
+    if (createExamForm.questions.length === 0) {
+      setError('Please add at least one question.')
+      return
+    }
+    setCreateExamLoading(true)
+    setError('')
+    try {
+      const totalMarks = createExamForm.questions.reduce((sum, q) => sum + Number(q.max_marks), 0)
+      const passingMarks = Math.round(totalMarks * 0.5)
+      
+      const payload = {
+        title: createExamForm.title,
+        subject: createExamForm.subject,
+        code: createExamForm.code,
+        language: createExamForm.language,
+        total_marks: totalMarks,
+        passing_marks: passingMarks,
+        questions: createExamForm.questions.map((q, idx) => ({
+          question_number: idx + 1,
+          question_text: q.question_text,
+          question_type: q.question_type,
+          max_marks: Number(q.max_marks),
+          model_answer: q.model_answer,
+        }))
+      }
+      
+      const newExam = await apiCreateExam(payload)
+      setExams(prev => [newExam, ...prev])
+      setCreateExamOpen(false)
+      // Reset form
+      setCreateExamForm({
+        title: '',
+        subject: '',
+        code: '',
+        language: 'en',
+        questions: [
+          { question_number: 1, question_text: '', question_type: 'Short', max_marks: 10, model_answer: '' }
+        ]
+      })
+      await fetchData()
+    } catch (err: any) {
+      setError(err.message || 'Failed to create exam')
+    } finally {
+      setCreateExamLoading(false)
+    }
+  }
+
+  // LMS Connect Handlers
+  async function handleSaveLms(e: React.FormEvent) {
+    e.preventDefault()
+    if (!lmsUrl || !lmsToken) {
+      setError('Please provide a valid server URL and API token.')
+      return
+    }
+    setLmsLoading(true)
+    setError('')
+    try {
+      await apiSaveLmsSettings({ lms_type: lmsType, api_url: lmsUrl, api_token: lmsToken })
+      setLmsConfigured(true)
+      const coursesData = await apiGetLmsCourses()
+      setLmsCourses(coursesData)
+      setLmsToken('') // Clear token display
+    } catch (err: any) {
+      setError(err.message || 'Failed to save LMS parameters.')
+    } finally {
+      setLmsLoading(false)
+    }
+  }
+
+  async function handleSyncGrades(e: React.FormEvent) {
+    e.preventDefault()
+    if (!syncTargetExam || !selectedLmsCourseId || !selectedLmsAssignmentId) {
+      setError('Please select a target LMS course and assignment.')
+      return
+    }
+    setSyncLoading(true)
+    setError('')
+    try {
+      const res = await apiSyncExamGradesToLms(syncTargetExam.id, selectedLmsCourseId, selectedLmsAssignmentId)
+      setSyncModalOpen(false)
+      await fetchData()
+      alert(`Successfully synchronized ${res.synced_count} grades to ${lmsType.toUpperCase()} gradebook!`)
+    } catch (err: any) {
+      setError(err.message || 'Grades synchronization failed.')
+    } finally {
+      setSyncLoading(false)
     }
   }
 
@@ -455,7 +594,200 @@ export default function DashboardPage() {
                       <h1 className="text-2xl font-semibold text-white tracking-tight">Exams</h1>
                       <p className="text-sm text-slate-500 mt-1">{exams.length} active exams</p>
                     </div>
+                    {(user?.role?.toLowerCase() === 'teacher' || user?.role?.toLowerCase() === 'admin') && (
+                      <Button
+                        size="sm"
+                        className="bg-cyan-500 hover:bg-cyan-400 text-black font-medium cursor-pointer"
+                        onClick={() => setCreateExamOpen(true)}
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Create Exam
+                      </Button>
+                    )}
                   </div>
+
+                  {/* Create Exam Modal */}
+                  {createExamOpen && (
+                    <div className="glass-card rounded-2xl p-6 space-y-6">
+                      <div className="flex items-center justify-between border-b border-white/[0.04] pb-4">
+                        <div>
+                          <h3 className="text-base font-semibold text-white">Create New Exam</h3>
+                          <p className="text-xs text-slate-500 mt-0.5">Define exam metadata, language, and evaluation questions.</p>
+                        </div>
+                        <button onClick={() => setCreateExamOpen(false)} className="text-slate-500 hover:text-white cursor-pointer">
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+
+                      <form onSubmit={handleCreateExam} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                          <div className="md:col-span-2">
+                            <label className="block text-xs font-semibold text-slate-400 mb-1.5">Exam Title</label>
+                            <input
+                              type="text" placeholder="e.g. Biology Cell Structure Exam" required
+                              value={createExamForm.title}
+                              onChange={(e) => setCreateExamForm(f => ({ ...f, title: e.target.value }))}
+                              className="w-full h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] px-4 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/40"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-semibold text-slate-400 mb-1.5">Subject</label>
+                            <input
+                              type="text" placeholder="e.g. Biology" required
+                              value={createExamForm.subject}
+                              onChange={(e) => setCreateExamForm(f => ({ ...f, subject: e.target.value }))}
+                              className="w-full h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] px-4 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/40"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-semibold text-slate-400 mb-1.5">Exam Code</label>
+                            <input
+                              type="text" placeholder="e.g. BIO-101" required
+                              value={createExamForm.code}
+                              onChange={(e) => setCreateExamForm(f => ({ ...f, code: e.target.value }))}
+                              className="w-full h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] px-4 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/40"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                          <div>
+                            <label className="block text-xs font-semibold text-slate-400 mb-1.5">Exam Language</label>
+                            <select
+                              value={createExamForm.language}
+                              onChange={(e) => setCreateExamForm(f => ({ ...f, language: e.target.value }))}
+                              className="w-full h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] px-4 text-sm text-white focus:outline-none focus:border-cyan-500/40 cursor-pointer"
+                            >
+                              <option value="en" className="bg-zinc-900">English (en)</option>
+                              <option value="es" className="bg-zinc-900">Spanish (es)</option>
+                              <option value="fr" className="bg-zinc-900">French (fr)</option>
+                              <option value="de" className="bg-zinc-900">German (de)</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="space-y-4 border-t border-white/[0.04] pt-4">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-sm font-semibold text-slate-300">Exam Questions</h4>
+                            <Button
+                              type="button" size="xs" variant="outline"
+                              className="border-white/[0.08] text-cyan-400 hover:bg-white/[0.04] cursor-pointer"
+                              onClick={() => setCreateExamForm(f => ({
+                                ...f,
+                                questions: [
+                                  ...f.questions,
+                                  { question_number: f.questions.length + 1, question_text: '', question_type: 'Short', max_marks: 10, model_answer: '' }
+                                ]
+                              }))}
+                            >
+                              <Plus className="h-3 w-3 mr-1" /> Add Question
+                            </Button>
+                          </div>
+
+                          <div className="space-y-4">
+                            {createExamForm.questions.map((q, idx) => (
+                              <div key={idx} className="bg-white/[0.02] border border-white/[0.04] rounded-xl p-4 space-y-3 relative">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-xs font-semibold text-cyan-400 font-mono">Question #{idx + 1}</span>
+                                  {createExamForm.questions.length > 1 && (
+                                    <button
+                                      type="button"
+                                      className="text-slate-500 hover:text-red-400 cursor-pointer"
+                                      onClick={() => setCreateExamForm(f => {
+                                        const updatedQ = f.questions.filter((_, qIdx) => qIdx !== idx)
+                                        return {
+                                          ...f,
+                                          questions: updatedQ.map((uq, uidx) => ({ ...uq, question_number: uidx + 1 }))
+                                        }
+                                      })}
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </button>
+                                  )}
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                                  <div className="md:col-span-2">
+                                    <label className="block text-[10px] text-slate-500 mb-1">Question Prompt</label>
+                                    <input
+                                      type="text" placeholder="e.g. What is the role of mitochondria?" required
+                                      value={q.question_text}
+                                      onChange={(e) => setCreateExamForm(f => {
+                                        const updatedQ = [...f.questions]
+                                        updatedQ[idx].question_text = e.target.value
+                                        return { ...f, questions: updatedQ }
+                                      })}
+                                      className="w-full h-9 rounded-lg bg-white/[0.04] border border-white/[0.06] px-3 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/40"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-[10px] text-slate-500 mb-1">Response Type</label>
+                                    <select
+                                      value={q.question_type}
+                                      onChange={(e) => setCreateExamForm(f => {
+                                        const updatedQ = [...f.questions]
+                                        updatedQ[idx].question_type = e.target.value as any
+                                        return { ...f, questions: updatedQ }
+                                      })}
+                                      className="w-full h-9 rounded-lg bg-white/[0.04] border border-white/[0.06] px-3 text-xs text-white focus:outline-none focus:border-cyan-500/40 cursor-pointer"
+                                    >
+                                      <option value="MCQ" className="bg-zinc-900">MCQ</option>
+                                      <option value="Short" className="bg-zinc-900">Short</option>
+                                      <option value="Long" className="bg-zinc-900">Long</option>
+                                    </select>
+                                  </div>
+                                  <div>
+                                    <label className="block text-[10px] text-slate-500 mb-1">Max Marks</label>
+                                    <input
+                                      type="number" min="1" max="100" required
+                                      value={q.max_marks}
+                                      onChange={(e) => setCreateExamForm(f => {
+                                        const updatedQ = [...f.questions]
+                                        updatedQ[idx].max_marks = Number(e.target.value)
+                                        return { ...f, questions: updatedQ }
+                                      })}
+                                      className="w-full h-9 rounded-lg bg-white/[0.04] border border-white/[0.06] px-3 text-xs text-white focus:outline-none focus:border-cyan-500/40"
+                                    />
+                                  </div>
+                                </div>
+
+                                <div>
+                                  <label className="block text-[10px] text-slate-500 mb-1">Model Answer / Evaluator Rubric Criteria</label>
+                                  <textarea
+                                    placeholder="e.g. Mitochondria is the powerhouse of the cell generating ATP..." required rows={2}
+                                    value={q.model_answer}
+                                    onChange={(e) => setCreateExamForm(f => {
+                                      const updatedQ = [...f.questions]
+                                      updatedQ[idx].model_answer = e.target.value
+                                      return { ...f, questions: updatedQ }
+                                    })}
+                                    className="w-full rounded-lg bg-white/[0.04] border border-white/[0.06] p-3 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/40 resize-y"
+                                  />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-end gap-3 border-t border-white/[0.04] pt-4">
+                          <Button
+                            type="button" variant="outline" size="sm"
+                            className="border-white/[0.08] hover:bg-white/[0.04] text-slate-300"
+                            onClick={() => setCreateExamOpen(false)}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            type="submit" size="sm" disabled={createExamLoading}
+                            className="bg-cyan-500 hover:bg-cyan-400 text-black font-semibold"
+                          >
+                            {createExamLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Plus className="h-4 w-4 mr-2" />}
+                            Create Exam
+                          </Button>
+                        </div>
+                      </form>
+                    </div>
+                  )}
 
                   <div className="space-y-4">
                     {exams.map((exam) => (
@@ -465,6 +797,7 @@ export default function DashboardPage() {
                             <div className="flex items-center gap-3 mb-2">
                               <span className="text-xs font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded">{exam.code}</span>
                               <span className="text-xs text-slate-500">{exam.subject}</span>
+                              <span className="text-xs font-semibold text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded uppercase">{exam.language || 'en'}</span>
                             </div>
                             <h3 className="text-lg font-semibold text-white">{exam.title}</h3>
                             <p className="text-xs text-slate-500 mt-1">
@@ -517,6 +850,20 @@ export default function DashboardPage() {
                       </p>
                     </div>
                     <div className="flex gap-2">
+                      {lmsConfigured && exams.length > 0 && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="border-cyan-500/20 text-cyan-400 hover:bg-cyan-500/10 cursor-pointer"
+                          onClick={() => {
+                            setSyncTargetExam(exams[0])
+                            setSyncModalOpen(true)
+                          }}
+                        >
+                          <Cpu className="h-4 w-4 mr-2" />
+                          Sync LMS Grades
+                        </Button>
+                      )}
                       {exams.length > 0 && (
                         <Button
                           size="sm"
@@ -544,6 +891,69 @@ export default function DashboardPage() {
                       </Button>
                     </div>
                   </div>
+
+                  {/* LMS Sync Modal */}
+                  {syncModalOpen && syncTargetExam && (
+                    <div className="glass-card rounded-2xl p-6 space-y-4">
+                      <div className="flex items-center justify-between border-b border-white/[0.04] pb-3">
+                        <h3 className="text-sm font-semibold text-white">Sync Grades to LMS Gradebook</h3>
+                        <button onClick={() => setSyncModalOpen(false)} className="text-slate-500 hover:text-white cursor-pointer"><X className="h-4 w-4" /></button>
+                      </div>
+                      <form onSubmit={handleSyncGrades} className="space-y-4">
+                        <p className="text-xs text-slate-400">
+                          This will synchronize all scored submission results for **{syncTargetExam.title}** directly to your connected {lmsType.toUpperCase()} account.
+                        </p>
+                        
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-[10px] text-slate-500 mb-1">Target Course</label>
+                            <select
+                              required value={selectedLmsCourseId}
+                              onChange={(e) => {
+                                setSelectedLmsCourseId(e.target.value)
+                                setSelectedLmsAssignmentId('') // reset assignment selection
+                              }}
+                              className="w-full h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] px-4 text-sm text-white focus:outline-none focus:border-cyan-500/40 cursor-pointer"
+                            >
+                              <option value="" className="bg-zinc-900">Select LMS Course</option>
+                              {lmsCourses.map(c => (
+                                <option key={c.id} value={c.id} className="bg-zinc-900">{c.code} — {c.name}</option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div>
+                            <label className="block text-[10px] text-slate-500 mb-1">Target Assignment</label>
+                            <select
+                              required value={selectedLmsAssignmentId}
+                              onChange={(e) => setSelectedLmsAssignmentId(e.target.value)}
+                              className="w-full h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] px-4 text-sm text-white focus:outline-none focus:border-cyan-500/40 cursor-pointer"
+                              disabled={!selectedLmsCourseId}
+                            >
+                              <option value="" className="bg-zinc-900">Select LMS Assignment</option>
+                              {lmsCourses.find(c => c.id === selectedLmsCourseId)?.assignments.map(a => (
+                                <option key={a.id} value={a.id} className="bg-zinc-900">{a.name} ({a.max_points} pts)</option>
+                              )) || []}
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="flex justify-end gap-3 pt-2">
+                          <Button
+                            type="button" variant="outline" size="sm"
+                            className="border-white/[0.08] hover:bg-white/[0.04] text-slate-300 cursor-pointer"
+                            onClick={() => setSyncModalOpen(false)}
+                          >
+                            Cancel
+                          </Button>
+                          <Button type="submit" disabled={syncLoading} className="bg-cyan-500 hover:bg-cyan-400 text-black font-semibold cursor-pointer">
+                            {syncLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Cpu className="h-4 w-4 mr-2" />}
+                            Publish Grades
+                          </Button>
+                        </div>
+                      </form>
+                    </div>
+                  )}
 
                   {/* Upload modal */}
                   {uploadOpen && (
@@ -673,6 +1083,132 @@ export default function DashboardPage() {
                         </div>
                       </div>
                     ))}
+                  </div>
+                </div>
+              )}
+
+              {/* LMS CONNECT TAB */}
+              {activeTab === 'lms' && (
+                <div className="space-y-8">
+                  <div>
+                    <h1 className="text-2xl font-semibold text-white tracking-tight">LMS Connect</h1>
+                    <p className="text-sm text-slate-500 mt-1">Connect your institutional Canvas or Moodle environments to synchronize evaluation grades.</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* LMS Setup card */}
+                    <div className="lg:col-span-1 glass-card rounded-2xl p-6 space-y-4 h-fit">
+                      <div className="flex items-center gap-3 pb-3 border-b border-white/[0.04]">
+                        <Cpu className="h-5 w-5 text-cyan-400" />
+                        <h3 className="text-sm font-semibold text-white">Connection Profile</h3>
+                      </div>
+
+                      <form onSubmit={handleSaveLms} className="space-y-4">
+                        <div>
+                          <label className="block text-xs font-semibold text-slate-400 mb-1.5">LMS Platform Type</label>
+                          <select
+                            value={lmsType}
+                            onChange={(e) => setLmsType(e.target.value as any)}
+                            className="w-full h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] px-4 text-sm text-white focus:outline-none focus:border-cyan-500/40 cursor-pointer"
+                          >
+                            <option value="canvas" className="bg-zinc-900">Canvas LMS</option>
+                            <option value="moodle" className="bg-zinc-900">Moodle LMS</option>
+                          </select>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-semibold text-slate-400 mb-1.5">API Server URL</label>
+                          <input
+                            type="url" placeholder={lmsType === 'canvas' ? 'https://canvas.instructure.com/api/v1' : 'https://moodle.university.edu/webservice/rest/server.php'} required
+                            value={lmsUrl}
+                            onChange={(e) => setLmsUrl(e.target.value)}
+                            className="w-full h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] px-4 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/40"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-semibold text-slate-400 mb-1.5">API Developer Token</label>
+                          <input
+                            type="password" placeholder="••••••••••••••••••••••••••••••••" required
+                            value={lmsToken}
+                            onChange={(e) => setLmsToken(e.target.value)}
+                            className="w-full h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] px-4 text-sm text-white focus:outline-none focus:border-cyan-500/40"
+                          />
+                        </div>
+
+                        <Button type="submit" disabled={lmsLoading} className="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-semibold cursor-pointer">
+                          {lmsLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Cpu className="h-4 w-4 mr-2" />}
+                          Save & Test Connection
+                        </Button>
+                      </form>
+
+                      {lmsConfigured ? (
+                        <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 flex items-start gap-3">
+                          <CheckCircle className="h-5 w-5 text-emerald-400 shrink-0 mt-0.5" />
+                          <div>
+                            <p className="text-xs font-semibold text-emerald-400">Connection Connected</p>
+                            <p className="text-[10px] text-slate-400 mt-0.5">Connected to {lmsType.toUpperCase()} server. Ready to synchronize gradebooks.</p>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 flex items-start gap-3">
+                          <AlertCircle className="h-5 w-5 text-amber-400 shrink-0 mt-0.5" />
+                          <div>
+                            <p className="text-xs font-semibold text-amber-400">Not Connected</p>
+                            <p className="text-[10px] text-slate-400 mt-0.5">Please provide connection parameters to authorize class directories sync.</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Course catalog card */}
+                    <div className="lg:col-span-2 glass-card rounded-2xl p-6 space-y-4">
+                      <div className="flex items-center justify-between pb-3 border-b border-white/[0.04]">
+                        <h3 className="text-sm font-semibold text-white">Imported Course Catalog</h3>
+                        {lmsConfigured && (
+                          <span className="text-xs font-mono text-cyan-400 bg-cyan-500/10 px-2.5 py-0.5 rounded-full uppercase">{lmsType} Mode</span>
+                        )}
+                      </div>
+
+                      {!lmsConfigured ? (
+                        <div className="flex flex-col items-center justify-center text-center p-12 space-y-3">
+                          <Cpu className="h-10 w-10 text-slate-700" />
+                          <div>
+                            <h4 className="text-sm font-medium text-slate-400">No LMS Courses Imported</h4>
+                            <p className="text-xs text-slate-600 mt-1 max-w-sm">Provide your integration configurations in the side panel to dynamically fetch courses directories from your Canvas or Moodle platform.</p>
+                          </div>
+                        </div>
+                      ) : lmsCourses.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center text-center p-12 space-y-3">
+                          <Loader2 className="h-8 w-8 text-cyan-400 animate-spin" />
+                          <h4 className="text-xs text-slate-500">Querying LMS courses repository...</h4>
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {lmsCourses.map((c) => (
+                            <div key={c.id} className="bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.04] transition-all rounded-xl p-4 space-y-3">
+                              <div>
+                                <span className="text-[10px] font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded">{c.code}</span>
+                                <h4 className="text-sm font-semibold text-white mt-1.5">{c.name}</h4>
+                              </div>
+                              <div className="border-t border-white/[0.04] pt-3 space-y-1.5">
+                                <p className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">LMS Assignments</p>
+                                {c.assignments.length === 0 ? (
+                                  <p className="text-xs text-slate-600 italic">No assignments found for this course.</p>
+                                ) : (
+                                  c.assignments.map((a) => (
+                                    <div key={a.id} className="flex items-center justify-between text-xs">
+                                      <span className="text-slate-400">{a.name}</span>
+                                      <span className="text-slate-600 shrink-0">{a.max_points} points</span>
+                                    </div>
+                                  ))
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}

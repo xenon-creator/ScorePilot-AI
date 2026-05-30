@@ -11,11 +11,12 @@ from pydantic import BaseModel, EmailStr
 from app.core.config import settings
 from app.core.security import hash_password, verify_password, create_access_token, RoleChecker, get_current_user_payload
 from app.models.database import (
-    get_db, User, Exam, Question, Submission, Answer, AuditLog,
+    get_db, User, Exam, Question, Submission, Answer, AuditLog, LMSSettings,
     UserRole, QuestionType, SubmissionStatus
 )
 from app.services.ocr_service import OCRService
 from app.workers.tasks import process_and_score_submission
+from app.services.lms_service import LMSService
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -79,6 +80,7 @@ class ExamCreateModel(BaseModel):
     total_marks: int
     passing_marks: int
     questions: List[QuestionCreateModel]
+    language: str = "en"
 
 class ReviewOverrideItemModel(BaseModel):
     question_number: int
@@ -88,6 +90,17 @@ class ReviewOverrideItemModel(BaseModel):
 class ReviewSubmissionOverrideModel(BaseModel):
     submission_id: str
     overrides: List[ReviewOverrideItemModel]
+
+
+class LMSSettingsCreateModel(BaseModel):
+    lms_type: str  # "canvas" or "moodle"
+    api_url: str
+    api_token: str
+
+
+class LMSSyncPayload(BaseModel):
+    course_id: str
+    assignment_id: str
 
 
 # ==========================================
@@ -125,6 +138,7 @@ def _format_exam(exam: Exam) -> dict:
         "title": exam.title,
         "subject": exam.description or "",
         "code": exam.title[:8].upper().replace(" ", "-") if exam.description is None else exam.description,
+        "language": exam.language,
         "creator_id": exam.created_by,
         "total_marks": int(sum(q.max_marks for q in exam.questions)),
         "passing_marks": int(sum(q.max_marks for q in exam.questions) * 0.5),
@@ -274,6 +288,7 @@ def create_exam(data: ExamCreateModel, db: Session = Depends(get_db), payload: d
     exam = Exam(
         title=data.title,
         description=data.subject,
+        language=data.language,
         created_by=creator_id,
     )
     db.add(exam)
@@ -598,3 +613,141 @@ def get_audit_logs(db: Session = Depends(get_db), payload: dict = Depends(RoleCh
             "details": detail,
         })
     return result
+
+
+# --- LMS INTEGRATION ---
+@app.get("/api/v1/lms/settings")
+def get_lms_settings(db: Session = Depends(get_db), payload: dict = Depends(RoleChecker(["Teacher", "Admin"]))):
+    user = db.query(User).filter(User.name == payload["sub"]).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User profile not found")
+    
+    settings_rec = db.query(LMSSettings).filter(LMSSettings.user_id == user.id, LMSSettings.is_active == True).first()
+    if not settings_rec:
+        return {"configured": False}
+    
+    return {
+        "configured": True,
+        "lms_type": settings_rec.lms_type,
+        "api_url": settings_rec.api_url,
+        "api_token": "********"  # Hide token for security
+    }
+
+
+@app.post("/api/v1/lms/settings")
+def save_lms_settings(data: LMSSettingsCreateModel, db: Session = Depends(get_db), payload: dict = Depends(RoleChecker(["Teacher", "Admin"]))):
+    user = db.query(User).filter(User.name == payload["sub"]).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User profile not found")
+        
+    # Deactivate existing settings
+    db.query(LMSSettings).filter(LMSSettings.user_id == user.id).update({"is_active": False})
+    
+    new_settings = LMSSettings(
+        user_id=user.id,
+        lms_type=data.lms_type,
+        api_url=data.api_url,
+        api_token=data.api_token,
+        is_active=True
+    )
+    db.add(new_settings)
+    
+    _audit(db, user.id, "LMS Settings Configured", {"lms_type": data.lms_type, "api_url": data.api_url})
+    db.commit()
+    return {"status": "success", "message": "LMS settings saved successfully"}
+
+
+@app.get("/api/v1/lms/courses")
+def get_lms_courses(db: Session = Depends(get_db), payload: dict = Depends(RoleChecker(["Teacher", "Admin"]))):
+    user = db.query(User).filter(User.name == payload["sub"]).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User profile not found")
+        
+    settings_rec = db.query(LMSSettings).filter(LMSSettings.user_id == user.id, LMSSettings.is_active == True).first()
+    if not settings_rec:
+        raise HTTPException(status_code=400, detail="LMS connection not configured.")
+        
+    courses = LMSService.sync_courses(
+        lms_type=settings_rec.lms_type,
+        api_url=settings_rec.api_url,
+        api_token=settings_rec.api_token
+    )
+    
+    # Retrieve assignments for each course to make frontend rendering seamless
+    result = []
+    for course in courses:
+        try:
+            assigns = LMSService.sync_assignments(
+                lms_type=settings_rec.lms_type,
+                api_url=settings_rec.api_url,
+                api_token=settings_rec.api_token,
+                course_id=course["id"]
+            )
+        except Exception:
+            assigns = []
+        result.append({
+            "id": course["id"],
+            "name": course["name"],
+            "code": course["code"],
+            "assignments": assigns
+        })
+    return result
+
+
+@app.post("/api/v1/exams/{exam_id}/sync-lms")
+def sync_exam_grades_to_lms(exam_id: str, data: LMSSyncPayload, db: Session = Depends(get_db), payload: dict = Depends(RoleChecker(["Teacher", "Admin"]))):
+    user = db.query(User).filter(User.name == payload["sub"]).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User profile not found")
+        
+    settings_rec = db.query(LMSSettings).filter(LMSSettings.user_id == user.id, LMSSettings.is_active == True).first()
+    if not settings_rec:
+        raise HTTPException(status_code=400, detail="LMS connection not configured.")
+        
+    exam = db.query(Exam).filter(Exam.id == exam_id).first()
+    if not exam:
+        raise HTTPException(status_code=404, detail="Exam not found")
+        
+    # Gather scored submissions
+    submissions = db.query(Submission).filter(
+        Submission.exam_id == exam_id,
+        Submission.status == SubmissionStatus.graded
+    ).all()
+    
+    if not submissions:
+        raise HTTPException(status_code=400, detail="No scored submissions found for this exam.")
+        
+    # Standardize grade payloads
+    grades_payload = []
+    for sub in submissions:
+        student_identifier = sub.student_id or sub.student_name
+        feedback_notes = f"ScorePilot AI evaluation completed for {exam.title}."
+        grades_payload.append({
+            "student_id": student_identifier,
+            "grade": sub.total_score or 0.0,
+            "feedback": feedback_notes
+        })
+        
+    sync_result = LMSService.sync_grades(
+        lms_type=settings_rec.lms_type,
+        api_url=settings_rec.api_url,
+        api_token=settings_rec.api_token,
+        course_id=data.course_id,
+        assignment_id=data.assignment_id,
+        grades_data=grades_payload
+    )
+    
+    _audit(
+        db, user.id, "LMS Grades Synchronized",
+        {
+            "exam_id": exam_id,
+            "exam_title": exam.title,
+            "course_id": data.course_id,
+            "assignment_id": data.assignment_id,
+            "synced_count": len(grades_payload),
+            "lms_type": settings_rec.lms_type
+        }
+    )
+    db.commit()
+    
+    return sync_result
