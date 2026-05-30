@@ -504,7 +504,7 @@ S3_BUCKET=exam-papers
 - [x] Real AI scoring with sentence-transformers ✅
 - [x] Celery worker with Redis for production async grading ✅
 - [x] MinIO file storage for scanned papers ✅
-- [ ] Real OCR integration (Tesseract / Google Vision API)
+- [x] Real OCR integration (Tesseract / Google Vision API) ✅
 - [ ] Student portal with self-service score viewing
 - [ ] Email notifications for score release
 - [ ] Export results to CSV/PDF
