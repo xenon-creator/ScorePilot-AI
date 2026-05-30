@@ -1,6 +1,7 @@
 import uuid
 import json
 import datetime
+import os
 from typing import Dict, Any, List, Optional
 from fastapi import FastAPI, Depends, HTTPException, status, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
@@ -14,7 +15,7 @@ from app.models.database import (
     UserRole, QuestionType, SubmissionStatus
 )
 from app.services.ocr_service import OCRService
-from app.services.scoring_service import ScoringService
+from app.workers.tasks import process_and_score_submission
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -136,7 +137,7 @@ def _format_exam(exam: Exam) -> dict:
 def _format_submission(sub: Submission, exam: Optional[Exam] = None) -> dict:
     """Format a Submission ORM object to the response shape the frontend expects."""
     status_map = {
-        SubmissionStatus.pending: "Scored",
+        SubmissionStatus.pending: "Pending",
         SubmissionStatus.graded: "Scored",
         SubmissionStatus.flagged: "Flagged",
         SubmissionStatus.reviewed: "Approved",
@@ -263,6 +264,11 @@ def create_exam(data: ExamCreateModel, db: Session = Depends(get_db), payload: d
     return _format_exam(exam)
 
 
+# Create local uploads folder for async paper staging
+UPLOADS_DIR = os.path.join(os.path.dirname(__file__), "..", "uploads")
+os.makedirs(UPLOADS_DIR, exist_ok=True)
+
+
 # --- UPLOADS & SCORING ---
 @app.post("/api/v1/uploads")
 def upload_papers(
@@ -277,80 +283,41 @@ def upload_papers(
     if not exam:
         raise HTTPException(status_code=404, detail="Exam details not found")
 
-    # Run OCR simulation to get extracted text
-    ocr_result = OCRService.simulate_scanning_pipeline(
-        file_content=b"pdf-binary-simulation",
-        filename=file.filename or "paper.pdf",
-    )
+    filename = file.filename or "paper.pdf"
+    unique_filename = f"{uuid.uuid4()}_{filename}"
+    filepath = os.path.join(UPLOADS_DIR, unique_filename)
 
-    # Create submission (pending)
+    # Save uploaded file locally
+    try:
+        with open(filepath, "wb") as f:
+            f.write(file.file.read())
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to save uploaded file: {str(e)}")
+
+    # Create submission in database with pending status
     submission = Submission(
         exam_id=exam_id,
         student_name=student_name,
         student_id=student_id,
         status=SubmissionStatus.pending,
-        extracted_text=ocr_result.get("raw_text", ""),
+        total_score=0.0,
+        ai_confidence=0.0,
+        extracted_text="",
     )
     db.add(submission)
-    db.flush()
-
-    # Map OCR blocks by question number
-    ocr_blocks = {b["question_number"]: b for b in ocr_result.get("blocks", [])}
-
-    total_score = 0.0
-    total_confidence = 0.0
-    any_flagged = False
-
-    for idx, q in enumerate(exam.questions):
-        q_num = idx + 1
-        q_type = q.question_type.value  # "mcq", "short", "long"
-
-        # Get student answer from OCR
-        block = ocr_blocks.get(q_num)
-        student_text = block["answer_text"] if block else ""
-
-        # Score using real AI
-        if q_type == "mcq":
-            result = ScoringService.evaluate_mcq(student_text, q.model_answer, q.max_marks)
-        elif q_type == "short":
-            result = ScoringService.evaluate_short_answer(student_text, q.model_answer, q.max_marks)
-        else:
-            result = ScoringService.evaluate_long_answer(student_text, q.model_answer, q.max_marks)
-
-        if result.flagged_for_review:
-            any_flagged = True
-
-        total_score += result.score
-        total_confidence += result.confidence
-
-        answer = Answer(
-            submission_id=submission.id,
-            question_id=q.id,
-            question_number=q_num,
-            student_answer=student_text,
-            ai_score=result.score,
-            final_score=result.score,
-            ai_confidence=result.confidence,
-            ai_reasoning=result.reasoning,
-            flagged_for_review=result.flagged_for_review,
-            scored_at=datetime.datetime.utcnow(),
-        )
-        db.add(answer)
-
-    # Update submission totals
-    num_questions = len(exam.questions) or 1
-    submission.total_score = round(total_score, 2)
-    submission.ai_confidence = round(total_confidence / num_questions, 2)
-    submission.status = SubmissionStatus.flagged if any_flagged else SubmissionStatus.graded
-
-    _audit(db, None, "AI Scoring Completed", {
-        "submission_id": submission.id,
-        "status": submission.status.value,
-        "score": submission.total_score,
-        "flagged": any_flagged,
-    })
     db.commit()
     db.refresh(submission)
+
+    # Dispatch Celery background task for asynchronous scoring
+    process_and_score_submission.delay(submission.id, filepath, filename)
+
+    # Log initial submission upload event
+    _audit(db, None, "Submission Uploaded", {
+        "submission_id": submission.id,
+        "student_name": submission.student_name,
+        "filename": filename,
+    })
+    db.commit()
 
     return _format_submission(submission)
 
