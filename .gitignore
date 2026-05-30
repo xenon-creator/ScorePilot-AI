@@ -33,6 +33,7 @@ env/
 htmlcov/
 .coverage
 .coverage.*
+models/
 
 # ==========================
 # Node / Frontend

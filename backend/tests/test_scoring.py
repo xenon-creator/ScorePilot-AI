@@ -1,61 +1,71 @@
+"""
+Test suite for the real AI scoring engine.
+Run: pytest backend/tests/test_scoring.py -v
+"""
 import pytest
 from app.services.scoring_service import ScoringService
 
-def test_mcq_scorer_correct():
-    result = ScoringService.evaluate_mcq(
-        student_answer="A",
-        model_answer="A",
-        max_marks=2.0
-    )
-    assert result["is_correct"] is True
-    assert result["score"] == 2.0
-    assert result["confidence"] == 1.0
 
-def test_mcq_scorer_incorrect():
-    result = ScoringService.evaluate_mcq(
-        student_answer="B",
-        model_answer="A",
-        max_marks=2.0,
-        negative_marking=0.25
-    )
-    assert result["is_correct"] is False
-    assert result["score"] == -0.25
+class TestMCQScoring:
+    def test_mcq_exact_match(self):
+        result = ScoringService.evaluate_mcq("photosynthesis", "photosynthesis", 2.0)
+        assert result.score == 2.0
+        assert result.confidence == 1.0
 
-def test_semantic_similarity_overlap():
-    sim_exact = ScoringService.calculate_semantic_similarity(
-        "Mitochondria is the powerhouse of the cell.",
-        "Mitochondria is the powerhouse of the cell."
-    )
-    assert sim_exact == 1.0
+    def test_mcq_semantic_match(self):
+        result = ScoringService.evaluate_mcq(
+            "the process by which plants make food",
+            "photosynthesis",
+            2.0,
+        )
+        # Semantic match should score something > 0
+        assert result.score > 0
 
-    sim_partial = ScoringService.calculate_semantic_similarity(
-        "Mitochondria generates ATP power inside cells.",
-        "Mitochondria generates energy through cellular respiration."
-    )
-    assert 0.3 < sim_partial < 0.9
 
-def test_short_answer_evaluator():
-    result = ScoringService.evaluate_short_answer(
-        student_answer="Mitochondria makes ATP during cellular respiration.",
-        model_answer="Mitochondria generates ATP through cellular respiration in double membranes.",
-        max_marks=6.0,
-        keywords=["ATP", "respiration", "mitochondria"]
-    )
-    assert result["score"] > 3.0
-    assert len(result["criteria_matched"]["matched_keywords"]) >= 2
-    assert "mitochondria" in result["criteria_matched"]["matched_keywords"]
+class TestShortAnswerScoring:
+    def test_short_answer_partial(self):
+        result = ScoringService.evaluate_short_answer(
+            "plants use sunlight to make glucose",
+            "photosynthesis converts light energy into chemical energy stored as glucose using chlorophyll",
+            5.0,
+        )
+        assert 1.0 <= result.score <= 4.5
 
-def test_long_answer_rubric_weighting():
-    rubrics = [
-        {"criterion": "Light reactions", "weight": 0.5, "keywords": ["light", "thylakoid", "oxygen"]},
-        {"criterion": "Calvin cycle", "weight": 0.5, "keywords": ["dark", "stroma", "glucose"]}
-    ]
-    result = ScoringService.evaluate_long_answer(
-        student_answer="Light dependent reactions occur in thylakoids generating oxygen. The dark Calvin cycle occurs in stroma to assemble glucose.",
-        model_answer="Photosynthesis occurs in thylakoids splitting water to release oxygen, and stroma fixes carbon into glucose sugars.",
-        max_marks=10.0,
-        rubrics=rubrics
-    )
-    assert result["score"] >= 7.0
-    assert result["confidence"] >= 0.6
-    assert len(result["criteria_matched"]["criteria_details"]) == 2
+
+class TestLongAnswerScoring:
+    def test_long_answer_empty(self):
+        result = ScoringService.evaluate_long_answer(
+            "",
+            "any model answer text here",
+            10.0,
+        )
+        assert result.score == 0.0
+
+    def test_confidence_flagging(self):
+        result = ScoringService.evaluate_long_answer(
+            "unclear rambling text xyz abc",
+            "precise scientific explanation of cellular respiration including glycolysis and krebs cycle. "
+            "The electron transport chain produces ATP through oxidative phosphorylation. "
+            "NADH and FADH2 serve as electron carriers in the process.",
+            10.0,
+        )
+        assert result.flagged_for_review is True
+
+
+class TestScoringEdgeCases:
+    def test_empty_student_answer_short(self):
+        result = ScoringService.evaluate_short_answer("", "model answer", 5.0)
+        assert result.score == 0.0
+
+    def test_perfect_similarity_short(self):
+        answer = "photosynthesis converts light energy into chemical energy stored as glucose using chlorophyll"
+        result = ScoringService.evaluate_short_answer(answer, answer, 5.0)
+        assert result.score >= 4.0
+
+    def test_mcq_option_letters(self):
+        result = ScoringService.evaluate_mcq("B", "B", 1.0)
+        assert result.score == 1.0
+
+    def test_mcq_wrong_option(self):
+        result = ScoringService.evaluate_mcq("A", "C", 1.0)
+        assert result.score <= 0.0

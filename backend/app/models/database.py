@@ -136,6 +136,8 @@ class Answer(Base):
     final_score = Column(Float, nullable=True, default=0.0)
     ai_confidence = Column(Float, nullable=True, default=0.0)
     ai_reasoning = Column(Text, nullable=True, default="")
+    flagged_for_review = Column(Boolean, nullable=False, default=False)
+    scored_at = Column(DateTime, nullable=True, default=datetime.utcnow)
     overridden_by = Column(String, ForeignKey("users.id"), nullable=True)
 
     # Relationships

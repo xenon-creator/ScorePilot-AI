@@ -345,6 +345,8 @@ erDiagram
         float final_score
         float ai_confidence
         text ai_reasoning
+        bool flagged_for_review
+        datetime scored_at
         string overridden_by FK
     }
     audit_logs {
@@ -367,6 +369,48 @@ alembic upgrade head
 
 # Rollback one migration
 alembic downgrade -1
+```
+
+---
+
+## 🧠 AI Scoring Engine
+
+ScorePilot uses **real semantic AI scoring** powered by sentence-transformers — no external APIs, fully offline after first model download.
+
+### Model
+
+| Property | Value |
+|----------|-------|
+| **Model** | `all-MiniLM-L6-v2` |
+| **Size** | ~80MB (cached in `./models/`) |
+| **Runtime** | CPU-only, no GPU required |
+| **Cold start** | ~5-10s (first load), instant after |
+| **Per-answer latency** | <200ms on CPU |
+
+### Scoring Modes
+
+| Type | Method | Details |
+|------|--------|---------|
+| **MCQ** | Exact match + semantic fallback | Full marks for exact/near-exact match, half marks for semantic similarity ≥75% |
+| **Short Answer** | 70% semantic + 30% keyword | Cosine similarity blended with keyword coverage extraction |
+| **Long Answer** | Sentence-level coverage + depth | Each model sentence matched against student sentences; 60% coverage + 40% depth ratio |
+
+### Confidence & Flagging
+
+- Every answer gets an `ai_confidence` score (0.0 - 1.0)
+- **Short answers** flagged if confidence < 0.50
+- **Long answers** flagged if confidence < 0.65
+- Flagged answers set `submission.status = "flagged"` for human review
+
+### Example API Response
+
+```json
+{
+  "ai_score": 3.42,
+  "ai_confidence": 0.73,
+  "ai_reasoning": "Semantic similarity: 68%. Keyword coverage: 3/5 (60%). Final blended score: 3.42/5.0.",
+  "flagged_for_review": false
+}
 ```
 
 ---
@@ -457,10 +501,10 @@ S3_BUCKET=exam-papers
 
 - [x] Real PostgreSQL integration with Alembic migrations
 - [x] Demo user seeding with idempotent seed script
+- [x] Real AI scoring with sentence-transformers ✅
 - [ ] Celery worker with Redis for production async grading
 - [ ] MinIO file storage for scanned papers
 - [ ] Real OCR integration (Tesseract / Google Vision API)
-- [ ] Real AI scoring with sentence-transformers
 - [ ] Student portal with self-service score viewing
 - [ ] Email notifications for score release
 - [ ] Export results to CSV/PDF

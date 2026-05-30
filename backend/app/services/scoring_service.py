@@ -1,224 +1,276 @@
+"""
+AI Scoring Service — real semantic scoring using sentence-transformers.
+
+Supports three question types:
+  - MCQ:   exact match + semantic fallback
+  - Short: semantic similarity + keyword coverage blend
+  - Long:  sentence-level coverage + depth analysis
+"""
 import re
-import difflib
-from typing import Dict, Any, List, Tuple
+import logging
+from typing import Dict, Any, List
+from dataclasses import dataclass
+
+from app.services.embedding_engine import get_similarity
+
+logger = logging.getLogger(__name__)
+
+# Simple English stopwords (no NLTK needed)
+_STOPWORDS = frozenset({
+    "i", "me", "my", "we", "our", "you", "your", "he", "she", "it", "its",
+    "they", "them", "their", "this", "that", "these", "those", "is", "am",
+    "are", "was", "were", "be", "been", "being", "have", "has", "had", "do",
+    "does", "did", "will", "would", "shall", "should", "may", "might", "can",
+    "could", "a", "an", "the", "and", "but", "or", "nor", "not", "no", "so",
+    "if", "then", "than", "too", "very", "of", "in", "on", "at", "to", "for",
+    "with", "by", "from", "as", "into", "about", "between", "through", "after",
+    "before", "during", "above", "below", "up", "down", "out", "off", "over",
+    "under", "again", "further", "all", "each", "every", "both", "few", "more",
+    "most", "other", "some", "such", "only", "own", "same", "just", "also",
+    "how", "what", "which", "who", "whom", "when", "where", "why",
+})
+
+
+@dataclass
+class ScoringResult:
+    """Result object for a single answer scoring."""
+    score: float
+    confidence: float
+    reasoning: str
+    flagged_for_review: bool = False
+    criteria_matched: Dict[str, Any] = None
+
+    def __post_init__(self):
+        if self.criteria_matched is None:
+            self.criteria_matched = {}
+
+
+def _extract_keywords(text: str, top_n: int = 5) -> List[str]:
+    """Extract top N meaningful words from text (no NLTK, simple split + filter)."""
+    words = re.findall(r'[a-zA-Z]{3,}', text.lower())
+    keywords = [w for w in words if w not in _STOPWORDS]
+    # Deduplicate preserving order
+    seen = set()
+    unique = []
+    for w in keywords:
+        if w not in seen:
+            seen.add(w)
+            unique.append(w)
+    return unique[:top_n]
+
+
+def _split_sentences(text: str) -> List[str]:
+    """Split text into sentences on . ? ! boundaries."""
+    parts = re.split(r'[.?!]\s+', text.strip())
+    return [s.strip() for s in parts if s.strip() and len(s.strip()) > 5]
+
 
 class ScoringService:
+    """AI-powered scoring using sentence-transformers for real semantic analysis."""
+
     @staticmethod
-    def evaluate_mcq(student_answer: str, model_answer: str, max_marks: float, negative_marking: float = 0.0) -> Dict[str, Any]:
+    def evaluate_mcq(
+        student_answer: str,
+        model_answer: str,
+        max_marks: float,
+        negative_marking: float = 0.0,
+    ) -> ScoringResult:
         """
-        Grades Multiple Choice Questions. Supports case-insensitive matches and negative marks.
+        MCQ scoring:
+        1. Exact match → full marks
+        2. Semantic similarity fallback for text-based MCQs
         """
-        ans = student_answer.strip().upper()
-        model = model_answer.strip().upper()
-        
-        # Take first letter or exact match
-        ans_char = ans[0] if ans else ""
-        model_char = model[0] if model else ""
-        
-        is_correct = ans_char == model_char
-        
-        if is_correct:
-            assigned_score = max_marks
-            feedback = "Correct option matching."
+        s_norm = student_answer.strip().lower()
+        m_norm = model_answer.strip().lower()
+
+        if not s_norm:
+            return ScoringResult(
+                score=0.0,
+                confidence=1.0,
+                reasoning="No answer provided.",
+            )
+
+        # Exact match (case-insensitive)
+        if s_norm == m_norm:
+            return ScoringResult(
+                score=max_marks,
+                confidence=1.0,
+                reasoning=f"Exact match: '{student_answer.strip()}' matches model answer.",
+            )
+
+        # Single-character option matching (A/B/C/D)
+        s_char = s_norm[0] if len(s_norm) == 1 else None
+        m_char = m_norm[0] if len(m_norm) <= 2 else None
+        if s_char and m_char:
+            if s_char == m_char:
+                return ScoringResult(
+                    score=max_marks,
+                    confidence=1.0,
+                    reasoning=f"Option match: '{s_char.upper()}' is correct.",
+                )
+            else:
+                penalty = -abs(negative_marking) if negative_marking > 0 else 0.0
+                return ScoringResult(
+                    score=penalty,
+                    confidence=1.0,
+                    reasoning=f"Incorrect option: expected '{m_char.upper()}', got '{s_char.upper()}'.",
+                )
+
+        # Semantic similarity fallback for text-based MCQs
+        similarity = get_similarity(s_norm, m_norm)
+
+        if similarity >= 0.85:
+            return ScoringResult(
+                score=max_marks,
+                confidence=0.95,
+                reasoning=f"Near-exact semantic match ({similarity:.0%}). Full marks awarded.",
+                criteria_matched={"semantic_similarity": round(similarity, 4)},
+            )
+        elif similarity >= 0.50:
+            return ScoringResult(
+                score=round(max_marks * 0.5, 2),
+                confidence=round(similarity, 2),
+                reasoning=f"Partial semantic match ({similarity:.0%}). Half marks awarded.",
+                criteria_matched={"semantic_similarity": round(similarity, 4)},
+            )
         else:
-            # Apply negative marking if configured
-            assigned_score = -abs(negative_marking) if negative_marking > 0 else 0.0
-            feedback = f"Incorrect choice. Expected '{model_char}', but student wrote '{ans_char}'."
-            
-        return {
-            "score": float(assigned_score),
-            "is_correct": is_correct,
-            "confidence": 1.0,
-            "feedback": feedback,
-            "criteria_matched": {
-                "option_match": is_correct,
-                "selected_option": ans_char,
-                "correct_option": model_char
-            }
-        }
+            penalty = -abs(negative_marking) if negative_marking > 0 else 0.0
+            return ScoringResult(
+                score=penalty,
+                confidence=round(1.0 - similarity, 2),
+                reasoning=f"Low semantic match ({similarity:.0%}). Answer does not match expected response.",
+                criteria_matched={"semantic_similarity": round(similarity, 4)},
+            )
 
-    @classmethod
-    def calculate_semantic_similarity(cls, text1: str, text2: str) -> float:
-        """
-        Simulates transformer-based sentence embeddings similarity using a high-fidelity
-        sequence matcher combined with word overlaps to mimic actual NLP models.
-        """
-        t1_words = set(re.findall(r'\w+', text1.lower()))
-        t2_words = set(re.findall(r'\w+', text2.lower()))
-        
-        if not t1_words or not t2_words:
-            return 0.0
-            
-        # Jaccard overlap
-        jaccard = len(t1_words.intersection(t2_words)) / len(t1_words.union(t2_words))
-        
-        # Sequence matcher ratio for syntax structure
-        seq_ratio = difflib.SequenceMatcher(None, text1.lower(), text2.lower()).ratio()
-        
-        # Blended semantic similarity score (heavy weight on conceptual overlaps)
-        similarity = (jaccard * 0.7) + (seq_ratio * 0.3)
-        return min(round(similarity * 1.25, 2), 1.0)  # Boost factor for conceptual matches
-
-    @classmethod
+    @staticmethod
     def evaluate_short_answer(
-        cls, 
-        student_answer: str, 
-        model_answer: str, 
-        max_marks: float, 
-        keywords: List[str] = None
-    ) -> Dict[str, Any]:
+        student_answer: str,
+        model_answer: str,
+        max_marks: float,
+        keywords: List[str] = None,
+    ) -> ScoringResult:
         """
-        Grades short-form answers by blending semantic vector similarities 
-        with keyword matching criteria.
+        Short answer scoring:
+        - 70% semantic similarity + 30% keyword coverage
         """
-        if not keywords:
-            keywords = []
-            
-        # 1. Semantic Similarity Check
-        similarity = cls.calculate_semantic_similarity(student_answer, model_answer)
-        
-        # 2. Key Term Presence Check
-        matched_keywords = []
-        missing_keywords = []
-        for kw in keywords:
-            # Use regex for word boundaries
-            if re.search(rf'\b{re.escape(kw.lower())}\b', student_answer.lower()):
-                matched_keywords.append(kw)
-            else:
-                missing_keywords.append(kw)
-                
-        kw_ratio = len(matched_keywords) / len(keywords) if keywords else 1.0
-        
-        # Blended rating
-        final_ratio = (similarity * 0.6) + (kw_ratio * 0.4)
-        raw_score = final_ratio * max_marks
-        
-        # Cap score between 0 and max_marks
-        raw_score = max(0.0, min(float(round(raw_score * 2) / 2), max_marks))  # Round to nearest 0.5
-        
-        # Determine confidence of score assignment. 
-        # Lower confidence if writing length is short, or similarity differs wildly from keyword ratio.
-        diff = abs(similarity - kw_ratio)
-        confidence = max(0.4, 1.0 - (diff * 0.5))
-        
-        feedback = ""
-        if final_ratio >= 0.85:
-            feedback = "Excellent response! Captures all core concepts accurately."
-        elif final_ratio >= 0.5:
-            feedback = "Partially correct. Understood the primary mechanism, but missed key terms or details."
-        else:
-            feedback = "Incomplete response. Lacks core concepts and fails to match expected criteria."
-            
-        if missing_keywords:
-            feedback += f" Missing concepts: {', '.join(missing_keywords[:2])}."
+        if not student_answer or not student_answer.strip():
+            return ScoringResult(
+                score=0.0,
+                confidence=1.0,
+                reasoning="No answer provided.",
+            )
 
-        return {
-            "score": raw_score,
-            "confidence": round(confidence, 2),
-            "feedback": feedback,
-            "criteria_matched": {
-                "semantic_similarity_percentage": int(similarity * 100),
-                "matched_keywords": matched_keywords,
-                "missing_keywords": missing_keywords,
-                "keyword_coverage_ratio": round(kw_ratio, 2)
-            }
-        }
+        # Semantic similarity
+        similarity = get_similarity(student_answer, model_answer)
 
-    @classmethod
+        # Keyword extraction and coverage
+        kw_list = keywords if keywords else _extract_keywords(model_answer, top_n=5)
+        if not kw_list:
+            kw_list = _extract_keywords(model_answer, top_n=5)
+
+        student_lower = student_answer.lower()
+        keyword_hits = sum(1 for kw in kw_list if kw.lower() in student_lower)
+        keyword_coverage = keyword_hits / len(kw_list) if kw_list else 0.0
+
+        # Blended score
+        blended = (similarity * 0.7) + (keyword_coverage * 0.3)
+        final_score = round(blended * max_marks, 2)
+        final_score = max(0.0, min(final_score, max_marks))
+
+        confidence = round(similarity, 2) if similarity > 0.5 else 0.3
+
+        flagged = confidence < 0.5
+
+        reasoning = (
+            f"Semantic similarity: {similarity:.0%}. "
+            f"Keyword coverage: {keyword_hits}/{len(kw_list)} ({keyword_coverage:.0%}). "
+            f"Final blended score: {final_score}/{max_marks}."
+        )
+
+        return ScoringResult(
+            score=final_score,
+            confidence=confidence,
+            reasoning=reasoning,
+            flagged_for_review=flagged,
+            criteria_matched={
+                "semantic_similarity": round(similarity, 4),
+                "keyword_hits": keyword_hits,
+                "keyword_total": len(kw_list),
+                "keyword_coverage": round(keyword_coverage, 4),
+                "keywords_checked": kw_list,
+            },
+        )
+
+    @staticmethod
     def evaluate_long_answer(
-        cls, 
-        student_answer: str, 
-        model_answer: str, 
-        max_marks: float, 
-        rubrics: List[Dict[str, Any]]
-    ) -> Dict[str, Any]:
+        student_answer: str,
+        model_answer: str,
+        max_marks: float,
+        rubrics: List[Dict[str, Any]] = None,
+    ) -> ScoringResult:
         """
-        Grades multi-paragraph, descriptive answers using fine-grained 
-        rubric parameters (e.g., structure, core claims, grammar, analysis).
+        Long answer scoring:
+        - Sentence-level coverage matching (60%)
+        - Depth/completeness ratio (40%)
         """
-        # Rubrics is a list of criteria: e.g. [{"criterion": "Mechanisms", "weight": 0.4, "keywords": ["ATP", "respiration"]}]
-        score_breakdown = {}
-        total_assigned_ratio = 0.0
-        
-        matched_criteria_details = []
-        suggested_feedback = []
-        
-        # Overall readability and size checks
-        words = len(student_answer.split())
-        grammar_score = 1.0
-        if words < 30:
-            grammar_score = 0.3
-        elif words < 75:
-            grammar_score = 0.7
-            
-        for rub in rubrics:
-            crit_name = rub.get("criterion", "Concept Coverage")
-            weight = rub.get("weight", 0.25)
-            expected_kws = rub.get("keywords", [])
-            description = rub.get("description", "")
-            
-            # Evaluate this rubric criterion
-            crit_matches = []
-            crit_missing = []
-            for kw in expected_kws:
-                if re.search(rf'\b{re.escape(kw.lower())}\b', student_answer.lower()):
-                    crit_matches.append(kw)
-                else:
-                    crit_missing.append(kw)
-            
-            # Sub-score calculations
-            match_ratio = len(crit_matches) / len(expected_kws) if expected_kws else 1.0
-            semantic_overlap = cls.calculate_semantic_similarity(student_answer, model_answer)
-            
-            # Blended weight for this specific rubric block
-            crit_ratio = (match_ratio * 0.7) + (semantic_overlap * 0.3)
-            if crit_name.lower() == "grammar" or "structure" in crit_name.lower():
-                crit_ratio = (crit_ratio * 0.4) + (grammar_score * 0.6)
-                
-            crit_ratio = min(1.0, max(0.0, crit_ratio))
-            criterion_score = crit_ratio * (max_marks * weight)
-            
-            total_assigned_ratio += crit_ratio * weight
-            score_breakdown[crit_name] = round(criterion_score, 2)
-            
-            # Document details
-            matched_criteria_details.append({
-                "criterion": crit_name,
-                "description": description,
-                "weight": weight,
-                "matched_points": crit_matches,
-                "missing_points": crit_missing,
-                "coverage_percentage": int(crit_ratio * 100),
-                "score_allocated": round(criterion_score, 2),
-                "max_score_allocated": round(max_marks * weight, 2)
-            })
-            
-            if crit_ratio < 0.6:
-                suggested_feedback.append(f"Enhance depth in '{crit_name}'. Missing concept: {', '.join(crit_missing[:2]) or 'lacks structure'}.")
-            else:
-                suggested_feedback.append(f"Strong understanding demonstrated in '{crit_name}'.")
+        if not student_answer or not student_answer.strip():
+            return ScoringResult(
+                score=0.0,
+                confidence=1.0,
+                reasoning="No answer provided. Score: 0.0.",
+            )
 
-        final_score = total_assigned_ratio * max_marks
-        final_score = max(0.0, min(float(round(final_score * 2) / 2), max_marks))  # Round to nearest 0.5
-        
-        # Calculate overall system confidence in grading
-        # Short responses to long essays trigger low AI confidence (requires teacher verification)
-        base_confidence = 0.90
-        if words < 50:
-            base_confidence -= 0.30
-        if any(item["coverage_percentage"] < 40 for item in matched_criteria_details):
-            base_confidence -= 0.10
-            
-        confidence = max(0.5, round(base_confidence, 2))
-        
-        return {
-            "score": final_score,
-            "confidence": confidence,
-            "feedback": " | ".join(suggested_feedback[:3]),
-            "criteria_matched": {
-                "score_breakdown": score_breakdown,
-                "criteria_details": matched_criteria_details,
-                "word_count": words,
-                "readability_score": int(grammar_score * 100)
-            }
-        }
+        model_sentences = _split_sentences(model_answer)
+        student_sentences = _split_sentences(student_answer)
+
+        if not model_sentences:
+            model_sentences = [model_answer.strip()]
+        if not student_sentences:
+            student_sentences = [student_answer.strip()]
+
+        # For each model sentence, find best match in student answer
+        best_matches = []
+        for m_sent in model_sentences:
+            best_sim = 0.0
+            for s_sent in student_sentences:
+                sim = get_similarity(m_sent, s_sent)
+                if sim > best_sim:
+                    best_sim = sim
+            best_matches.append(best_sim)
+
+        coverage_score = sum(best_matches) / len(best_matches) if best_matches else 0.0
+        matched_count = sum(1 for s in best_matches if s >= 0.5)
+
+        # Depth ratio
+        depth_score = min(len(student_sentences) / len(model_sentences), 1.0)
+
+        # Final score
+        final_ratio = (coverage_score * 0.6) + (depth_score * 0.4)
+        final_score = round(final_ratio * max_marks, 2)
+        final_score = max(0.0, min(final_score, max_marks))
+
+        confidence = round(coverage_score, 2)
+        flagged = confidence < 0.65
+
+        reasoning = (
+            f"Coverage: {coverage_score:.0%} (matched {matched_count}/{len(model_sentences)} key points). "
+            f"Depth ratio: {depth_score:.0%}. "
+            f"Final: {final_score}/{max_marks}."
+        )
+        if flagged:
+            reasoning += " [FLAGGED FOR REVIEW]"
+
+        return ScoringResult(
+            score=final_score,
+            confidence=confidence,
+            reasoning=reasoning,
+            flagged_for_review=flagged,
+            criteria_matched={
+                "coverage_score": round(coverage_score, 4),
+                "depth_score": round(depth_score, 4),
+                "model_sentences": len(model_sentences),
+                "student_sentences": len(student_sentences),
+                "matched_key_points": matched_count,
+                "per_sentence_scores": [round(s, 4) for s in best_matches],
+            },
+        )
