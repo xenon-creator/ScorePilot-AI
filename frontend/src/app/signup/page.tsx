@@ -8,7 +8,7 @@ import { useAuth } from '@/lib/auth-context'
 import { MeshGradient } from '@/components/ui/mesh-gradient'
 import { AlertCircle, Loader2, Mail, Lock, User, Cpu } from 'lucide-react'
 
-const roles = ['Teacher', 'Reviewer', 'Admin']
+const roles = ['Student', 'Teacher', 'Reviewer', 'Admin']
 
 export default function SignupPage() {
   const router = useRouter()
@@ -17,6 +17,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [role, setRole] = useState('Teacher')
+  const [studentId, setStudentId] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -25,7 +26,7 @@ export default function SignupPage() {
     setError('')
     setLoading(true)
     try {
-      await signup(username, email, password, role)
+      await signup(username, email, password, role, role === 'Student' ? studentId : undefined)
       router.push('/dashboard')
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Signup failed')
@@ -114,13 +115,13 @@ export default function SignupPage() {
 
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-slate-400">Role</label>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-4 gap-2">
               {roles.map((r) => (
                 <button
                   key={r}
                   type="button"
                   onClick={() => setRole(r)}
-                  className={`h-10 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                  className={`h-10 rounded-xl text-xs font-medium transition-all cursor-pointer ${
                     role === r
                       ? 'bg-cyan-500/20 border border-cyan-500/40 text-cyan-400'
                       : 'bg-white/[0.03] border border-white/[0.06] text-slate-500 hover:text-slate-300 hover:border-white/[0.1]'
@@ -131,6 +132,24 @@ export default function SignupPage() {
               ))}
             </div>
           </div>
+
+          {role === 'Student' && (
+            <div className="space-y-1.5 animate-in fade-in slide-in-from-top-2 duration-200">
+              <label htmlFor="studentId" className="text-xs font-medium text-slate-400">Student ID</label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-600" />
+                <input
+                  id="studentId"
+                  type="text"
+                  value={studentId}
+                  onChange={(e) => setStudentId(e.target.value)}
+                  placeholder="STUDENT_123"
+                  required={role === 'Student'}
+                  className="w-full h-11 rounded-xl bg-white/[0.04] border border-white/[0.08] pl-10 pr-4 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-cyan-500/40 focus:ring-1 focus:ring-cyan-500/20 transition-colors"
+                />
+              </div>
+            </div>
+          )}
 
           <Button
             type="submit"

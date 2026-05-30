@@ -25,6 +25,13 @@ DEMO_USERS = [
         "role": UserRole.reviewer,
         "password": "reviewer123",
     },
+    {
+        "email": "student@aegis.edu",
+        "name": "student_alice",
+        "role": UserRole.student,
+        "password": "student123",
+        "student_id": "STUDENT_123",
+    },
 ]
 
 
@@ -40,6 +47,7 @@ def seed():
                 email=u["email"],
                 name=u["name"],
                 role=u["role"],
+                student_id=u.get("student_id"),
                 password=hash_password(u["password"]),
             )
             db.add(user)

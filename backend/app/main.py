@@ -55,6 +55,7 @@ class SignUpModel(BaseModel):
     email: EmailStr
     password: str
     role: str = "Teacher"
+    student_id: Optional[str] = None
 
 class RubricModel(BaseModel):
     criterion: str
@@ -97,6 +98,7 @@ ROLE_MAP = {
     "Admin": UserRole.admin, "admin": UserRole.admin,
     "Teacher": UserRole.teacher, "teacher": UserRole.teacher,
     "Reviewer": UserRole.reviewer, "reviewer": UserRole.reviewer,
+    "Student": UserRole.student, "student": UserRole.student,
 }
 
 QTYPE_MAP = {
@@ -204,6 +206,7 @@ def signup(data: SignUpModel, db: Session = Depends(get_db)):
         email=data.email,
         name=data.username,
         role=role,
+        student_id=data.student_id if role == UserRole.student else None,
         password=hash_password(data.password),
     )
     db.add(new_user)
@@ -213,7 +216,15 @@ def signup(data: SignUpModel, db: Session = Depends(get_db)):
     db.commit()
 
     token = create_access_token(data.username, _role_display(role))
-    return {"access_token": token, "token_type": "bearer", "user": {"username": data.username, "role": _role_display(role)}}
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "user": {
+            "username": data.username,
+            "role": _role_display(role),
+            "student_id": new_user.student_id
+        }
+    }
 
 
 @app.post("/api/v1/auth/login")
@@ -227,12 +238,22 @@ def login(data: LoginModel, db: Session = Depends(get_db)):
     _audit(db, user.id, "User Login", {"ip": "127.0.0.1"})
     db.commit()
 
-    return {"access_token": token, "token_type": "bearer", "user": {"username": user.name, "role": _role_display(user.role)}}
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "user": {
+            "username": user.name,
+            "role": _role_display(user.role),
+            "student_id": user.student_id
+        }
+    }
 
 
 @app.get("/api/v1/auth/me")
-def get_me(payload: dict = Depends(get_current_user_payload)):
-    return {"username": payload["sub"], "role": payload["role"]}
+def get_me(payload: dict = Depends(get_current_user_payload), db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.name == payload["sub"]).first()
+    student_id = user.student_id if user else None
+    return {"username": payload["sub"], "role": payload["role"], "student_id": student_id}
 
 
 # --- EXAMS ---
@@ -340,6 +361,26 @@ def list_submissions(exam_id: Optional[str] = None, db: Session = Depends(get_db
     if exam_id:
         query = query.filter(Submission.exam_id == exam_id)
     subs = query.order_by(Submission.uploaded_at.desc()).all()
+    return [_format_submission(s) for s in subs]
+
+
+@app.get("/api/v1/student/submissions")
+def list_student_submissions(
+    db: Session = Depends(get_db),
+    payload: dict = Depends(RoleChecker(["Student"]))
+):
+    user = db.query(User).filter(User.name == payload["sub"]).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Student profile not found")
+
+    from sqlalchemy import or_
+    filters = []
+    if user.student_id:
+        filters.append(Submission.student_id == user.student_id)
+    filters.append(Submission.student_name == user.name)
+    filters.append(Submission.student_id == user.email)
+
+    subs = db.query(Submission).filter(or_(*filters)).order_by(Submission.uploaded_at.desc()).all()
     return [_format_submission(s) for s in subs]
 
 

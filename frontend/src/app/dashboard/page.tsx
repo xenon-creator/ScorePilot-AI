@@ -15,10 +15,11 @@ import {
   ChevronDown, AlertCircle, CheckCircle, Clock, Eye, X
 } from 'lucide-react'
 
-type Tab = 'overview' | 'exams' | 'submissions' | 'analytics' | 'audit'
+type Tab = 'overview' | 'my-grades' | 'exams' | 'submissions' | 'analytics' | 'audit'
 
 const sidebarItems: { key: Tab; label: string; icon: React.ElementType }[] = [
   { key: 'overview', label: 'Overview', icon: LayoutDashboard },
+  { key: 'my-grades', label: 'My Grades', icon: LayoutDashboard },
   { key: 'exams', label: 'Exams', icon: FileText },
   { key: 'submissions', label: 'Submissions', icon: Upload },
   { key: 'analytics', label: 'Analytics', icon: BarChart3 },
@@ -30,6 +31,13 @@ export default function DashboardPage() {
   const { user, isAuthenticated, isLoading: authLoading, logout } = useAuth()
   const [activeTab, setActiveTab] = useState<Tab>('overview')
 
+  // Set default tab for student
+  useEffect(() => {
+    if (user?.role?.toLowerCase() === 'student') {
+      setActiveTab('my-grades')
+    }
+  }, [user])
+
   // Data state
   const [exams, setExams] = useState<Exam[]>([])
   const [submissions, setSubmissions] = useState<Submission[]>([])
@@ -37,6 +45,9 @@ export default function DashboardPage() {
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+
+  // Collapsible submissions state for student grades view
+  const [expandedSubmissions, setExpandedSubmissions] = useState<Record<string, boolean>>({})
 
   // Upload state
   const [uploadOpen, setUploadOpen] = useState(false)
@@ -55,33 +66,45 @@ export default function DashboardPage() {
 
   // Fetch data on mount
   const fetchData = useCallback(async () => {
+    if (!user) return
     setLoading(true)
     setError('')
     try {
-      const [examsData, subsData] = await Promise.all([
-        apiGetExams(),
-        apiGetSubmissions(),
-      ])
-      setExams(examsData)
-      setSubmissions(subsData)
+      const isStudent = user.role.toLowerCase() === 'student'
+      if (isStudent) {
+        const { apiGetStudentSubmissions } = await import('@/lib/api')
+        const [examsData, subsData] = await Promise.all([
+          apiGetExams(),
+          apiGetStudentSubmissions(),
+        ])
+        setExams(examsData)
+        setSubmissions(subsData)
+      } else {
+        const [examsData, subsData] = await Promise.all([
+          apiGetExams(),
+          apiGetSubmissions(),
+        ])
+        setExams(examsData)
+        setSubmissions(subsData)
 
-      if (examsData.length > 0) {
-        const analyticsData = await apiGetAnalytics(examsData[0].id)
-        setAnalytics(analyticsData)
-      }
+        if (examsData.length > 0) {
+          const analyticsData = await apiGetAnalytics(examsData[0].id)
+          setAnalytics(analyticsData)
+        }
 
-      try {
-        const logs = await apiGetAuditLogs()
-        setAuditLogs(logs)
-      } catch {
-        // User may not have permission for audit logs
+        try {
+          const logs = await apiGetAuditLogs()
+          setAuditLogs(logs)
+        } catch {
+          // User may not have permission for audit logs
+        }
       }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Failed to load data')
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [user])
 
   useEffect(() => {
     if (isAuthenticated) fetchData()
@@ -133,6 +156,15 @@ export default function DashboardPage() {
     )
   }
 
+  const isStudent = user?.role?.toLowerCase() === 'student'
+  const allowedSidebarItems = sidebarItems.filter((item) => {
+    if (isStudent) {
+      return item.key === 'my-grades' || item.key === 'exams'
+    } else {
+      return item.key !== 'my-grades'
+    }
+  })
+
   const scoredCount = submissions.filter(s => s.status === 'Scored').length
   const flaggedCount = submissions.filter(s => s.status === 'Flagged').length
   const approvedCount = submissions.filter(s => s.status === 'Approved').length
@@ -153,9 +185,9 @@ export default function DashboardPage() {
             ScorePilot<span className="text-cyan-400">AI</span>
           </span>
         </Link>
-
+ 
         <nav className="flex-1 space-y-1">
-          {sidebarItems.map((item) => (
+          {allowedSidebarItems.map((item) => (
             <button
               key={item.key}
               onClick={() => setActiveTab(item.key)}
@@ -204,6 +236,145 @@ export default function DashboardPage() {
             </div>
           ) : (
             <>
+              {/* MY GRADES TAB FOR STUDENT */}
+              {activeTab === 'my-grades' && (
+                <div className="space-y-8 animate-in fade-in duration-300">
+                  <div>
+                    <h1 className="text-2xl font-semibold text-white tracking-tight">My Grades</h1>
+                    <p className="text-sm text-slate-500 mt-1">
+                      Welcome back, {user?.username}. View your submitted papers, AI scores, and reviews.
+                    </p>
+                  </div>
+
+                  {/* Student Stats Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {[
+                      { label: 'Exams Submitted', value: submissions.length, icon: FileText, color: 'text-cyan-400' },
+                      { label: 'Graded / Approved', value: submissions.filter(s => s.status === 'Scored' || s.status === 'Approved').length, icon: CheckCircle, color: 'text-emerald-400' },
+                      { label: 'Awaiting Grade', value: submissions.filter(s => s.status === 'Pending').length, icon: Clock, color: 'text-yellow-400' },
+                    ].map((stat) => (
+                      <div key={stat.label} className="glass-card rounded-2xl p-6">
+                        <div className={cn('flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.04] mb-4', stat.color)}>
+                          <stat.icon className="h-5 w-5" />
+                        </div>
+                        <p className="text-3xl font-bold text-white tracking-tight">{stat.value}</p>
+                        <p className="text-sm text-slate-500 mt-1">{stat.label}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* My Grades List */}
+                  <div className="space-y-4">
+                    {submissions.length === 0 ? (
+                      <div className="glass-card rounded-2xl p-12 text-center text-slate-500">
+                        You haven&apos;t submitted any exam papers yet.
+                      </div>
+                    ) : (
+                      submissions.map((sub) => {
+                        const exam = exams.find(e => e.id === sub.exam_id)
+                        const isExpanded = expandedSubmissions[sub.id]
+                        const isPending = sub.status === 'Pending'
+
+                        return (
+                          <div key={sub.id} className="glass-card rounded-2xl p-6 transition-all duration-300">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                              <div className="space-y-1">
+                                <div className="flex items-center gap-2">
+                                  <span className="text-[10px] font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded">
+                                    {exam?.code || 'EXAM'}
+                                  </span>
+                                  <span className="text-xs text-slate-500">
+                                    Submitted {new Date(sub.created_at).toLocaleDateString()}
+                                  </span>
+                                </div>
+                                <h3 className="text-lg font-semibold text-white tracking-tight">{exam?.title || 'Unknown Exam'}</h3>
+                              </div>
+
+                              <div className="flex items-center justify-between sm:justify-end gap-6">
+                                <div className="text-left sm:text-right">
+                                  <span className={cn(
+                                    'text-xs px-2.5 py-1 rounded-full font-medium inline-block mb-1',
+                                    sub.status === 'Pending' && 'bg-yellow-500/10 text-yellow-400',
+                                    sub.status === 'Scored' && 'bg-cyan-500/10 text-cyan-400',
+                                    sub.status === 'Flagged' && 'bg-yellow-500/10 text-yellow-400', // show flagged as Awaiting Review or Graded
+                                    sub.status === 'Approved' && 'bg-emerald-500/10 text-emerald-400',
+                                  )}>
+                                    {sub.status === 'Flagged' ? 'Graded (Awaiting Review)' : sub.status}
+                                  </span>
+                                  {!isPending && (
+                                    <div>
+                                      <p className="text-2xl font-bold text-white tracking-tight">
+                                        {sub.total_score}
+                                        <span className="text-xs text-slate-500">/{exam?.total_marks || 0}</span>
+                                      </p>
+                                    </div>
+                                  )}
+                                </div>
+
+                                {!isPending && (
+                                  <button
+                                    onClick={() => setExpandedSubmissions(prev => ({ ...prev, [sub.id]: !prev[sub.id] }))}
+                                    className="p-2 rounded-lg bg-white/[0.04] text-slate-400 hover:text-white hover:bg-white/[0.08] transition-all cursor-pointer"
+                                  >
+                                    <ChevronDown className={cn("h-4 w-4 transition-transform duration-300", isExpanded && "rotate-180")} />
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Collapsible Details */}
+                            {isExpanded && !isPending && (
+                              <div className="mt-6 pt-6 border-t border-white/[0.06] space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+                                <div>
+                                  <h4 className="text-xs font-semibold text-white uppercase tracking-wider mb-3">Question breakdown & Feedback</h4>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {sub.scores.map((sc) => {
+                                      const matchingQ = exam?.questions.find(q => q.question_number === sc.question_number)
+                                      return (
+                                        <div key={sc.question_number} className="bg-white/[0.02] border border-white/[0.04] rounded-xl p-4 space-y-3">
+                                          <div className="flex justify-between items-start gap-2">
+                                            <div>
+                                              <span className="text-[10px] font-medium text-slate-500 font-mono">QUESTION {sc.question_number}</span>
+                                              <p className="text-xs text-slate-300 font-medium line-clamp-1 mt-0.5">{matchingQ?.question_text || 'Exam Question'}</p>
+                                            </div>
+                                            <div className="text-right shrink-0">
+                                              <span className="text-sm font-semibold text-white">
+                                                {sc.final_score}
+                                              </span>
+                                              <span className="text-xs text-slate-500">/{matchingQ?.max_marks || 0}</span>
+                                            </div>
+                                          </div>
+                                          <div className="text-xs text-slate-400 bg-white/[0.02] border border-white/[0.04] rounded-xl p-3 italic">
+                                            {sc.feedback || 'No feedback available for this response.'}
+                                          </div>
+                                        </div>
+                                      )
+                                    })}
+                                  </div>
+                                </div>
+
+                                {sub.scanned_image_url && (
+                                  <div className="flex items-center gap-2 pt-2">
+                                    <a
+                                      href={sub.scanned_image_url}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="inline-flex items-center gap-1.5 text-xs text-cyan-400 hover:text-cyan-300 font-medium transition-colors cursor-pointer"
+                                    >
+                                      <Eye className="h-4 w-4" /> View Graded Exam Paper Scan
+                                    </a>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* OVERVIEW TAB */}
               {activeTab === 'overview' && (
                 <div className="space-y-8">

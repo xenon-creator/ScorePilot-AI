@@ -12,6 +12,7 @@ const quickLogins = [
   { label: 'Admin', email: 'admin@aegis.edu', password: 'admin123', role: 'Admin' },
   { label: 'Teacher', email: 'teacher@aegis.edu', password: 'teacher123', role: 'Teacher' },
   { label: 'Reviewer', email: 'reviewer@aegis.edu', password: 'reviewer123', role: 'Reviewer' },
+  { label: 'Student', email: 'student@aegis.edu', password: 'student123', role: 'Student' },
 ]
 
 export default function LoginPage() {
@@ -72,7 +73,7 @@ export default function LoginPage() {
         {/* Quick Login Personas */}
         <div className="space-y-2">
           <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">Quick Login</p>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-4 gap-2">
             {quickLogins.map((ql) => (
               <button
                 key={ql.label}

@@ -505,7 +505,7 @@ S3_BUCKET=exam-papers
 - [x] Celery worker with Redis for production async grading ✅
 - [x] MinIO file storage for scanned papers ✅
 - [x] Real OCR integration (Tesseract / Google Vision API) ✅
-- [ ] Student portal with self-service score viewing
+- [x] Student portal with self-service score viewing ✅
 - [ ] Email notifications for score release
 - [ ] Export results to CSV/PDF
 - [ ] Multi-language OCR support

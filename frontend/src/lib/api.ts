@@ -7,6 +7,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 export interface User {
   username: string
   role: string
+  student_id?: string
 }
 
 export interface AuthResponse {
@@ -157,11 +158,12 @@ export async function apiSignup(
   username: string,
   email: string,
   password: string,
-  role: string = 'Teacher'
+  role: string = 'Teacher',
+  studentId?: string
 ): Promise<AuthResponse> {
   return apiFetch<AuthResponse>('/api/v1/auth/signup', {
     method: 'POST',
-    body: JSON.stringify({ username, email, password, role }),
+    body: JSON.stringify({ username, email, password, role, student_id: studentId }),
   })
 }
 
@@ -224,6 +226,10 @@ export async function apiUploadPaper(
 export async function apiGetSubmissions(examId?: string): Promise<Submission[]> {
   const query = examId ? `?exam_id=${encodeURIComponent(examId)}` : ''
   return apiFetch<Submission[]>(`/api/v1/submissions${query}`)
+}
+
+export async function apiGetStudentSubmissions(): Promise<Submission[]> {
+  return apiFetch<Submission[]>('/api/v1/student/submissions')
 }
 
 // ============================================

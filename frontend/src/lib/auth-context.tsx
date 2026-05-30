@@ -9,7 +9,7 @@ interface AuthContextValue {
   isAuthenticated: boolean
   isLoading: boolean
   login: (email: string, password: string) => Promise<void>
-  signup: (username: string, email: string, password: string, role?: string) => Promise<void>
+  signup: (username: string, email: string, password: string, role?: string, studentId?: string) => Promise<void>
   logout: () => void
 }
 
@@ -45,8 +45,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(res.user)
   }, [])
 
-  const signup = useCallback(async (username: string, email: string, password: string, role: string = 'Teacher') => {
-    const res = await apiSignup(username, email, password, role)
+  const signup = useCallback(async (username: string, email: string, password: string, role: string = 'Teacher', studentId?: string) => {
+    const res = await apiSignup(username, email, password, role, studentId)
     localStorage.setItem('sp_token', res.access_token)
     setToken(res.access_token)
     setUser(res.user)

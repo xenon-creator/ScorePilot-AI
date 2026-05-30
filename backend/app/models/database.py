@@ -38,6 +38,7 @@ class UserRole(str, enum.Enum):
     admin = "admin"
     teacher = "teacher"
     reviewer = "reviewer"
+    student = "student"
 
 
 class QuestionType(str, enum.Enum):
@@ -68,6 +69,7 @@ class User(Base):
     email = Column(String, unique=True, nullable=False, index=True)
     name = Column(String, nullable=False)
     role = Column(SAEnum(UserRole), nullable=False, default=UserRole.teacher)
+    student_id = Column(String, nullable=True, default=None)
     password = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
