@@ -16,6 +16,7 @@ pytesseract>=0.3.10
 google-cloud-vision>=3.7.0
 pypdf>=4.2.0
 pillow>=10.3.0
+reportlab>=4.2.0
 
 # AI Scoring Engine
 sentence-transformers>=3.0.0

@@ -509,6 +509,75 @@ def get_analytics(exam_id: str, db: Session = Depends(get_db)):
     }
 
 
+# --- EXPORTS ---
+@app.get("/api/v1/exams/{exam_id}/export/csv")
+def export_exam_csv(
+    exam_id: str,
+    db: Session = Depends(get_db),
+    payload: dict = Depends(RoleChecker(["Teacher", "Reviewer", "Admin"]))
+):
+    from fastapi.responses import StreamingResponse
+    from app.services.export_service import ExportService
+    
+    exam = db.query(Exam).filter(Exam.id == exam_id).first()
+    if not exam:
+        raise HTTPException(status_code=404, detail="Exam not found")
+        
+    submissions = db.query(Submission).filter(Submission.exam_id == exam_id).order_by(Submission.uploaded_at.desc()).all()
+    
+    csv_generator = ExportService.generate_submissions_csv_generator(exam, submissions)
+    
+    filename = f"exam_{exam_id}_grades.csv"
+    headers = {
+        "Content-Disposition": f'attachment; filename="{filename}"'
+    }
+    return StreamingResponse(csv_generator, media_type="text/csv", headers=headers)
+
+
+@app.get("/api/v1/submissions/{submission_id}/export/pdf")
+def export_submission_pdf(
+    submission_id: str,
+    db: Session = Depends(get_db),
+    payload: dict = Depends(get_current_user_payload)
+):
+    from fastapi import Response
+    from app.services.export_service import ExportService
+    
+    submission = db.query(Submission).filter(Submission.id == submission_id).first()
+    if not submission:
+        raise HTTPException(status_code=404, detail="Submission not found")
+        
+    exam = db.query(Exam).filter(Exam.id == submission.exam_id).first()
+    if not exam:
+        raise HTTPException(status_code=404, detail="Exam not found")
+        
+    # Enforce Student Ownership check
+    user_role = payload.get("role")
+    if user_role == "Student":
+        user = db.query(User).filter(User.name == payload["sub"]).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="User profile not found")
+            
+        is_owner = False
+        if submission.student_id == user.student_id:
+            is_owner = True
+        elif submission.student_name == user.name:
+            is_owner = True
+        elif submission.student_id == user.email:
+            is_owner = True
+            
+        if not is_owner:
+            raise HTTPException(status_code=403, detail="Access denied: You can only export your own exam results.")
+            
+    pdf_bytes = ExportService.generate_student_pdf_bytes(submission, exam)
+    
+    filename = f"submission_{submission_id}_report.pdf"
+    headers = {
+        "Content-Disposition": f'attachment; filename="{filename}"'
+    }
+    return Response(content=pdf_bytes, media_type="application/pdf", headers=headers)
+
+
 # --- AUDIT LOGS ---
 @app.get("/api/v1/audit-logs")
 def get_audit_logs(db: Session = Depends(get_db), payload: dict = Depends(RoleChecker(["Admin", "Moderator", "Teacher"]))):

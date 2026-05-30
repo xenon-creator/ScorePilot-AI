@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useAuth } from '@/lib/auth-context'
 import {
   apiGetExams, apiGetSubmissions, apiGetAnalytics, apiGetAuditLogs, apiUploadPaper, apiOverrideScores,
+  apiExportExamCsv, apiExportSubmissionPdf,
   type Exam, type Submission, type AnalyticsData, type AuditLog
 } from '@/lib/api'
 import { Button } from '@/components/ui/button'
@@ -353,8 +354,8 @@ export default function DashboardPage() {
                                   </div>
                                 </div>
 
-                                {sub.scanned_image_url && (
-                                  <div className="flex items-center gap-2 pt-2">
+                                <div className="flex flex-wrap items-center gap-4 pt-2">
+                                  {sub.scanned_image_url && (
                                     <a
                                       href={sub.scanned_image_url}
                                       target="_blank"
@@ -363,8 +364,20 @@ export default function DashboardPage() {
                                     >
                                       <Eye className="h-4 w-4" /> View Graded Exam Paper Scan
                                     </a>
-                                  </div>
-                                )}
+                                  )}
+                                  <button
+                                    onClick={async () => {
+                                      try {
+                                        await apiExportSubmissionPdf(sub.id, sub.student_name)
+                                      } catch (err: any) {
+                                        setError(err.message || 'PDF export failed')
+                                      }
+                                    }}
+                                    className="inline-flex items-center gap-1.5 text-xs text-cyan-400 hover:text-cyan-300 font-medium transition-colors cursor-pointer bg-transparent border-0 p-0"
+                                  >
+                                    <FileText className="h-4 w-4" /> Export Verified PDF Report
+                                  </button>
+                                </div>
                               </div>
                             )}
                           </div>
@@ -503,14 +516,33 @@ export default function DashboardPage() {
                         {scoredCount} scored • {flaggedCount} flagged • {approvedCount} approved
                       </p>
                     </div>
-                    <Button
-                      size="sm"
-                      className="bg-cyan-500 hover:bg-cyan-400 text-black font-medium"
-                      onClick={() => setUploadOpen(true)}
-                    >
-                      <Upload className="h-4 w-4 mr-2" />
-                      Upload Paper
-                    </Button>
+                    <div className="flex gap-2">
+                      {exams.length > 0 && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="border-white/[0.08] hover:bg-white/[0.04] text-slate-300 cursor-pointer"
+                          onClick={async () => {
+                            try {
+                              await apiExportExamCsv(exams[0].id, exams[0].title)
+                            } catch (err: any) {
+                              setError(err.message || 'CSV export failed')
+                            }
+                          }}
+                        >
+                          <FileText className="h-4 w-4 mr-2" />
+                          Export CSV
+                        </Button>
+                      )}
+                      <Button
+                        size="sm"
+                        className="bg-cyan-500 hover:bg-cyan-400 text-black font-medium cursor-pointer"
+                        onClick={() => setUploadOpen(true)}
+                      >
+                        <Upload className="h-4 w-4 mr-2" />
+                        Upload Paper
+                      </Button>
+                    </div>
                   </div>
 
                   {/* Upload modal */}
@@ -608,19 +640,37 @@ export default function DashboardPage() {
                         </div>
 
                         {/* Actions */}
-                        {sub.status === 'Flagged' && (
-                          <div className="flex gap-2">
-                            <Button size="sm" className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20" onClick={() => handleApprove(sub)}>
-                              <CheckCircle className="h-4 w-4 mr-1" /> Approve
+                        <div className="flex flex-wrap items-center gap-2">
+                          {(sub.status === 'Scored' || sub.status === 'Approved' || sub.status === 'Flagged') && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="border-white/[0.08] hover:bg-white/[0.04] text-slate-400 hover:text-white cursor-pointer"
+                              onClick={async () => {
+                                try {
+                                  await apiExportSubmissionPdf(sub.id, sub.student_name)
+                                } catch (err: any) {
+                                  setError(err.message || 'PDF export failed')
+                                }
+                              }}
+                            >
+                              <FileText className="h-4 w-4 mr-1.5" /> Export PDF
                             </Button>
-                            <Button size="sm" variant="ghost" className="text-slate-400" onClick={() => setOverrideTarget(sub)}>
-                              <Eye className="h-4 w-4 mr-1" /> Review Details
-                            </Button>
-                          </div>
-                        )}
-                        {sub.status === 'Approved' && sub.reviewer_id && (
-                          <p className="text-xs text-slate-600">Reviewed by {sub.reviewer_id} on {sub.reviewed_at ? new Date(sub.reviewed_at).toLocaleString() : 'N/A'}</p>
-                        )}
+                          )}
+                          {sub.status === 'Flagged' && (
+                            <>
+                              <Button size="sm" className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 cursor-pointer" onClick={() => handleApprove(sub)}>
+                                <CheckCircle className="h-4 w-4 mr-1" /> Approve
+                              </Button>
+                              <Button size="sm" variant="ghost" className="text-slate-400 cursor-pointer" onClick={() => setOverrideTarget(sub)}>
+                                Review Details
+                              </Button>
+                            </>
+                          )}
+                          {sub.status === 'Approved' && sub.reviewer_id && (
+                            <p className="text-xs text-slate-600 self-center">Reviewed by {sub.reviewer_id} on {sub.reviewed_at ? new Date(sub.reviewed_at).toLocaleString() : 'N/A'}</p>
+                          )}
+                        </div>
                       </div>
                     ))}
                   </div>

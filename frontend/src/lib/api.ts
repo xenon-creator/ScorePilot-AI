@@ -265,3 +265,45 @@ export async function apiGetAnalytics(examId: string): Promise<AnalyticsData> {
 export async function apiGetAuditLogs(): Promise<AuditLog[]> {
   return apiFetch<AuditLog[]>('/api/v1/audit-logs')
 }
+
+// ============================================
+// EXPORTS
+// ============================================
+
+export async function apiExportExamCsv(examId: string, examTitle: string): Promise<void> {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('sp_token') : null
+  const headers: Record<string, string> = {}
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`
+  }
+  const res = await fetch(`${API_BASE}/api/v1/exams/${examId}/export/csv`, { headers })
+  if (!res.ok) throw new Error('Failed to export CSV')
+  const blob = await res.blob()
+  const url = window.URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `exam_${examTitle.toLowerCase().replace(/ /g, '_')}_grades.csv`
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  window.URL.revokeObjectURL(url)
+}
+
+export async function apiExportSubmissionPdf(submissionId: string, studentName: string): Promise<void> {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('sp_token') : null
+  const headers: Record<string, string> = {}
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`
+  }
+  const res = await fetch(`${API_BASE}/api/v1/submissions/${submissionId}/export/pdf`, { headers })
+  if (!res.ok) throw new Error('Failed to export PDF')
+  const blob = await res.blob()
+  const url = window.URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `submission_${studentName.toLowerCase().replace(/ /g, '_')}_report.pdf`
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  window.URL.revokeObjectURL(url)
+}
