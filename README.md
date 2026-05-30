@@ -506,7 +506,7 @@ S3_BUCKET=exam-papers
 - [x] MinIO file storage for scanned papers ✅
 - [x] Real OCR integration (Tesseract / Google Vision API) ✅
 - [x] Student portal with self-service score viewing ✅
-- [ ] Email notifications for score release
+- [x] Email notifications for score release ✅
 - [ ] Export results to CSV/PDF
 - [ ] Multi-language OCR support
 - [ ] LMS integration (Moodle, Canvas)

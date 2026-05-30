@@ -1,5 +1,6 @@
 import os
 from typing import List, Optional
+from pydantic import ConfigDict
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
@@ -35,7 +36,14 @@ class Settings(BaseSettings):
     GOOGLE_APPLICATION_CREDENTIALS: Optional[str] = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", None)
     TESSERACT_CMD_PATH: str = os.getenv("TESSERACT_CMD_PATH", r"C:\Program Files\Tesseract-OCR\tesseract.exe")
 
-    class Config:
-        case_sensitive = True
+    # SMTP / Email Settings
+    SMTP_HOST: str = os.getenv("SMTP_HOST", "")
+    SMTP_PORT: int = int(os.getenv("SMTP_PORT", "587"))
+    SMTP_USER: str = os.getenv("SMTP_USER", "")
+    SMTP_PASSWORD: str = os.getenv("SMTP_PASSWORD", "")
+    SMTP_FROM_EMAIL: str = os.getenv("SMTP_FROM_EMAIL", "ScorePilot AI <noreply@scorepilot.ai>")
+    STUDENT_PORTAL_URL: str = os.getenv("STUDENT_PORTAL_URL", "http://localhost:3000")
+
+    model_config = ConfigDict(case_sensitive=True)
 
 settings = Settings()

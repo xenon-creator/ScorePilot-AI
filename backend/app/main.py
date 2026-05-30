@@ -441,6 +441,10 @@ def override_scores(
     db.commit()
     db.refresh(submission)
 
+    # Trigger async score release email notification task
+    from app.workers.tasks import send_score_release_email_task
+    send_score_release_email_task.delay(submission.id)
+
     result = _format_submission(submission)
     result["reviewer_id"] = payload["sub"]
     result["reviewed_at"] = datetime.datetime.utcnow().isoformat() + "Z"

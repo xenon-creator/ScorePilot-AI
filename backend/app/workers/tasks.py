@@ -6,7 +6,7 @@ from typing import Dict, Any
 
 from celery import Celery
 from app.core.config import settings
-from app.models.database import SessionLocal, Submission, Exam, Question, Answer, SubmissionStatus, AuditLog
+from app.models.database import SessionLocal, Submission, Exam, Question, Answer, SubmissionStatus, AuditLog, User
 from app.services.ocr_service import OCRService
 from app.services.scoring_service import ScoringService
 
@@ -138,6 +138,10 @@ def process_and_score_submission(submission_id: str, object_key: str, filename: 
         db.commit()
         logger.info(f"[Worker] Ingestion completed. Submission status: {submission.status.value}. Score: {submission.total_score}")
 
+        # If autograded successfully without flags, trigger email score release task!
+        if submission.status == SubmissionStatus.graded:
+            send_score_release_email_task.delay(submission.id)
+
         return {
             "status": "success",
             "submission_id": submission.id,
@@ -157,5 +161,79 @@ def process_and_score_submission(submission_id: str, object_key: str, filename: 
         except Exception as db_ex:
             logger.error(f"[Worker] Could not fallback flag submission: {db_ex}")
         raise e
+    finally:
+        db.close()
+
+
+@celery_app.task(name="tasks.send_score_release_email_task")
+def send_score_release_email_task(submission_id: str) -> Dict[str, Any]:
+    """
+    Asynchronous Celery task to send a score release email to the student.
+    """
+    logger.info(f"[Worker] Starting score release email dispatch for submission: {submission_id}...")
+    db = SessionLocal()
+    try:
+        submission = db.query(Submission).filter(Submission.id == submission_id).first()
+        if not submission:
+            logger.error(f"[Worker] Submission {submission_id} not found.")
+            return {"status": "error", "message": f"Submission {submission_id} not found"}
+            
+        exam = db.query(Exam).filter(Exam.id == submission.exam_id).first()
+        if not exam:
+            logger.error(f"[Worker] Exam {submission.exam_id} not found.")
+            return {"status": "error", "message": f"Exam {submission.exam_id} not found"}
+            
+        # Determine student email address
+        # 1. Lookup registered student user matching student_id or student_name
+        student_user = None
+        if submission.student_id:
+            student_user = db.query(User).filter(User.student_id == submission.student_id).first()
+        if not student_user:
+            student_user = db.query(User).filter(User.name == submission.student_name).first()
+            
+        student_email = "student@aegis.edu" # default fallback
+        if student_user:
+            student_email = student_user.email
+        elif submission.student_id and "@" in submission.student_id:
+            student_email = submission.student_id
+            
+        # Build question breakdown structure
+        questions_breakdown = []
+        for idx, q in enumerate(exam.questions):
+            q_num = idx + 1
+            ans = next((a for a in submission.answers if a.question_number == q_num), None)
+            score = ans.final_score if ans else 0.0
+            feedback = ans.ai_reasoning if ans else "No feedback."
+            questions_breakdown.append({
+                "question_number": q_num,
+                "question_text": q.text,
+                "score": score,
+                "max_marks": q.max_marks,
+                "feedback": feedback
+            })
+            
+        max_marks = sum(q.max_marks for q in exam.questions)
+        
+        # Send email
+        from app.services.notification_service import NotificationService
+        success = NotificationService.send_score_release_email(
+            student_name=submission.student_name,
+            student_email=student_email,
+            exam_title=exam.title,
+            total_score=submission.total_score or 0.0,
+            max_marks=max_marks,
+            breakdown=questions_breakdown
+        )
+        
+        if success:
+            logger.info(f"[Worker] Successfully dispatched score release email for {submission_id}.")
+            return {"status": "success", "recipient": student_email}
+        else:
+            logger.error(f"[Worker] Failed to dispatch score release email for {submission_id}.")
+            return {"status": "error", "message": "Email dispatch failed"}
+            
+    except Exception as e:
+        logger.error(f"[Worker] Exception in send_score_release_email_task: {e}", exc_info=True)
+        return {"status": "error", "message": str(e)}
     finally:
         db.close()
