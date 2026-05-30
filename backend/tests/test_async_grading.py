@@ -86,17 +86,15 @@ class TestAsyncGradingPipeline:
 
         assert submission.status == SubmissionStatus.pending
 
-        # 2. Simulate local staging file creation
-        # We don't need real PDF content since OCRService handles simulation
-        staging_dir = os.path.join(os.path.dirname(__file__), "..", "uploads")
-        os.makedirs(staging_dir, exist_ok=True)
-        
-        filepath = os.path.join(staging_dir, f"test_async_{submission.id}.pdf")
-        with open(filepath, "w") as f:
-            f.write("biology exam paper details")
+        # 2. Simulate S3 uploads staging
+        from app.services.storage_service import upload_file_content, ensure_bucket_exists
+        ensure_bucket_exists()
+
+        object_key = f"tests/test_async_{submission.id}.pdf"
+        upload_file_content(b"biology exam paper details", object_key)
 
         # 3. Call Celery task synchronously via .apply()
-        task_result = process_and_score_submission.apply(args=[submission.id, filepath, "biology_exam.pdf"])
+        task_result = process_and_score_submission.apply(args=[submission.id, object_key, "biology_exam.pdf"])
 
         # 4. Verify task finished successfully
         assert task_result.status == "SUCCESS"
@@ -116,7 +114,3 @@ class TestAsyncGradingPipeline:
         assert answers[0].ai_score is not None
         assert answers[0].flagged_for_review in [True, False]
         assert answers[0].scored_at is not None
-
-        # Clean staging file
-        if os.path.exists(filepath):
-            os.remove(filepath)

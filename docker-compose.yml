@@ -27,6 +27,23 @@ services:
     networks:
       - aegis_network
 
+  # MinIO S3 Object Storage Service
+  minio:
+    image: minio/minio
+    container_name: aegis-minio-s3
+    restart: always
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - aegis_network
+
   # API Gateway & Core NLP Engine REST Endpoint
   backend:
     build:
@@ -41,11 +58,16 @@ services:
       - DB_NAME=aegis_grading
       - REDIS_URL=redis://redis:6379/0
       - JWT_SECRET=super-secret-aegis-grading-key-2026
+      - S3_ENDPOINT=http://minio:9000
+      - S3_ACCESS_KEY=minioadmin
+      - S3_SECRET_KEY=minioadmin
+      - S3_BUCKET=exam-papers
     ports:
       - "8000:8000"
     depends_on:
       - db
       - redis
+      - minio
     networks:
       - aegis_network
 
@@ -63,9 +85,14 @@ services:
       - DB_PASSWORD=postgres
       - DB_NAME=aegis_grading
       - REDIS_URL=redis://redis:6379/0
+      - S3_ENDPOINT=http://minio:9000
+      - S3_ACCESS_KEY=minioadmin
+      - S3_SECRET_KEY=minioadmin
+      - S3_BUCKET=exam-papers
     depends_on:
       - redis
       - db
+      - minio
     networks:
       - aegis_network
 
@@ -85,6 +112,7 @@ services:
 
 volumes:
   postgres_data:
+  minio_data:
 
 networks:
   aegis_network:

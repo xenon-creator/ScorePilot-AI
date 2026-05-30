@@ -29,10 +29,10 @@ celery_app.conf.update(
 
 
 @celery_app.task(name="tasks.process_and_score_submission")
-def process_and_score_submission(submission_id: str, filepath: str, filename: str) -> Dict[str, Any]:
+def process_and_score_submission(submission_id: str, object_key: str, filename: str) -> Dict[str, Any]:
     """
     Asynchronous Celery task:
-    1. Reads saved document staging files.
+    1. Downloads staged papers from S3/MinIO.
     2. Runs high-fidelity OCR scanning.
     3. Performs real NLP semantic grading via sentence-transformers.
     4. Automatically flags low-confidence submissions.
@@ -54,15 +54,15 @@ def process_and_score_submission(submission_id: str, filepath: str, filename: st
             logger.error(f"[Worker] Exam {submission.exam_id} not found.")
             return {"status": "error", "message": f"Exam {submission.exam_id} not found"}
 
-        # Read staging file content
+        # Download staged file content from S3/MinIO
         file_bytes = b""
-        if filepath and os.path.exists(filepath):
+        if object_key:
             try:
-                with open(filepath, "rb") as f:
-                    file_bytes = f.read()
-                logger.info(f"[Worker] Staged file read successfully: {len(file_bytes)} bytes.")
-            except Exception as fe:
-                logger.warning(f"[Worker] Could not read staged file at {filepath}: {fe}")
+                from app.services.storage_service import download_file_content
+                file_bytes = download_file_content(object_key)
+                logger.info(f"[Worker] Downloaded file from S3 successfully: {len(file_bytes)} bytes.")
+            except Exception as se:
+                logger.error(f"[Worker] Could not download file '{object_key}' from S3: {se}")
 
         # Run OCR simulation pipeline
         ocr_result = OCRService.simulate_scanning_pipeline(

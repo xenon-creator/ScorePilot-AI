@@ -33,6 +33,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+@app.on_event("startup")
+def startup_event():
+    try:
+        from app.services.storage_service import ensure_bucket_exists
+        ensure_bucket_exists()
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).error(f"Error ensuring MinIO bucket exists on startup: {e}")
+
 # ==========================================
 # PYDANTIC VALIDATION MODELS
 # ==========================================
@@ -136,6 +146,8 @@ def _format_exam(exam: Exam) -> dict:
 
 def _format_submission(sub: Submission, exam: Optional[Exam] = None) -> dict:
     """Format a Submission ORM object to the response shape the frontend expects."""
+    from app.services.storage_service import generate_presigned_view_url
+
     status_map = {
         SubmissionStatus.pending: "Pending",
         SubmissionStatus.graded: "Scored",
@@ -147,7 +159,7 @@ def _format_submission(sub: Submission, exam: Optional[Exam] = None) -> dict:
         "exam_id": sub.exam_id,
         "student_id": sub.student_id or "",
         "student_name": sub.student_name,
-        "scanned_image_url": "",
+        "scanned_image_url": generate_presigned_view_url(sub.scanned_image_url) if sub.scanned_image_url else "",
         "extracted_text": sub.extracted_text or "",
         "status": status_map.get(sub.status, "Scored"),
         "total_score": sub.total_score or 0.0,
@@ -264,11 +276,6 @@ def create_exam(data: ExamCreateModel, db: Session = Depends(get_db), payload: d
     return _format_exam(exam)
 
 
-# Create local uploads folder for async paper staging
-UPLOADS_DIR = os.path.join(os.path.dirname(__file__), "..", "uploads")
-os.makedirs(UPLOADS_DIR, exist_ok=True)
-
-
 # --- UPLOADS & SCORING ---
 @app.post("/api/v1/uploads")
 def upload_papers(
@@ -284,22 +291,27 @@ def upload_papers(
         raise HTTPException(status_code=404, detail="Exam details not found")
 
     filename = file.filename or "paper.pdf"
-    unique_filename = f"{uuid.uuid4()}_{filename}"
-    filepath = os.path.join(UPLOADS_DIR, unique_filename)
+    object_key = f"uploads/{uuid.uuid4()}_{filename}"
 
-    # Save uploaded file locally
+    # Read uploaded file bytes and put directly to S3 storage
     try:
-        with open(filepath, "wb") as f:
-            f.write(file.file.read())
+        from app.services.storage_service import upload_file_content
+        file_bytes = file.file.read()
+        upload_file_content(
+            file_bytes=file_bytes,
+            object_key=object_key,
+            content_type=file.content_type or "application/pdf"
+        )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to save uploaded file: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to upload file to storage: {str(e)}")
 
-    # Create submission in database with pending status
+    # Create submission in database with pending status and S3 reference
     submission = Submission(
         exam_id=exam_id,
         student_name=student_name,
         student_id=student_id,
         status=SubmissionStatus.pending,
+        scanned_image_url=object_key,
         total_score=0.0,
         ai_confidence=0.0,
         extracted_text="",
@@ -308,8 +320,8 @@ def upload_papers(
     db.commit()
     db.refresh(submission)
 
-    # Dispatch Celery background task for asynchronous scoring
-    process_and_score_submission.delay(submission.id, filepath, filename)
+    # Dispatch Celery background task for asynchronous scoring with object key
+    process_and_score_submission.delay(submission.id, object_key, filename)
 
     # Log initial submission upload event
     _audit(db, None, "Submission Uploaded", {
