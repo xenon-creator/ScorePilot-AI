@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import List, Optional
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
@@ -30,6 +30,10 @@ class Settings(BaseSettings):
 
     # AI Scoring Constants
     AI_CONFIDENCE_THRESHOLD: float = 0.85  # Flag if below this threshold
+
+    # OCR Configurations
+    GOOGLE_APPLICATION_CREDENTIALS: Optional[str] = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", None)
+    TESSERACT_CMD_PATH: str = os.getenv("TESSERACT_CMD_PATH", r"C:\Program Files\Tesseract-OCR\tesseract.exe")
 
     class Config:
         case_sensitive = True
