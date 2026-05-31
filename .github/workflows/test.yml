@@ -9,6 +9,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
       - name: Checkout code
@@ -19,11 +20,29 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('backend/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Cache sentence-transformers model
+        uses: actions/cache@v4
+        with:
+          path: backend/models
+          key: sentence-transformers-all-MiniLM-L6-v2
+
       - name: Install system dependencies
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y tesseract-ocr tesseract-ocr-hin \
-            libpq-dev poppler-utils
+          sudo apt-get install -y \
+            tesseract-ocr \
+            tesseract-ocr-hin \
+            libpq-dev \
+            poppler-utils \
+            libgl1
 
       - name: Install Python dependencies
         run: |
@@ -35,10 +54,12 @@ jobs:
         run: |
           cd backend
           python -m pytest tests/ -v --tb=short
-
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: pytest-results
-          path: backend/.pytest_cache/
+        env:
+          SENTENCE_TRANSFORMERS_HOME: ./models
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_NAME: aegis_grading
+          JWT_SECRET: ci-test-secret-key
+          REDIS_URL: redis://localhost:6379/0
