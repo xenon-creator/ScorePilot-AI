@@ -39,9 +39,18 @@ app = FastAPI(
 )
 
 # Enable CORS for frontend dashboard connections
+import os
+from fastapi.middleware.cors import CORSMiddleware
+
+allowed_origins_raw = os.getenv(
+    "ALLOWED_ORIGINS",
+    "http://localhost:3000"
+)
+allowed_origins = [o.strip() for o in allowed_origins_raw.split(",")]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -214,6 +223,11 @@ def _format_submission(sub: Submission, exam: Optional[Exam] = None) -> dict:
 @app.get("/")
 def read_root():
     return {"status": "online", "service": "AegisGrading AI API gateway", "time": str(datetime.datetime.now(datetime.UTC))}
+
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok", "service": "ScorePilot AI"}
 
 
 # --- AUTHENTICATION ---
