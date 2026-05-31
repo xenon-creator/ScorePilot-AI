@@ -18,11 +18,24 @@ from app.services.ocr_service import OCRService
 from app.workers.tasks import process_and_score_submission
 from app.services.lms_service import LMSService
 
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    try:
+        from app.services.storage_service import ensure_bucket_exists
+        ensure_bucket_exists()
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).error(f"Error ensuring MinIO bucket exists on startup: {e}")
+    yield
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version="1.0.0",
     docs_url="/docs",
-    redoc_url="/redoc"
+    redoc_url="/redoc",
+    lifespan=lifespan
 )
 
 # Enable CORS for frontend dashboard connections
@@ -33,16 +46,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.on_event("startup")
-def startup_event():
-    try:
-        from app.services.storage_service import ensure_bucket_exists
-        ensure_bucket_exists()
-    except Exception as e:
-        import logging
-        logging.getLogger(__name__).error(f"Error ensuring MinIO bucket exists on startup: {e}")
 
 # ==========================================
 # PYDANTIC VALIDATION MODELS
@@ -210,7 +213,7 @@ def _format_submission(sub: Submission, exam: Optional[Exam] = None) -> dict:
 
 @app.get("/")
 def read_root():
-    return {"status": "online", "service": "AegisGrading AI API gateway", "time": str(datetime.datetime.utcnow())}
+    return {"status": "online", "service": "AegisGrading AI API gateway", "time": str(datetime.datetime.now(datetime.UTC))}
 
 
 # --- AUTHENTICATION ---
@@ -467,7 +470,7 @@ def override_scores(
 
     result = _format_submission(submission)
     result["reviewer_id"] = payload["sub"]
-    result["reviewed_at"] = datetime.datetime.utcnow().isoformat() + "Z"
+    result["reviewed_at"] = datetime.datetime.now(datetime.UTC).isoformat() + "Z"
     return result
 
 

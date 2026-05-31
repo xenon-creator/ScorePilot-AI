@@ -1,6 +1,6 @@
 import uuid
 import enum
-from datetime import datetime
+import datetime
 
 from sqlalchemy import (
     create_engine, Column, String, Float, Integer, Text, DateTime,
@@ -71,7 +71,7 @@ class User(Base):
     role = Column(SAEnum(UserRole), nullable=False, default=UserRole.teacher)
     student_id = Column(String, nullable=True, default=None)
     password = Column(String, nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.datetime.now(datetime.UTC))
 
     # Relationships
     exams = relationship("Exam", back_populates="creator", foreign_keys="Exam.created_by")
@@ -87,7 +87,7 @@ class Exam(Base):
     description = Column(Text, nullable=True, default="")
     language = Column(String, nullable=False, default="en")
     created_by = Column(String, ForeignKey("users.id"), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.datetime.now(datetime.UTC))
 
     # Relationships
     creator = relationship("User", back_populates="exams", foreign_keys=[created_by])
@@ -122,7 +122,7 @@ class Submission(Base):
     ai_confidence = Column(Float, nullable=True, default=0.0)
     extracted_text = Column(Text, nullable=True, default="")
     scanned_image_url = Column(String, nullable=True, default="")
-    uploaded_at = Column(DateTime, default=datetime.utcnow)
+    uploaded_at = Column(DateTime, default=lambda: datetime.datetime.now(datetime.UTC))
 
     # Relationships
     exam = relationship("Exam", back_populates="submissions")
@@ -142,7 +142,7 @@ class Answer(Base):
     ai_confidence = Column(Float, nullable=True, default=0.0)
     ai_reasoning = Column(Text, nullable=True, default="")
     flagged_for_review = Column(Boolean, nullable=False, default=False)
-    scored_at = Column(DateTime, nullable=True, default=datetime.utcnow)
+    scored_at = Column(DateTime, nullable=True, default=lambda: datetime.datetime.now(datetime.UTC))
     overridden_by = Column(String, ForeignKey("users.id"), nullable=True)
 
     # Relationships
@@ -158,7 +158,7 @@ class AuditLog(Base):
     user_id = Column(String, ForeignKey("users.id"), nullable=True)
     action = Column(String, nullable=False)
     detail = Column(Text, nullable=True, default="")
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    timestamp = Column(DateTime, default=lambda: datetime.datetime.now(datetime.UTC))
 
     # Relationships
     user = relationship("User", back_populates="audit_logs")
@@ -173,7 +173,7 @@ class LMSSettings(Base):
     api_url = Column(String, nullable=False)
     api_token = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.datetime.now(datetime.UTC))
 
     # Relationships
     user = relationship("User", back_populates="lms_settings")

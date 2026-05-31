@@ -1,7 +1,7 @@
 import io
 import csv
 from typing import List, Generator
-from datetime import datetime
+import datetime
 
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
@@ -210,7 +210,7 @@ class ExportService:
             ],
             [
                 Paragraph("ScorePilot<font color='#22d3ee'>AI</font>", title_style),
-                Paragraph(f"DATE: {datetime.utcnow().strftime('%Y-%m-%d')}", meta_label_style)
+                Paragraph(f"DATE: {datetime.datetime.now(datetime.UTC).strftime('%Y-%m-%d')}", meta_label_style)
             ]
         ]
         
@@ -343,7 +343,7 @@ class ExportService:
         )
         
         verification_text = f"This report is programmatically compiled and verified by the ScorePilot AI grading pipeline.<br/>" \
-                            f"Verification ID: {submission.id} • Generated at {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')} • Verified Role: SYSTEM"
+                            f"Verification ID: {submission.id} • Generated at {datetime.datetime.now(datetime.UTC).strftime('%Y-%m-%d %H:%M:%S UTC')} • Verified Role: SYSTEM"
                             
         story.append(Paragraph(verification_text, footer_style))
         

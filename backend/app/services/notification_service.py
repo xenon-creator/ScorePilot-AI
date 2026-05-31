@@ -121,7 +121,7 @@ class NotificationService:
                                 This is an automated notification from ScorePilot AI. Please do not reply.
                             </p>
                             <p style="margin: 0; font-size: 11px; color: #334155;">
-                                &copy; {datetime.datetime.utcnow().year} ScorePilot AI. All rights reserved.
+                                &copy; {datetime.datetime.now(datetime.UTC).year} ScorePilot AI. All rights reserved.
                             </p>
                         </td>
                     </tr>
@@ -182,7 +182,7 @@ class NotificationService:
             os.makedirs(mailbox_dir, exist_ok=True)
             
             safe_name = student_name.replace(" ", "_").lower()
-            timestamp = datetime.datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+            timestamp = datetime.datetime.now(datetime.UTC).strftime("%Y%m%d_%H%M%S")
             filename = f"{safe_name}_{timestamp}.html"
             filepath = os.path.join(mailbox_dir, filename)
             

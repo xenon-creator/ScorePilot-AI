@@ -118,7 +118,7 @@ def process_and_score_submission(submission_id: str, object_key: str, filename: 
                 ai_confidence=blended_conf,
                 ai_reasoning=result.reasoning,
                 flagged_for_review=result.flagged_for_review,
-                scored_at=datetime.datetime.utcnow(),
+                scored_at=datetime.datetime.now(datetime.UTC),
             )
             db.add(answer)
 
@@ -133,7 +133,7 @@ def process_and_score_submission(submission_id: str, object_key: str, filename: 
             user_id=None,
             action="AI Scoring Completed",
             detail=f"Asynchronously graded submission {submission.id} for exam '{exam.title}'. Status: {submission.status.value}. Total Score: {submission.total_score}/{sum(q.max_marks for q in exam.questions)}",
-            timestamp=datetime.datetime.utcnow()
+            timestamp=datetime.datetime.now(datetime.UTC)
         )
         db.add(audit_log)
         
