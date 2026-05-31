@@ -10,7 +10,12 @@ from app.services.storage_service import (
 )
 from app.core.config import settings
 
+MINIO_AVAILABLE = os.getenv("S3_ENDPOINT") is not None or os.environ.get("S3_ENDPOINT") is not None
 
+@pytest.mark.skipif(
+    not MINIO_AVAILABLE,
+    reason="MinIO not configured in this environment"
+)
 class TestMinIOStorageIntegration:
     def test_bucket_ensurance_and_file_flow(self):
         # 1. Verify bucket verification/creation runs successfully
