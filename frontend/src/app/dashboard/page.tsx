@@ -670,7 +670,7 @@ export default function DashboardPage() {
                           <div className="flex items-center justify-between">
                             <h4 className="text-sm font-semibold text-slate-300">Exam Questions</h4>
                             <Button
-                              type="button" size="xs" variant="outline"
+                              type="button" size="sm" variant="outline"
                               className="border-white/[0.08] text-cyan-400 hover:bg-white/[0.04] cursor-pointer"
                               onClick={() => setCreateExamForm(f => ({
                                 ...f,

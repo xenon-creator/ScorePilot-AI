@@ -68,7 +68,7 @@ export interface Submission {
   student_name: string
   scanned_image_url: string
   extracted_text: string
-  status: 'Scored' | 'Flagged' | 'Approved'
+  status: 'Scored' | 'Flagged' | 'Approved' | 'Pending'
   total_score: number
   ai_confidence: number
   created_at: string

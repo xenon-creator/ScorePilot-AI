@@ -30,6 +30,20 @@ const transitionVariants = {
 }
 
 export function HeroSection() {
+    const [showScrollArrow, setShowScrollArrow] = React.useState(true)
+
+    React.useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 100) {
+                setShowScrollArrow(false)
+            } else {
+                setShowScrollArrow(true)
+            }
+        }
+        window.addEventListener('scroll', handleScroll, { passive: true })
+        return () => window.removeEventListener('scroll', handleScroll)
+    }, [])
+
     return (
         <>
             <HeroHeader />
@@ -53,7 +67,7 @@ export function HeroSection() {
                                     }}
                                 >
                                     <h1
-                                        className="mt-8 max-w-3xl text-balance text-5xl font-semibold tracking-tight md:text-6xl lg:text-7xl lg:mt-16">
+                                        className="mt-8 max-w-3xl text-balance text-[36px] sm:text-5xl font-semibold tracking-tight md:text-6xl lg:text-7xl lg:mt-16">
                                         Transforming academic evaluation{' '}
                                         <span className="text-gradient-cyan">through intelligent AI scoring.</span>
                                     </h1>
@@ -61,15 +75,15 @@ export function HeroSection() {
                                         className="mt-8 max-w-2xl text-pretty text-lg text-slate-400 md:text-xl">
                                         ScorePilot AI automates exam evaluation with OCR extraction, semantic analysis, and explainable scoring — giving educators superhuman grading precision.
                                     </p>
-                                    <div className="mt-12 flex items-center gap-3">
+                                    <div className="mt-12 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
                                         <div
                                             key={1}
-                                            className="bg-cyan-400/10 rounded-[14px] border border-cyan-400/20 p-0.5">
+                                            className="bg-cyan-400/10 rounded-[14px] border border-cyan-400/20 p-0.5 w-full sm:w-auto">
                                             <Button
                                                 asChild
                                                 size="lg"
-                                                className="rounded-xl px-6 text-base bg-cyan-500 hover:bg-cyan-400 text-black font-medium border-0">
-                                                <Link href="/signup">
+                                                className="rounded-xl px-6 text-base bg-cyan-500 hover:bg-cyan-400 text-black font-medium border-0 w-full justify-center">
+                                                <Link href="/signup" className="w-full text-center">
                                                     <span className="text-nowrap">Get Early Access</span>
                                                 </Link>
                                             </Button>
@@ -79,12 +93,17 @@ export function HeroSection() {
                                             asChild
                                             size="lg"
                                             variant="ghost"
-                                            className="h-[42px] rounded-xl px-5 text-base text-slate-300 hover:text-white">
-                                            <Link href="#workflow">
+                                            className="h-[42px] rounded-xl px-5 text-base text-slate-300 hover:text-white w-full sm:w-auto justify-center">
+                                            <Link href="#workflow" className="flex items-center justify-center">
                                                 <Play className="mr-2 h-4 w-4" />
                                                 <span className="text-nowrap">Watch Demo</span>
                                             </Link>
                                         </Button>
+                                    </div>
+                                    <div className={cn("scroll-indicator", !showScrollArrow && "hidden")}>
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                            <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                                        </svg>
                                     </div>
                                 </AnimatedGroup>
                             </div>
@@ -101,16 +120,16 @@ export function HeroSection() {
                                 },
                                 ...transitionVariants,
                             }}>
-                            <div className="relative mt-16 sm:mt-20 md:mt-28 px-2">
+                            <div className="relative mt-10 px-2">
                                 <div
                                     aria-hidden
                                     className="bg-gradient-to-b from-transparent via-transparent to-black absolute inset-0 z-10"
                                 />
                                 <div className="glass-card relative mx-auto max-w-5xl overflow-hidden rounded-2xl p-6 md:p-8">
                                     {/* Mock AI Scoring Dashboard */}
-                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="flex overflow-x-auto md:grid md:grid-cols-3 gap-4 no-scrollbar scroll-smooth pb-4 md:pb-0">
                                         {/* Score Card */}
-                                        <div className="glass-card rounded-xl p-5">
+                                        <div className="glass-card rounded-xl p-5 min-w-[280px] sm:min-w-[320px] md:min-w-0 flex-shrink-0 md:flex-shrink w-[280px] sm:w-[320px] md:w-full">
                                             <div className="flex items-center justify-between mb-4">
                                                 <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">AI Score</span>
                                                 <span className="text-xs text-emerald-400 font-medium">● Live</span>
@@ -123,7 +142,7 @@ export function HeroSection() {
                                         </div>
 
                                         {/* OCR Extraction */}
-                                        <div className="glass-card rounded-xl p-5">
+                                        <div className="glass-card rounded-xl p-5 min-w-[280px] sm:min-w-[320px] md:min-w-0 flex-shrink-0 md:flex-shrink w-[280px] sm:w-[320px] md:w-full">
                                             <div className="flex items-center justify-between mb-4">
                                                 <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">OCR Extract</span>
                                                 <span className="text-xs text-cyan-400 font-medium">Processing</span>
@@ -139,7 +158,7 @@ export function HeroSection() {
                                         </div>
 
                                         {/* Semantic Match */}
-                                        <div className="glass-card rounded-xl p-5">
+                                        <div className="glass-card rounded-xl p-5 min-w-[280px] sm:min-w-[320px] md:min-w-0 flex-shrink-0 md:flex-shrink w-[280px] sm:w-[320px] md:w-full">
                                             <div className="flex items-center justify-between mb-4">
                                                 <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Semantic Match</span>
                                                 <span className="text-xs text-violet-400 font-medium">Analyzed</span>

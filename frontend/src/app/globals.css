@@ -191,3 +191,32 @@
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
+
+/* Scroll chevron indicator and bounce animation */
+.scroll-indicator {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+  color: var(--primary);
+  opacity: 0.6;
+  animation: bounce 2s infinite;
+  transition: opacity 0.3s;
+}
+.scroll-indicator.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+/* Hide scrollbar for WebKit browsers */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}

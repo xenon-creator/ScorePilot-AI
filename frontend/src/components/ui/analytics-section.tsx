@@ -6,10 +6,10 @@ import { TrendingUp, Users, Zap, Clock } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const metrics = [
-  { label: 'Papers Graded', value: '12,847', change: '+2,340 this week', icon: Users, accent: 'cyan' },
-  { label: 'Average Score', value: '73.4', change: '+4.2 vs last term', icon: TrendingUp, accent: 'emerald' },
-  { label: 'AI Accuracy', value: '96.8%', change: '+1.3% improvement', icon: Zap, accent: 'violet' },
-  { label: 'Avg Review Time', value: '18s', change: '-42% with AI assist', icon: Clock, accent: 'blue' },
+  { label: 'Papers Graded', value: '—', change: '+2,340 this week', icon: Users, accent: 'cyan' },
+  { label: 'Average Score', value: '—', change: '+4.2 vs last term', icon: TrendingUp, accent: 'emerald' },
+  { label: 'AI Accuracy', value: '—', change: '+1.3% improvement', icon: Zap, accent: 'violet' },
+  { label: 'Avg Review Time', value: '—', change: '-42% with AI assist', icon: Clock, accent: 'blue' },
 ]
 
 const accentMap: Record<string, { bg: string; text: string; border: string }> = {
@@ -50,8 +50,26 @@ export function AnalyticsSection() {
           </p>
         </motion.div>
 
+        {/* Live stats warning banner */}
+        <div className="text-center mb-6">
+          <div 
+            style={{
+              background: 'oklch(0.3 0.05 80 / 40%)',
+              border: '1px solid oklch(0.5 0.1 80 / 30%)',
+              color: 'oklch(0.85 0.1 80)',
+              padding: '6px 16px',
+              borderRadius: '999px',
+              fontSize: '12px',
+              marginBottom: '24px',
+              display: 'inline-block',
+            }}
+          >
+            📊 Live stats will appear after your first exam batch
+          </div>
+        </div>
+
         {/* Metrics grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {metrics.map((metric, index) => {
             const colors = accentMap[metric.accent]
             return (
@@ -67,7 +85,12 @@ export function AnalyticsSection() {
                   <metric.icon className={cn('h-5 w-5', colors.text)} />
                 </div>
                 <p className="text-3xl font-bold text-white tracking-tight">{metric.value}</p>
-                <p className="text-sm text-slate-400 mt-1">{metric.label}</p>
+                <div className="text-sm text-slate-400 mt-1 flex items-center gap-2">
+                  {metric.label}
+                  {metric.label === 'Papers Graded' && (
+                    <span className="text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30 px-1.5 py-0.5 rounded uppercase tracking-wider">DEMO</span>
+                  )}
+                </div>
                 <p className={cn('text-xs mt-2 font-medium', colors.text)}>{metric.change}</p>
               </motion.div>
             )

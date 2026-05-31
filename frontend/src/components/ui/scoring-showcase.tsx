@@ -101,9 +101,9 @@ export function ScoringShowcase() {
               ].map((item) => (
                 <div key={item.criteria}>
                   <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-sm text-slate-300">{item.criteria}</span>
+                    <span className="text-[13px] sm:text-sm text-slate-300">{item.criteria}</span>
                     <span className={cn(
-                      'text-xs font-medium',
+                      'text-[13px] font-medium',
                       item.score >= 90 ? 'text-emerald-400' : item.score >= 75 ? 'text-yellow-400' : 'text-orange-400'
                     )}>{item.status}</span>
                   </div>
@@ -187,11 +187,11 @@ export function ScoringShowcase() {
               ].map((item) => (
                 <div key={item.field} className="flex items-center justify-between py-1">
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs text-slate-500">{item.field}</p>
+                    <p className="text-[13px] text-slate-500">{item.field}</p>
                     <p className="text-sm text-slate-300 truncate">{item.value}</p>
                   </div>
                   <span className={cn(
-                    'text-xs font-mono font-medium ml-4',
+                    'text-[14px] font-mono font-medium ml-4',
                     item.confidence >= 95 ? 'text-emerald-400' : item.confidence >= 90 ? 'text-yellow-400' : 'text-orange-400'
                   )}>
                     {item.confidence}%
