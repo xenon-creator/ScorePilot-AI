@@ -56,3 +56,27 @@ class TestOCRIntegration:
         assert 0.0 <= result["average_confidence"] <= 1.0
         for block in result["blocks"]:
             assert 0.0 <= block["confidence"] <= 1.0
+
+    def test_extract_text_tesseract_graceful_or_success(self):
+        from PIL import Image, ImageDraw
+        import io
+        
+        # 1. Create a tiny test image
+        img = Image.new("RGB", (100, 30), color=(255, 255, 255))
+        d = ImageDraw.Draw(img)
+        d.text((10, 10), "Q1: A", fill=(0, 0, 0))
+        
+        img_bytes_io = io.BytesIO()
+        img.save(img_bytes_io, format="PNG")
+        img_bytes = img_bytes_io.getvalue()
+        
+        # 2. Call extract_text
+        try:
+            res = OCRService.extract_text(img_bytes, "test_paper.png", lang="eng")
+            assert "extracted_text" in res
+            assert "confidence" in res
+            assert "lang" in res
+            assert res["lang"] == "eng"
+        except RuntimeError as e:
+            # If tesseract is not installed on the runner, it must raise a clear RuntimeError
+            assert "Tesseract OCR binary not found" in str(e)

@@ -27,6 +27,75 @@ class OCRService:
         return cleaned_text.strip()
 
     @classmethod
+    def extract_text(cls, file_content: bytes, filename: str, lang: str = "eng") -> Dict[str, Any]:
+        """
+        Extracts text from given file content (JPG, PNG, PDF) using real Tesseract OCR.
+        Returns: {"extracted_text": str, "confidence": float, "lang": str}
+        Raises RuntimeError if Tesseract is not installed/accessible.
+        """
+        import io
+        from PIL import Image
+        import pytesseract
+        from app.core.config import settings
+
+        # Check and set custom path if exists
+        tess_cmd = settings.TESSERACT_CMD_PATH
+        if tess_cmd and os.path.exists(tess_cmd):
+            pytesseract.pytesseract.tesseract_cmd = tess_cmd
+
+        # Check if tesseract is installed
+        try:
+            pytesseract.get_tesseract_version()
+        except Exception as e:
+            raise RuntimeError("Tesseract OCR binary not found. Please install tesseract-ocr.") from e
+
+        extracted_text_list = []
+        confidences = []
+
+        try:
+            if filename.lower().endswith(".pdf"):
+                from pdf2image import convert_from_bytes
+                try:
+                    images = convert_from_bytes(file_content)
+                except Exception as e:
+                    raise RuntimeError(f"Failed to convert PDF pages using pdf2image: {e}") from e
+                
+                for img in images:
+                    data = pytesseract.image_to_data(img, lang=lang, output_type=pytesseract.Output.DICT)
+                    text = pytesseract.image_to_string(img, lang=lang)
+                    extracted_text_list.append(text)
+                    
+                    confs = [float(c) for c in data.get("conf", []) if c is not None and float(c) != -1]
+                    if confs:
+                        confidences.append(sum(confs) / len(confs) / 100.0)
+                    else:
+                        confidences.append(0.85)
+            else:
+                img = Image.open(io.BytesIO(file_content))
+                data = pytesseract.image_to_data(img, lang=lang, output_type=pytesseract.Output.DICT)
+                text = pytesseract.image_to_string(img, lang=lang)
+                extracted_text_list.append(text)
+                
+                confs = [float(c) for c in data.get("conf", []) if c is not None and float(c) != -1]
+                if confs:
+                    confidences.append(sum(confs) / len(confs) / 100.0)
+                else:
+                    confidences.append(0.85)
+
+            combined_text = "\n\n".join(extracted_text_list)
+            avg_conf = sum(confidences) / len(confidences) if confidences else 0.85
+
+            return {
+                "extracted_text": cls.clean_text(combined_text),
+                "confidence": round(avg_conf, 2),
+                "lang": lang
+            }
+        except Exception as e:
+            if "tesseract" in str(e).lower() or "not installed" in str(e).lower():
+                raise RuntimeError("Tesseract OCR binary not found. Please install tesseract-ocr.") from e
+            raise RuntimeError(f"OCR Extraction failed: {e}") from e
+
+    @classmethod
     def extract_answers_from_text(cls, raw_ocr_text: str) -> List[Dict[str, Any]]:
         """
         Parses raw extracted sheet text into question-wise blocks.

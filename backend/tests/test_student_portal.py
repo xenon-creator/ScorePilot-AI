@@ -138,3 +138,58 @@ class TestStudentPortal:
             self.db.delete(sub_other)
             self.db.delete(exam)
             self.db.commit()
+
+    def test_student_results_query_unauthenticated(self):
+        # 1. Create a submission in DB for a specific student name
+        teacher = self.db.query(User).filter(User.role == UserRole.teacher).first()
+        if not teacher:
+            teacher = User(
+                email="teacher_test_portal2@aegis.edu",
+                name="Prof. Sarah Portal 2",
+                role=UserRole.teacher,
+                password="hashed_password",
+            )
+            self.db.add(teacher)
+            self.db.commit()
+            self.db.refresh(teacher)
+
+        exam = Exam(
+            title="Results Query Test Exam",
+            description="Testing Student Results unauthenticated API",
+            created_by=teacher.id,
+        )
+        self.db.add(exam)
+        self.db.commit()
+        self.db.refresh(exam)
+        
+        sub = Submission(
+            exam_id=exam.id,
+            student_name="Charlie Test Results",
+            student_id="STUDENT_CHARLIE",
+            status=SubmissionStatus.graded,
+            total_score=9.5,
+            ai_confidence=0.95,
+        )
+        self.db.add(sub)
+        self.db.commit()
+        self.db.refresh(sub)
+        
+        try:
+            # Query the unauthenticated results endpoint
+            response = client.get("/api/v1/student/results?student_name=Charlie Test Results")
+            assert response.status_code == 200
+            data = response.json()
+            assert len(data) == 1
+            assert data[0]["student_name"] == "Charlie Test Results"
+            assert data[0]["total_score"] == 9.5
+            assert data[0]["exam_title"] == "Results Query Test Exam"
+            
+            # Query case-insensitively
+            response_lc = client.get("/api/v1/student/results?student_name=charlie test results")
+            assert response_lc.status_code == 200
+            assert len(response_lc.json()) == 1
+        finally:
+            self.db.delete(sub)
+            self.db.delete(exam)
+            self.db.commit()
+

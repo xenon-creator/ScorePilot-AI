@@ -103,6 +103,11 @@ class LMSSyncPayload(BaseModel):
     assignment_id: str
 
 
+class LMSPushModel(BaseModel):
+    submission_id: str
+    lms_type: str  # "moodle" or "canvas"
+
+
 # ==========================================
 # HELPERS
 # ==========================================
@@ -751,3 +756,102 @@ def sync_exam_grades_to_lms(exam_id: str, data: LMSSyncPayload, db: Session = De
     db.commit()
     
     return sync_result
+
+
+@app.get("/api/v1/student/results")
+def get_student_results(
+    student_name: str,
+    db: Session = Depends(get_db)
+):
+    if not student_name or not student_name.strip():
+        raise HTTPException(status_code=400, detail="Student name parameter is required")
+
+    from sqlalchemy import func
+    subs = db.query(Submission).filter(
+        func.lower(Submission.student_name) == student_name.strip().lower()
+    ).order_by(Submission.uploaded_at.desc()).all()
+
+    results = []
+    for sub in subs:
+        exam = db.query(Exam).filter(Exam.id == sub.exam_id).first()
+        exam_title = exam.title if exam else "Unknown Exam"
+        
+        answers_list = []
+        for ans in sorted(sub.answers, key=lambda a: a.question_number):
+            question = db.query(Question).filter(Question.id == ans.question_id).first()
+            q_text = question.text if question else f"Question {ans.question_number}"
+            max_m = question.max_marks if question else 0.0
+            
+            answers_list.append({
+                "question_number": ans.question_number,
+                "question_text": q_text,
+                "student_answer": ans.student_answer,
+                "ai_score": ans.ai_score,
+                "final_score": ans.final_score,
+                "ai_confidence": ans.ai_confidence,
+                "ai_reasoning": ans.ai_reasoning or "No reasoning provided.",
+                "max_marks": max_m
+            })
+            
+        results.append({
+            "submission_id": sub.id,
+            "exam_title": exam_title,
+            "student_name": sub.student_name,
+            "status": sub.status.value,
+            "total_score": sub.total_score,
+            "max_score": sum(a["max_marks"] for a in answers_list),
+            "ai_confidence": sub.ai_confidence,
+            "uploaded_at": sub.uploaded_at.isoformat() if sub.uploaded_at else None,
+            "answers": answers_list
+        })
+        
+    return results
+
+
+@app.post("/api/v1/lms/push")
+def push_grade_to_lms(
+    data: LMSPushModel,
+    db: Session = Depends(get_db)
+):
+    if not settings.LMS_URL:
+        return {"status": "skipped", "reason": "LMS not configured"}
+
+    submission = db.query(Submission).filter(Submission.id == data.submission_id).first()
+    if not submission:
+        raise HTTPException(status_code=404, detail="Submission not found")
+
+    exam = db.query(Exam).filter(Exam.id == submission.exam_id).first()
+    exam_title = exam.title if exam else "Unknown Exam"
+
+    import httpx
+    
+    payload = {
+        "submission_id": submission.id,
+        "student_name": submission.student_name,
+        "student_id": submission.student_id,
+        "exam_title": exam_title,
+        "grade": submission.total_score,
+        "status": submission.status.value,
+        "lms_type": data.lms_type
+    }
+    
+    headers = {}
+    if settings.LMS_TOKEN:
+        headers["Authorization"] = f"Bearer {settings.LMS_TOKEN}"
+        
+    try:
+        response = httpx.post(settings.LMS_URL, json=payload, headers=headers, timeout=10)
+        return {
+            "status": "success",
+            "lms_response_status": response.status_code,
+            "lms_response_body": response.text,
+            "payload_sent": payload
+        }
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).warning(f"Failed to post grade to LMS_URL: {e}")
+        return {
+            "status": "failed",
+            "reason": f"Connection failed: {e}",
+            "payload_sent": payload
+        }

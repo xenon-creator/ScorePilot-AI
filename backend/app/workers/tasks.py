@@ -218,6 +218,17 @@ def send_score_release_email_task(submission_id: str) -> Dict[str, Any]:
         
         # Send email
         from app.services.notification_service import NotificationService
+        from app.services.email_service import send_score_notification
+        
+        # Trigger the standard library SMTP notification
+        send_score_notification(
+            to_email=student_email,
+            student_name=submission.student_name,
+            exam_title=exam.title,
+            total_score=submission.total_score or 0.0
+        )
+        
+        # Trigger the rich premium HTML layout release
         success = NotificationService.send_score_release_email(
             student_name=submission.student_name,
             student_email=student_email,

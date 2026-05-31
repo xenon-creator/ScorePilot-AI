@@ -35,6 +35,9 @@ class Settings(BaseSettings):
     # OCR Configurations
     GOOGLE_APPLICATION_CREDENTIALS: Optional[str] = os.getenv("GOOGLE_APPLICATION_CREDENTIALS", None)
     TESSERACT_CMD_PATH: str = os.getenv("TESSERACT_CMD_PATH", r"C:\Program Files\Tesseract-OCR\tesseract.exe")
+    TESSERACT_LANGS: str = os.getenv("TESSERACT_LANGS", "eng")
+    LMS_URL: Optional[str] = os.getenv("LMS_URL", None)
+    LMS_TOKEN: Optional[str] = os.getenv("LMS_TOKEN", None)
 
     # SMTP / Email Settings
     SMTP_HOST: str = os.getenv("SMTP_HOST", "")
