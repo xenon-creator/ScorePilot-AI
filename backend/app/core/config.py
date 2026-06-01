@@ -6,12 +6,12 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     PROJECT_NAME: str = "AegisGrading AI"
     API_V1_STR: str = "/api/v1"
-    SECRET_KEY: str = os.getenv("JWT_SECRET", "super-secret-aegis-grading-key-2026")
+    SECRET_KEY: str = os.getenv("JWT_SECRET", "dev-secret-change-in-production")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 Days
 
     # Database Settings
     POSTGRES_SERVER: str = os.getenv("DB_HOST", "localhost")
-    POSTGRES_PORT: str = os.getenv("DB_PORT", "5432")
+    POSTGRES_PORT: int = int(os.getenv("DB_PORT", "5432"))
     POSTGRES_USER: str = os.getenv("DB_USER", "postgres")
     POSTGRES_PASSWORD: str = os.getenv("DB_PASSWORD", "postgres")
     POSTGRES_DB: str = os.getenv("DB_NAME", "aegis_grading")
@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     S3_ACCESS_KEY: str = os.getenv("S3_ACCESS_KEY", "minioadmin")
     S3_SECRET_KEY: str = os.getenv("S3_SECRET_KEY", "minioadmin")
     S3_BUCKET: str = os.getenv("S3_BUCKET", "exam-papers")
+
+    # Sentence Transformers Caching
+    SENTENCE_TRANSFORMERS_HOME: str = os.getenv("SENTENCE_TRANSFORMERS_HOME", "./models")
 
     # AI Scoring Constants
     AI_CONFIDENCE_THRESHOLD: float = 0.85  # Flag if below this threshold

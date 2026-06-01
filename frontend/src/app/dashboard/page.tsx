@@ -16,6 +16,8 @@ import {
   Cpu, LayoutDashboard, FileText, Upload, BarChart3, Shield, LogOut, Loader2,
   ChevronDown, AlertCircle, CheckCircle, Clock, Eye, X, Plus, Trash2
 } from 'lucide-react'
+import { UploadQuestionPaper } from '@/components/ui/upload-question-paper'
+import { BulkUpload } from '@/components/ui/bulk-upload'
 
 type Tab = 'overview' | 'my-grades' | 'exams' | 'submissions' | 'analytics' | 'audit' | 'lms'
 
@@ -62,6 +64,8 @@ export default function DashboardPage() {
 
   // Create Exam state
   const [createExamOpen, setCreateExamOpen] = useState(false)
+  const [createMode, setCreateMode] = useState<'choose' | 'manual' | 'upload'>('choose')
+  const [bulkUploadOpen, setBulkUploadOpen] = useState(false)
   const [createExamLoading, setCreateExamLoading] = useState(false)
   const [createExamForm, setCreateExamForm] = useState({
     title: '',
@@ -598,7 +602,7 @@ export default function DashboardPage() {
                       <Button
                         size="sm"
                         className="bg-cyan-500 hover:bg-cyan-400 text-black font-medium cursor-pointer"
-                        onClick={() => setCreateExamOpen(true)}
+                        onClick={() => { setCreateExamOpen(true); setCreateMode('choose'); }}
                       >
                         <Plus className="h-4 w-4 mr-2" />
                         Create Exam
@@ -607,12 +611,61 @@ export default function DashboardPage() {
                   </div>
 
                   {/* Create Exam Modal */}
-                  {createExamOpen && (
+                  {createExamOpen && createMode === 'choose' && (
                     <div className="glass-card rounded-2xl p-6 space-y-6">
                       <div className="flex items-center justify-between border-b border-white/[0.04] pb-4">
                         <div>
                           <h3 className="text-base font-semibold text-white">Create New Exam</h3>
-                          <p className="text-xs text-slate-500 mt-0.5">Define exam metadata, language, and evaluation questions.</p>
+                          <p className="text-xs text-slate-500 mt-0.5">Choose how you want to create your exam questions.</p>
+                        </div>
+                        <button onClick={() => setCreateExamOpen(false)} className="text-slate-500 hover:text-white cursor-pointer">
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div 
+                          onClick={() => setCreateMode('upload')}
+                          className="border border-white/[0.08] hover:border-cyan-500/30 rounded-2xl p-6 text-center cursor-pointer transition-all bg-white/[0.01] hover:bg-cyan-500/[0.01] space-y-3"
+                        >
+                          <Upload className="h-8 w-8 text-cyan-400 mx-auto" />
+                          <h4 className="text-sm font-semibold text-white">Upload Question Paper</h4>
+                          <p className="text-xs text-slate-500">Upload your exam paper PDF/Image and extract questions automatically using AI OCR.</p>
+                        </div>
+
+                        <div 
+                          onClick={() => setCreateMode('manual')}
+                          className="border border-white/[0.08] hover:border-cyan-500/30 rounded-2xl p-6 text-center cursor-pointer transition-all bg-white/[0.01] hover:bg-cyan-500/[0.01] space-y-3"
+                        >
+                          <Plus className="h-8 w-8 text-cyan-400 mx-auto" />
+                          <h4 className="text-sm font-semibold text-white">Create Manually</h4>
+                          <p className="text-xs text-slate-500">Manually define your questions, types, and model answers step-by-step.</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {createExamOpen && createMode === 'upload' && (
+                    <UploadQuestionPaper 
+                      onSuccess={(newExam) => {
+                        setExams(prev => [...prev, newExam])
+                        setCreateExamOpen(false)
+                      }}
+                      onCancel={() => setCreateExamOpen(false)}
+                    />
+                  )}
+
+                  {createExamOpen && createMode === 'manual' && (
+                    <div className="glass-card rounded-2xl p-6 space-y-6">
+                      <div className="flex items-center justify-between border-b border-white/[0.04] pb-4">
+                        <div className="flex items-center gap-2">
+                          <button onClick={() => setCreateMode('choose')} className="text-xs text-cyan-400 hover:underline mr-2">
+                            &larr; Back
+                          </button>
+                          <div>
+                            <h3 className="text-base font-semibold text-white">Create New Exam</h3>
+                            <p className="text-xs text-slate-500 mt-0.5">Define exam metadata, language, and evaluation questions.</p>
+                          </div>
                         </div>
                         <button onClick={() => setCreateExamOpen(false)} className="text-slate-500 hover:text-white cursor-pointer">
                           <X className="h-4 w-4" />
@@ -889,6 +942,17 @@ export default function DashboardPage() {
                         <Upload className="h-4 w-4 mr-2" />
                         Upload Paper
                       </Button>
+                      {(user?.role?.toLowerCase() === 'teacher' || user?.role?.toLowerCase() === 'admin') && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="border-white/[0.08] text-slate-300 hover:bg-white/[0.04] hover:text-white cursor-pointer"
+                          onClick={() => setBulkUploadOpen(true)}
+                        >
+                          <Upload className="h-4 w-4 mr-2" />
+                          Bulk Upload
+                        </Button>
+                      )}
                     </div>
                   </div>
 
@@ -953,6 +1017,17 @@ export default function DashboardPage() {
                         </div>
                       </form>
                     </div>
+                  )}
+
+                  {/* Bulk Upload modal */}
+                  {bulkUploadOpen && (
+                    <BulkUpload 
+                      onSuccess={() => {
+                        setBulkUploadOpen(false)
+                        fetchData()
+                      }}
+                      onCancel={() => setBulkUploadOpen(false)}
+                    />
                   )}
 
                   {/* Upload modal */}

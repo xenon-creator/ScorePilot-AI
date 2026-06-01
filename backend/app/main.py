@@ -94,6 +94,18 @@ class ExamCreateModel(BaseModel):
     questions: List[QuestionCreateModel]
     language: str = "en"
 
+class QuestionFromPaperModel(BaseModel):
+    text: str
+    type: str  # MCQ, Short, Long
+    max_marks: float
+    model_answer: str
+
+class ExamCreateFromPaperModel(BaseModel):
+    title: str
+    subject: str
+    questions: List[QuestionFromPaperModel]
+    language: str = "en"
+
 class ReviewOverrideItemModel(BaseModel):
     question_number: int
     override_score: float
@@ -334,6 +346,72 @@ def create_exam(data: ExamCreateModel, db: Session = Depends(get_db), payload: d
     return _format_exam(exam)
 
 
+@app.post("/api/v1/exams/upload-paper")
+def upload_question_paper(
+    file: UploadFile = File(...),
+    payload: dict = Depends(RoleChecker(["Teacher", "Admin"]))
+):
+    from app.services.question_paper_service import QuestionPaperService
+
+    file_bytes = file.file.read()
+    filename = file.filename or "paper.pdf"
+    file_type = filename.split(".")[-1] if "." in filename else "pdf"
+    
+    try:
+        questions = QuestionPaperService.extract_questions_from_paper(file_bytes, file_type)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to extract questions: {str(e)}")
+        
+    formatted_questions = [
+        {
+            "number": q["question_number"],
+            "text": q["question_text"],
+            "marks_hint": q["marks_hint"]
+        }
+        for q in questions
+    ]
+    return {"questions": formatted_questions}
+
+
+@app.post("/api/v1/exams/from-paper")
+def create_exam_from_paper(
+    data: ExamCreateFromPaperModel,
+    db: Session = Depends(get_db),
+    payload: dict = Depends(RoleChecker(["Teacher", "Admin"]))
+):
+    creator = db.query(User).filter(User.name == payload["sub"]).first()
+    creator_id = creator.id if creator else None
+    if not creator_id:
+        raise HTTPException(status_code=400, detail="Creator user not found")
+
+    exam = Exam(
+        title=data.title,
+        description=data.subject,
+        language=data.language,
+        created_by=creator_id,
+    )
+    db.add(exam)
+    db.flush()
+
+    for idx, q_data in enumerate(data.questions):
+        # Support various cases (MCQ, mcq, Short, short, Long, long)
+        qtype = QTYPE_MAP.get(q_data.type, QTYPE_MAP.get(q_data.type.upper(), QuestionType.short))
+        question = Question(
+            exam_id=exam.id,
+            text=q_data.text,
+            question_type=qtype,
+            model_answer=q_data.model_answer,
+            max_marks=q_data.max_marks,
+        )
+        db.add(question)
+
+    _audit(db, creator_id, "Exam Created From Paper", {"exam_title": data.title, "questions_count": len(data.questions)})
+    db.commit()
+    db.refresh(exam)
+
+    return _format_exam(exam)
+
+
 # --- UPLOADS & SCORING ---
 @app.post("/api/v1/uploads")
 def upload_papers(
@@ -390,6 +468,73 @@ def upload_papers(
     db.commit()
 
     return _format_submission(submission)
+
+
+BULK_JOBS = {}
+
+@app.post("/api/v1/uploads/bulk")
+def upload_bulk_submissions(
+    exam_id: str = Form(...),
+    files: List[UploadFile] = File(...),
+    db: Session = Depends(get_db),
+    payload: dict = Depends(RoleChecker(["Teacher", "Admin"]))
+):
+    from app.services.bulk_upload_service import process_bulk_upload
+
+    if len(files) > 50:
+        raise HTTPException(status_code=400, detail="Cannot upload more than 50 files in a single batch.")
+        
+    try:
+        result = process_bulk_upload(files, exam_id, db)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Bulk upload failed: {str(e)}")
+        
+    job_id = str(uuid.uuid4())
+    BULK_JOBS[job_id] = {
+        "submission_ids": result["submissions"],
+        "total": len(files)
+    }
+    
+    return {
+        "job_id": job_id,
+        "total": result["total"],
+        "processed": result["processed"],
+        "failed": result["failed"],
+        "submission_ids": result["submissions"]
+    }
+
+
+@app.get("/api/v1/uploads/bulk/status/{job_id}")
+def get_bulk_upload_status(
+    job_id: str,
+    db: Session = Depends(get_db),
+    payload: dict = Depends(RoleChecker(["Teacher", "Admin"]))
+):
+    job = BULK_JOBS.get(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="Bulk upload job not found")
+        
+    submission_ids = job["submission_ids"]
+    total = job["total"]
+    
+    # Query database to count how many are processed
+    # Processed means status != 'pending'
+    processed = db.query(Submission).filter(
+        Submission.id.in_(submission_ids),
+        Submission.status != SubmissionStatus.pending
+    ).count()
+    
+    status_str = "processing"
+    if processed == total:
+        status_str = "complete"
+    elif len(submission_ids) == 0:
+        status_str = "failed"
+        
+    return {
+        "status": status_str,
+        "processed": processed,
+        "total": total
+    }
 
 
 @app.get("/api/v1/submissions")
