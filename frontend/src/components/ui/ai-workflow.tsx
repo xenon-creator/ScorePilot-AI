@@ -49,7 +49,8 @@ export function AIWorkflow() {
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null)
 
   return (
-    <section id="workflow" className="relative py-24 md:py-32 lg:py-40">
+    <section id="how-it-works" className="relative py-24 md:py-32 lg:py-40">
+      <div id="workflow" className="absolute top-0" />
       <div className="mx-auto max-w-6xl px-6">
         {/* Section header */}
         <motion.div

@@ -48,7 +48,7 @@ export function HeroSection() {
         <>
             <HeroHeader />
             <main className="overflow-hidden">
-                <section>
+                <section id="platform">
                     <div className="relative pt-32">
                         <MeshGradient className="-z-10" />
                         <div className="mx-auto max-w-6xl px-6">
@@ -94,7 +94,7 @@ export function HeroSection() {
                                             size="lg"
                                             variant="ghost"
                                             className="h-[42px] rounded-xl px-5 text-base text-slate-300 hover:text-white w-full sm:w-auto justify-center">
-                                            <Link href="#workflow" className="flex items-center justify-center">
+                                            <Link href="/#how-it-works" className="flex items-center justify-center">
                                                 <Play className="mr-2 h-4 w-4" />
                                                 <span className="text-nowrap">Watch Demo</span>
                                             </Link>
@@ -196,10 +196,10 @@ export function HeroSection() {
 }
 
 const menuItems = [
-    { name: 'Platform', href: '#platform' },
-    { name: 'How It Works', href: '#workflow' },
-    { name: 'Scoring', href: '#scoring' },
-    { name: 'Analytics', href: '#analytics' },
+    { name: 'Platform', href: '/#platform' },
+    { name: 'How It Works', href: '/#how-it-works' },
+    { name: 'Scoring', href: '/#scoring' },
+    { name: 'Analytics', href: '/#analytics' },
     { name: 'Pricing', href: '/pricing' },
 ]
 
