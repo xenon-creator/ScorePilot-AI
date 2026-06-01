@@ -200,7 +200,9 @@ const menuItems = [
     { name: 'How It Works', href: '#workflow' },
     { name: 'Scoring', href: '#scoring' },
     { name: 'Analytics', href: '#analytics' },
+    { name: 'Pricing', href: '/pricing' },
 ]
+
 
 export const HeroHeader = () => {
     const [menuState, setMenuState] = React.useState(false)

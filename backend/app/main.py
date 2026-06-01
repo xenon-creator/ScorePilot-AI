@@ -3,7 +3,7 @@ import json
 import datetime
 import os
 from typing import Dict, Any, List, Optional
-from fastapi import FastAPI, Depends, HTTPException, status, UploadFile, File, Form
+from fastapi import FastAPI, Depends, HTTPException, status, UploadFile, File, Form, Request
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, EmailStr
@@ -132,9 +132,20 @@ class LMSPushModel(BaseModel):
     lms_type: str  # "moodle" or "canvas"
 
 
+class CreateOrderModel(BaseModel):
+    plan: str
+
+
+class VerifyPaymentModel(BaseModel):
+    razorpay_payment_id: str
+    razorpay_subscription_id: str
+    razorpay_signature: str
+
+
 # ==========================================
 # HELPERS
 # ==========================================
+
 
 ROLE_MAP = {
     "Admin": UserRole.admin, "admin": UserRole.admin,
@@ -420,7 +431,26 @@ def upload_papers(
     exam_id: str = Form(...),
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
+    payload: dict = Depends(get_current_user_payload),
 ):
+    from app.services.subscription_service import check_usage_limit, increment_usage
+
+    current_user = db.query(User).filter(User.name == payload["sub"]).first()
+    if not current_user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    usage = check_usage_limit(current_user.id, db)
+    if not usage["can_grade"]:
+        raise HTTPException(
+            status_code=402,
+            detail={
+                "error": "usage_limit_reached",
+                "message": "You've used all 5 free papers this month. Upgrade to continue.",
+                "papers_used": usage["papers_used"],
+                "papers_limit": usage["papers_limit"]
+            }
+        )
+
     # Retrieve exam
     exam = db.query(Exam).filter(Exam.id == exam_id).first()
     if not exam:
@@ -460,14 +490,18 @@ def upload_papers(
     process_and_score_submission.delay(submission.id, object_key, filename)
 
     # Log initial submission upload event
-    _audit(db, None, "Submission Uploaded", {
+    _audit(db, current_user.id, "Submission Uploaded", {
         "submission_id": submission.id,
         "student_name": submission.student_name,
         "filename": filename,
     })
     db.commit()
 
+    # Increment subscription usage count
+    increment_usage(current_user.id, db)
+
     return _format_submission(submission)
+
 
 
 BULK_JOBS = {}
@@ -1017,3 +1051,153 @@ def push_grade_to_lms(
             "reason": f"Connection failed: {e}",
             "payload_sent": payload
         }
+
+
+# ==========================================
+# SAAS MONETIZATION ENDPOINTS
+# ==========================================
+from app.services.subscription_service import (
+    get_or_create_subscription, check_usage_limit,
+    increment_usage, create_razorpay_subscription,
+    activate_subscription, cancel_subscription
+)
+from app.core.plans import PLANS
+import hmac
+import hashlib
+
+@app.get("/api/v1/subscription/status")
+def get_subscription_status(
+    db: Session = Depends(get_db),
+    payload: dict = Depends(get_current_user_payload)
+):
+    user = db.query(User).filter(User.name == payload["sub"]).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    sub = get_or_create_subscription(user.id, db)
+    usage = check_usage_limit(user.id, db)
+    return {
+        "plan": sub.plan.value,
+        "papers_used": sub.papers_used,
+        "papers_limit": sub.papers_limit,
+        "can_grade": usage["can_grade"],
+        "upgrade_required": usage["upgrade_required"],
+        "status": sub.status.value
+    }
+
+@app.get("/api/v1/subscription/plans")
+def get_plans():
+    return PLANS
+
+@app.post("/api/v1/subscription/create-order")
+def create_subscription_order(
+    data: CreateOrderModel,
+    db: Session = Depends(get_db),
+    payload: dict = Depends(get_current_user_payload)
+):
+    RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID", "")
+    if not RAZORPAY_KEY_ID:
+        return {"error": "payments_not_configured"}
+
+    user = db.query(User).filter(User.name == payload["sub"]).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+        
+    try:
+        order_details = create_razorpay_subscription(
+            user_id=user.id,
+            plan=data.plan,
+            user_email=user.email,
+            user_name=user.name,
+            db=db
+        )
+        return order_details
+    except ValueError as ve:
+        if str(ve) == "Payments not configured":
+            return {"error": "payments_not_configured"}
+        raise HTTPException(status_code=400, detail=str(ve))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create subscription order: {str(e)}")
+
+@app.post("/api/v1/subscription/verify-payment")
+def verify_subscription_payment(
+    data: VerifyPaymentModel,
+    db: Session = Depends(get_db),
+    payload: dict = Depends(get_current_user_payload)
+):
+    RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET", "")
+    if not RAZORPAY_KEY_SECRET:
+        return {"error": "payments_not_configured"}
+
+    expected = hmac.new(
+        RAZORPAY_KEY_SECRET.encode(),
+        f"{data.razorpay_payment_id}|{data.razorpay_subscription_id}".encode(),
+        hashlib.sha256
+    ).hexdigest()
+    
+    if expected == data.razorpay_signature:
+        activate_subscription(data.razorpay_subscription_id, data.razorpay_payment_id, db)
+        sub = db.query(Subscription).filter_by(razorpay_sub_id=data.razorpay_subscription_id).first()
+        plan_str = sub.plan.value if sub else "free"
+        return {"success": True, "plan": plan_str}
+    else:
+        raise HTTPException(status_code=400, detail="Invalid signature verification failed")
+
+@app.post("/api/v1/subscription/webhook")
+async def subscription_webhook(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    webhook_secret = os.getenv("RAZORPAY_WEBHOOK_SECRET", "")
+    body_bytes = await request.body()
+    body_str = body_bytes.decode("utf-8")
+    
+    if webhook_secret:
+        signature = request.headers.get("X-Razorpay-Signature", "")
+        expected = hmac.new(
+            webhook_secret.encode(),
+            body_bytes,
+            hashlib.sha256
+        ).hexdigest()
+        if expected != signature:
+            raise HTTPException(status_code=400, detail="Invalid signature")
+
+    try:
+        event_data = json.loads(body_str)
+        event_type = event_data.get("event")
+        
+        if event_type == "subscription.activated":
+            payload_sub = event_data.get("payload", {}).get("subscription", {}).get("entity", {})
+            sub_id = payload_sub.get("id")
+            activate_subscription(sub_id, "webhook", db)
+        elif event_type in ["subscription.cancelled", "subscription.expired"]:
+            payload_sub = event_data.get("payload", {}).get("subscription", {}).get("entity", {})
+            sub_id = payload_sub.get("id")
+            db_sub = db.query(Subscription).filter_by(razorpay_sub_id=sub_id).first()
+            if db_sub:
+                cancel_subscription(db_sub.user_id, db)
+        elif event_type == "payment.failed":
+            payload_payment = event_data.get("payload", {}).get("payment", {}).get("entity", {})
+            sub_id = payload_payment.get("subscription_id")
+            if sub_id:
+                db_sub = db.query(Subscription).filter_by(razorpay_sub_id=sub_id).first()
+                if db_sub:
+                    cancel_subscription(db_sub.user_id, db)
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).warning(f"Error handling Razorpay webhook: {e}")
+        
+    return {"status": "ok"}
+
+@app.post("/api/v1/subscription/cancel")
+def user_cancel_subscription(
+    db: Session = Depends(get_db),
+    payload: dict = Depends(get_current_user_payload)
+):
+    user = db.query(User).filter(User.name == payload["sub"]).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+        
+    cancel_subscription(user.id, db)
+    return {"status": "cancelled"}
+

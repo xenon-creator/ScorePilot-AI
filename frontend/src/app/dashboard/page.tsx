@@ -18,6 +18,8 @@ import {
 } from 'lucide-react'
 import { UploadQuestionPaper } from '@/components/ui/upload-question-paper'
 import { BulkUpload } from '@/components/ui/bulk-upload'
+import { UpgradePrompt } from '@/components/ui/upgrade-prompt'
+
 
 type Tab = 'overview' | 'my-grades' | 'exams' | 'submissions' | 'analytics' | 'audit' | 'lms'
 
@@ -91,6 +93,17 @@ export default function DashboardPage() {
   const [selectedLmsAssignmentId, setSelectedLmsAssignmentId] = useState('')
   const [syncLoading, setSyncLoading] = useState(false)
 
+  // Subscription state
+  const [subStatus, setSubStatus] = useState<{
+    plan: string
+    papers_used: number
+    papers_limit: number
+    can_grade: boolean
+    upgrade_required: boolean
+    status: string
+  } | null>(null)
+  const [upgradeOpen, setUpgradeOpen] = useState(false)
+
   // Redirect if not authenticated
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -120,6 +133,22 @@ export default function DashboardPage() {
         ])
         setExams(examsData)
         setSubmissions(subsData)
+
+        // Fetch subscription status
+        try {
+          const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+          const token = localStorage.getItem('sp_token') || ''
+          const subRes = await fetch(`${API_BASE}/api/v1/subscription/status`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          })
+          if (subRes.ok) {
+            const subData = await subRes.json()
+            setSubStatus(subData)
+          }
+        } catch (subErr) {
+          console.error("Subscription status fetch failed:", subErr)
+        }
+
 
         if (examsData.length > 0) {
           const analyticsData = await apiGetAnalytics(examsData[0].id)
@@ -162,18 +191,32 @@ export default function DashboardPage() {
   async function handleUpload(e: React.FormEvent) {
     e.preventDefault()
     if (!uploadForm.file || !uploadForm.examId) return
+
+    // Proactive usage check
+    if (subStatus && !subStatus.can_grade) {
+      setUploadOpen(false)
+      setUpgradeOpen(true)
+      return
+    }
+
     setUploadLoading(true)
     try {
       await apiUploadPaper(uploadForm.studentName, uploadForm.studentId, uploadForm.examId, uploadForm.file)
       setUploadOpen(false)
       setUploadForm({ studentName: '', studentId: '', examId: '', file: null })
       await fetchData()
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Upload failed')
+    } catch (err: any) {
+      if (err.status === 402 || (err.message && err.message.includes('usage_limit_reached'))) {
+        setUploadOpen(false)
+        setUpgradeOpen(true)
+      } else {
+        setError(err.message || 'Upload failed')
+      }
     } finally {
       setUploadLoading(false)
     }
   }
+
 
   // Override handler
   async function handleApprove(sub: Submission) {
@@ -292,6 +335,12 @@ export default function DashboardPage() {
     router.push('/')
   }
 
+  const handleUpgradeSuccess = useCallback(async () => {
+    setUpgradeOpen(false)
+    await fetchData()
+  }, [fetchData])
+
+
   if (authLoading || (!isAuthenticated && !authLoading)) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -365,7 +414,42 @@ export default function DashboardPage() {
 
       {/* Main content */}
       <main className="flex-1 overflow-y-auto">
-        <div className="max-w-6xl mx-auto px-8 py-8">
+        <div className="max-w-6xl mx-auto px-8 py-8 space-y-6">
+          {/* Subscription Status Bar */}
+          {subStatus && (
+            <div className="glass-card rounded-2xl p-4 border border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-semibold text-white capitalize">
+                  {subStatus.plan} Plan
+                </span>
+                <span className="text-xs text-slate-500">
+                  {subStatus.papers_used} / {subStatus.papers_limit} papers used
+                </span>
+                {subStatus.plan === 'free' && (
+                  <button
+                    onClick={() => setUpgradeOpen(true)}
+                    className="text-xs text-cyan-400 hover:text-cyan-300 font-semibold hover:underline bg-transparent border-0 cursor-pointer"
+                  >
+                    [Upgrade &rarr;]
+                  </button>
+                )}
+              </div>
+              <div className="flex items-center gap-3 w-full sm:w-64">
+                <div className="h-2 w-full bg-white/[0.04] rounded-full overflow-hidden border border-white/[0.08]">
+                  <div
+                    className={cn(
+                      "h-full rounded-full transition-all duration-500",
+                      subStatus.plan === 'free' && (subStatus.papers_used / subStatus.papers_limit) >= 0.8
+                        ? "bg-red-500"
+                        : "bg-gradient-to-r from-cyan-500 to-blue-500"
+                    )}
+                    style={{ width: `${Math.min(100, (subStatus.papers_used / (subStatus.papers_limit || 1)) * 100)}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
           {error && (
             <div className="flex items-center gap-2 rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400 mb-6">
               <AlertCircle className="h-4 w-4 flex-shrink-0" />
@@ -1407,7 +1491,16 @@ export default function DashboardPage() {
             </>
           )}
         </div>
+        {upgradeOpen && subStatus && (
+          <UpgradePrompt
+            papersUsed={subStatus.papers_used}
+            papersLimit={subStatus.papers_limit}
+            onSuccess={handleUpgradeSuccess}
+            onClose={() => setUpgradeOpen(false)}
+          />
+        )}
       </main>
     </div>
   )
 }
+

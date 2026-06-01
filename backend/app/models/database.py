@@ -4,7 +4,7 @@ import datetime
 
 from sqlalchemy import (
     create_engine, Column, String, Float, Integer, Text, DateTime,
-    ForeignKey, Enum as SAEnum, Boolean
+    ForeignKey, Enum as SAEnum, Boolean, func
 )
 from sqlalchemy.orm import (
     DeclarativeBase, sessionmaker, relationship, Session
@@ -54,6 +54,19 @@ class SubmissionStatus(str, enum.Enum):
     reviewed = "reviewed"
 
 
+class PlanType(str, enum.Enum):
+    free = "free"
+    starter = "starter"
+    pro = "pro"
+
+
+class SubscriptionStatus(str, enum.Enum):
+    active = "active"
+    cancelled = "cancelled"
+    expired = "expired"
+    trial = "trial"
+
+
 # ============================================
 # MODELS
 # ============================================
@@ -77,6 +90,24 @@ class User(Base):
     exams = relationship("Exam", back_populates="creator", foreign_keys="Exam.created_by")
     audit_logs = relationship("AuditLog", back_populates="user")
     lms_settings = relationship("LMSSettings", back_populates="user", cascade="all, delete-orphan")
+    subscription = relationship("Subscription", backref="user", uselist=False, cascade="all, delete-orphan")
+
+
+class Subscription(Base):
+    __tablename__ = "subscriptions"
+    
+    id = Column(String, primary_key=True, default=_uuid)
+    user_id = Column(String, ForeignKey("users.id"))
+    plan = Column(SAEnum(PlanType), nullable=False, default=PlanType.free)
+    status = Column(SAEnum(SubscriptionStatus), nullable=False, default=SubscriptionStatus.trial)
+    papers_used = Column(Integer, default=0)
+    papers_limit = Column(Integer, default=5)
+    razorpay_sub_id = Column(String, nullable=True)
+    razorpay_customer_id = Column(String, nullable=True)
+    current_period_start = Column(DateTime(timezone=True), nullable=True)
+    current_period_end = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
 
 
 class Exam(Base):
