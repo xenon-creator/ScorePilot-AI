@@ -82,10 +82,12 @@ def setup_teacher_and_exam():
     db.commit()
     db.close()
 
+@patch('app.services.bulk_upload_service.process_and_score_submission')
 @patch('app.services.storage_service.upload_file_content')
 @patch('app.services.ocr_service.OCRService.simulate_scanning_pipeline')
-def test_bulk_upload_endpoint_returns_job_status(mock_ocr, mock_upload, setup_teacher_and_exam):
+def test_bulk_upload_endpoint_returns_job_status(mock_ocr, mock_upload, mock_celery, setup_teacher_and_exam):
     exam_id = setup_teacher_and_exam
+
     
     # Mock S3 upload
     mock_upload.return_value = "uploads/mock_s3_key.pdf"
