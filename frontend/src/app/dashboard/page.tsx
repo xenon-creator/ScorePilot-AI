@@ -395,6 +395,15 @@ export default function DashboardPage() {
               {item.label}
             </button>
           ))}
+          
+          {/* Upgrade Item */}
+          <Link
+            href="/pricing"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 text-cyan-400 hover:from-cyan-500/20 hover:to-blue-500/20 hover:text-cyan-300"
+          >
+            <span>💎</span>
+            <span>Upgrade</span>
+          </Link>
         </nav>
 
         <div className="mt-auto pt-4 border-t border-white/[0.06] space-y-3">
@@ -402,6 +411,39 @@ export default function DashboardPage() {
             <p className="text-sm font-medium text-white">{user?.username}</p>
             <p className="text-xs text-slate-500">{user?.role}</p>
           </div>
+
+          {/* Sidebar Subscription Widget */}
+          <div className="p-3 bg-white/[0.02] border border-white/[0.04] rounded-2xl space-y-2.5 mx-1">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] font-semibold text-slate-400 capitalize">
+                {subStatus?.plan ? `${subStatus.plan} Plan` : 'Free Plan'}
+              </span>
+              <span className="text-[10px] text-slate-500 font-mono">
+                {subStatus?.papers_used ?? 0} / {subStatus?.papers_limit ?? 5} used
+              </span>
+            </div>
+            
+            <div className="h-1 w-full bg-white/[0.04] rounded-full overflow-hidden border border-white/[0.08]">
+              <div
+                className="h-full rounded-full bg-cyan-500 transition-all duration-500"
+                style={{
+                  width: `${Math.min(100, (((subStatus?.papers_used ?? 0) / (subStatus?.papers_limit ?? 5)) * 100))}%`
+                }}
+              />
+            </div>
+
+            <Button
+              asChild
+              variant="outline"
+              size="sm"
+              className="w-full justify-center border-cyan-500/20 text-cyan-400 hover:bg-cyan-500/10 hover:text-cyan-300 text-[10px] py-1.5 h-auto rounded-xl"
+            >
+              <Link href="/pricing">
+                <span>⚡ Upgrade Plan</span>
+              </Link>
+            </Button>
+          </div>
+
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-slate-500 hover:text-red-400 hover:bg-red-500/5 transition-colors cursor-pointer"
@@ -413,7 +455,13 @@ export default function DashboardPage() {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-grow flex-1 overflow-y-auto">
+        <div className="border-b border-white/[0.04] bg-black/10 backdrop-blur-md px-8 py-3.5 flex items-center justify-between">
+          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Dashboard</span>
+          <Link href="/pricing" className="text-xs font-semibold text-slate-400 hover:text-cyan-400 transition-colors">
+            Pricing
+          </Link>
+        </div>
         <div className="max-w-6xl mx-auto px-8 py-8 space-y-6">
           {/* Subscription Status Bar */}
           {subStatus && (
@@ -654,6 +702,20 @@ export default function DashboardPage() {
                             Review AI scoring feedback, override scores when needed, and sync grades to Canvas or Moodle.
                           </p>
                         </div>
+                      </div>
+
+                      {/* Onboarding Upgrade Banner */}
+                      <div className="bg-white/[0.02] border border-white/[0.04] p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 mt-2">
+                        <div className="flex items-center gap-3">
+                          <span className="text-xl">🚀</span>
+                          <div className="text-left">
+                            <h4 className="text-sm font-semibold text-white">Need more than 5 papers/month?</h4>
+                            <p className="text-xs text-slate-400 mt-0.5">Upgrade to Starter for ₹999/month — grade 200 papers.</p>
+                          </div>
+                        </div>
+                        <Button asChild variant="outline" size="sm" className="border-cyan-500/20 text-cyan-400 hover:bg-cyan-500/10 rounded-xl text-xs px-4 py-2 shrink-0">
+                          <Link href="/pricing">View Plans &rarr;</Link>
+                        </Button>
                       </div>
 
                       <div className="flex justify-center pt-4">
