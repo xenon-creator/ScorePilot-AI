@@ -14,7 +14,8 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import {
   Cpu, LayoutDashboard, FileText, Upload, BarChart3, Shield, LogOut, Loader2,
-  ChevronDown, AlertCircle, CheckCircle, Clock, Eye, X, Plus, Trash2
+  ChevronDown, AlertCircle, CheckCircle, Clock, Eye, X, Plus, Trash2,
+  Menu, Gem, Link as LinkIcon
 } from 'lucide-react'
 import { UploadQuestionPaper } from '@/components/ui/upload-question-paper'
 import { BulkUpload } from '@/components/ui/bulk-upload'
@@ -29,7 +30,7 @@ const sidebarItems: { key: Tab; label: string; icon: React.ElementType }[] = [
   { key: 'my-grades', label: 'My Grades', icon: LayoutDashboard },
   { key: 'exams', label: 'Exams', icon: FileText },
   { key: 'submissions', label: 'Submissions', icon: Upload },
-  { key: 'lms', label: 'LMS Connect', icon: Cpu },
+  { key: 'lms', label: 'LMS Connect', icon: LinkIcon },
   { key: 'analytics', label: 'Analytics', icon: BarChart3 },
   { key: 'audit', label: 'Audit Logs', icon: Shield },
 ]
@@ -105,6 +106,33 @@ export default function DashboardPage() {
   } | null>(null)
   const [upgradeOpen, setUpgradeOpen] = useState(false)
   const [showPricingModal, setShowPricingModal] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(true)
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Detect screen size on mount and resize
+  useEffect(() => {
+    const handleResize = () => {
+      const mobile = window.innerWidth < 768
+      setIsMobile(mobile)
+      
+      const saved = localStorage.getItem('sidebar_expanded')
+      if (saved !== null) {
+        setIsExpanded(saved === 'true')
+      } else {
+        setIsExpanded(!mobile)
+      }
+    }
+
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  const toggleSidebar = () => {
+    const nextState = !isExpanded
+    setIsExpanded(nextState)
+    localStorage.setItem('sidebar_expanded', String(nextState))
+  }
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -369,93 +397,183 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen flex bg-background">
+      {/* Mobile Hamburger Menu Button when sidebar is closed */}
+      {isMobile && !isExpanded && (
+        <button
+          onClick={() => setIsExpanded(true)}
+          className="fixed top-4 left-4 z-50 p-2 bg-slate-900/80 backdrop-blur border border-white/10 text-white rounded-lg hover:bg-slate-800 transition-colors cursor-pointer"
+        >
+          <Menu size={20} />
+        </button>
+      )}
+
       {/* Sidebar */}
-      <aside className="w-64 border-r border-white/[0.06] flex flex-col py-6 px-4 shrink-0">
-        <Link href="/" className="flex items-center gap-2 px-3 mb-8">
-          <div className="relative flex h-7 w-7 items-center justify-center">
-            <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500 opacity-80" />
-            <Cpu className="relative z-10 h-4 w-4 text-black" />
-          </div>
-          <span className="text-base font-semibold tracking-tight text-white">
+      <aside className={cn(
+        "fixed left-0 top-0 h-full bg-[oklch(0.10_0.005_270)] border-r border-white/[0.08] z-40",
+        "transition-all duration-300 ease-in-out flex flex-col py-6 px-4",
+        isMobile
+          ? (isExpanded ? "left-0 w-60" : "-left-60 w-60")
+          : (isExpanded ? "w-60" : "w-16 px-2")
+      )}>
+        {/* Header with hamburger */}
+        <div className="flex items-center h-16 px-1 mb-6 border-b border-white/[0.06] flex-shrink-0">
+          <button
+            onClick={toggleSidebar}
+            className="text-slate-400 hover:text-white transition-colors cursor-pointer p-1 rounded-lg hover:bg-white/[0.05]"
+          >
+            {isExpanded ? <X size={20} /> : <Menu size={20} />}
+          </button>
+          <span className={cn(
+            "ml-3 font-semibold text-white tracking-tight transition-all duration-300 overflow-hidden whitespace-nowrap",
+            isExpanded ? "opacity-100 w-auto" : "opacity-0 w-0 pointer-events-none"
+          )}>
             ScorePilot<span className="text-cyan-400">AI</span>
           </span>
-        </Link>
+        </div>
  
         <nav className="flex-1 space-y-1">
           {allowedSidebarItems.map((item) => (
             <button
               key={item.key}
-              onClick={() => setActiveTab(item.key)}
+              onClick={() => {
+                setActiveTab(item.key)
+                if (isMobile) setIsExpanded(false)
+              }}
               className={cn(
-                'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer',
+                'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer relative group justify-start',
                 activeTab === item.key
                   ? 'bg-white/[0.06] text-white'
                   : 'text-slate-500 hover:text-slate-300 hover:bg-white/[0.03]'
               )}
             >
-              <item.icon className="h-4 w-4" />
-              {item.label}
+              <item.icon className="h-5 w-5 flex-shrink-0" />
+              <span className={cn(
+                "transition-all duration-300 overflow-hidden whitespace-nowrap text-sm font-medium",
+                isExpanded ? "opacity-100 w-auto" : "opacity-0 w-0 pointer-events-none"
+              )}>
+                {item.label}
+              </span>
+              {!isExpanded && (
+                /* Tooltip on hover when collapsed */
+                <span className="absolute left-14 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity shadow-lg border border-white/[0.05]">
+                  {item.label}
+                </span>
+              )}
             </button>
           ))}
           
           {/* Upgrade Item */}
           <button
             onClick={() => setShowPricingModal(true)}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 text-cyan-400 hover:from-cyan-500/20 hover:to-blue-500/20 hover:text-cyan-300 text-left"
+            className={cn(
+              "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 text-cyan-400 hover:from-cyan-500/20 hover:to-blue-500/20 hover:text-cyan-300 text-left relative group justify-start"
+            )}
           >
-            <span>💎</span>
-            <span>Upgrade</span>
+            <Gem size={20} className="flex-shrink-0" />
+            <span className={cn(
+              "transition-all duration-300 overflow-hidden whitespace-nowrap text-sm font-medium",
+              isExpanded ? "opacity-100 w-auto" : "opacity-0 w-0 pointer-events-none"
+            )}>
+              Upgrade
+            </span>
+            {!isExpanded && (
+              /* Tooltip on hover when collapsed */
+              <span className="absolute left-14 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity shadow-lg border border-white/[0.05]">
+                Upgrade Plan
+              </span>
+            )}
           </button>
         </nav>
 
-        <div className="mt-auto pt-4 border-t border-white/[0.06] space-y-3">
-          <div className="px-3">
-            <p className="text-sm font-medium text-white">{user?.username}</p>
-            <p className="text-xs text-slate-500">{user?.role}</p>
-          </div>
+        {/* Bottom section */}
+        <div className="mt-auto pt-4 border-t border-white/[0.06] space-y-3 flex-shrink-0">
+          {isExpanded ? (
+            /* Full upgrade section */
+            <div className="space-y-3">
+              <div className="px-3">
+                <p className="text-sm font-medium text-white">{user?.username}</p>
+                <p className="text-xs text-slate-500">{user?.role}</p>
+              </div>
 
-          {/* Sidebar Subscription Widget */}
-          <div className="p-3 bg-white/[0.02] border border-white/[0.04] rounded-2xl space-y-2.5 mx-1">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-semibold text-slate-400 capitalize">
-                {subStatus?.plan ? `${subStatus.plan} Plan` : 'Free Plan'}
-              </span>
-              <span className="text-[10px] text-slate-500 font-mono">
-                {subStatus?.papers_used ?? 0} / {subStatus?.papers_limit ?? 5} used
-              </span>
+              {/* Sidebar Subscription Widget */}
+              <div className="p-3 bg-white/[0.02] border border-white/[0.04] rounded-2xl space-y-2.5 mx-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-semibold text-slate-400 capitalize">
+                    {subStatus?.plan ? `${subStatus.plan} Plan` : 'Free Plan'}
+                  </span>
+                  <span className="text-[10px] text-slate-500 font-mono">
+                    {subStatus?.papers_used ?? 0} / {subStatus?.papers_limit ?? 5} used
+                  </span>
+                </div>
+                
+                <div className="h-1 w-full bg-white/[0.04] rounded-full overflow-hidden border border-white/[0.08]">
+                  <div
+                    className="h-full rounded-full bg-cyan-500 transition-all duration-500"
+                    style={{
+                      width: `${Math.min(100, (((subStatus?.papers_used ?? 0) / (subStatus?.papers_limit ?? 5)) * 100))}%`
+                    }}
+                  />
+                </div>
+
+                <Button
+                  onClick={() => setShowPricingModal(true)}
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-center border-cyan-500/20 text-cyan-400 hover:bg-cyan-500/10 hover:text-cyan-300 text-[10px] py-1.5 h-auto rounded-xl flex items-center gap-1.5"
+                >
+                  <Gem size={12} />
+                  <span>Upgrade Plan</span>
+                </Button>
+              </div>
+
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-slate-500 hover:text-red-400 hover:bg-red-500/5 transition-colors cursor-pointer justify-start"
+              >
+                <LogOut className="h-4 w-4 flex-shrink-0" />
+                <span>Logout</span>
+              </button>
             </div>
-            
-            <div className="h-1 w-full bg-white/[0.04] rounded-full overflow-hidden border border-white/[0.08]">
-              <div
-                className="h-full rounded-full bg-cyan-500 transition-all duration-500"
-                style={{
-                  width: `${Math.min(100, (((subStatus?.papers_used ?? 0) / (subStatus?.papers_limit ?? 5)) * 100))}%`
-                }}
-              />
+          ) : (
+            /* Collapsed: just gem icon & logout icon */
+            <div className="flex flex-col items-center gap-2">
+              <button
+                onClick={() => setShowPricingModal(true)}
+                className="w-full flex justify-center p-2.5 text-cyan-400 hover:bg-cyan-500/10 rounded-xl transition-colors cursor-pointer relative group"
+              >
+                <Gem size={20} />
+                <span className="absolute left-14 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity shadow-lg border border-white/[0.05]">
+                  Upgrade Plan
+                </span>
+              </button>
+              
+              <button
+                onClick={handleLogout}
+                className="w-full flex justify-center p-2.5 text-slate-500 hover:text-red-400 hover:bg-red-500/5 rounded-xl transition-colors cursor-pointer relative group"
+              >
+                <LogOut size={20} />
+                <span className="absolute left-14 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity shadow-lg border border-white/[0.05]">
+                  Logout
+                </span>
+              </button>
             </div>
-
-            <Button
-              onClick={() => setShowPricingModal(true)}
-              variant="outline"
-              size="sm"
-              className="w-full justify-center border-cyan-500/20 text-cyan-400 hover:bg-cyan-500/10 hover:text-cyan-300 text-[10px] py-1.5 h-auto rounded-xl"
-            >
-              <span>⚡ Upgrade Plan</span>
-            </Button>
-          </div>
-
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-slate-500 hover:text-red-400 hover:bg-red-500/5 transition-colors cursor-pointer"
-          >
-            <LogOut className="h-4 w-4" />
-            Logout
-          </button>
+          )}
         </div>
       </aside>
 
+      {/* Mobile overlay backdrop */}
+      {isMobile && isExpanded && (
+        <div
+          className="fixed inset-0 bg-black/60 z-30 transition-opacity duration-300"
+          onClick={() => setIsExpanded(false)}
+        />
+      )}
+
       {/* Main content */}
-      <main className="flex-grow flex-1 overflow-y-auto">
+      <main className={cn(
+        "flex-grow flex-1 overflow-y-auto min-h-screen transition-all duration-300 ease-in-out",
+        isMobile ? "ml-0" : (isExpanded ? "ml-60" : "ml-16")
+      )}>
         <div className="border-b border-white/[0.04] bg-black/10 backdrop-blur-md px-8 py-3.5 flex items-center justify-between">
           <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Dashboard</span>
           <Link href="/pricing" className="text-xs font-semibold text-slate-400 hover:text-cyan-400 transition-colors">
