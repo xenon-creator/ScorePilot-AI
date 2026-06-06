@@ -53,18 +53,25 @@ def create_razorpay_subscription(user_id: str, plan: str,
     if not plan_config:
         raise ValueError(f"Invalid plan name: {plan}")
 
-    if not plan_config["razorpay_plan_id"]:
+    if not plan_config.get("razorpay_plan_id"):
         return {
-            "error": "plans_not_configured",
-            "message": "Subscription plans are being set up. Please contact support.",
-            "contact": "support@scorepilot.ai"
+            "error": "plan_not_configured",
+            "message": f"Upgrade to {plan} is coming soon. Email support@scorepilot.ai",
         }
 
     # Generate customer
-    customer = client.customer.create({
-        "name": user_name,
-        "email": user_email
-    })
+    try:
+        customer = client.customer.create({
+            "name": user_name,
+            "email": user_email
+        })
+    except Exception as e:
+        # Customer already exists — fetch by email instead
+        customers = client.customer.all({"email": user_email})
+        if customers and customers.get("items"):
+            customer = customers["items"][0]
+        else:
+            raise e
 
     # Generate subscription
     subscription = client.subscription.create({
@@ -75,7 +82,8 @@ def create_razorpay_subscription(user_id: str, plan: str,
     })
 
     sub = get_or_create_subscription(user_id, db)
-    sub.razorpay_customer_id = customer["id"]
+    if not sub.razorpay_customer_id:
+        sub.razorpay_customer_id = customer["id"]
     sub.razorpay_sub_id = subscription["id"]
     sub.plan = PlanType(plan)
     db.commit()

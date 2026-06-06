@@ -91,8 +91,8 @@ export function PricingModal({ isOpen, onClose, subStatus, onSuccess }: PricingM
 
       const orderData = await orderRes.json()
 
-      if (orderData.error === 'plans_not_configured') {
-        setInfo('Payments launching soon! Contact us at support@scorepilot.ai to get early access.')
+      if (orderData.error === 'plan_not_configured' || orderData.error === 'plans_not_configured') {
+        setInfo('Payments launching soon! Email support@scorepilot.ai')
         return
       }
 
