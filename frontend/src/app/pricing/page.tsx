@@ -328,6 +328,21 @@ export default function PricingPage() {
           )}
         </div>
 
+        {/* One-Time Credits Banner */}
+        <div className="glass-card rounded-3xl p-6 sm:p-8 border border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="space-y-2 text-center sm:text-left">
+            <h3 className="text-lg font-bold text-white flex items-center justify-center sm:justify-start gap-2">
+              <Sparkles className="h-5 w-5 text-cyan-400" /> Need one-time credits?
+            </h3>
+            <p className="text-xs text-slate-400 max-w-xl leading-relaxed">
+              Don&apos;t want a subscription? Buy grading credits on-demand for specific exams. Credits are added immediately to your account.
+            </p>
+          </div>
+          <Button asChild className="bg-cyan-500 hover:bg-cyan-400 text-black font-semibold rounded-xl text-xs px-6 py-5 shrink-0 w-full sm:w-auto">
+            <Link href="/checkout">Buy On-Demand Credits →</Link>
+          </Button>
+        </div>
+
         {/* FAQs */}
         <div className="border-t border-white/[0.06] pt-16 space-y-12">
           <div className="text-center space-y-3 max-w-xl mx-auto">

@@ -142,6 +142,19 @@ class VerifyPaymentModel(BaseModel):
     razorpay_signature: str
 
 
+class RazorpayStandardCreateOrderRequest(BaseModel):
+    amount: int
+    currency: str = "INR"
+    receipt: Optional[str] = None
+
+
+class RazorpayStandardVerifyPaymentRequest(BaseModel):
+    razorpay_order_id: str
+    razorpay_payment_id: str
+    razorpay_signature: str
+
+
+
 # ==========================================
 # HELPERS
 # ==========================================
@@ -1200,4 +1213,94 @@ def user_cancel_subscription(
         
     cancel_subscription(user.id, db)
     return {"status": "cancelled"}
+
+
+@app.post("/api/create-order")
+def create_standard_order(
+    data: RazorpayStandardCreateOrderRequest,
+    payload: dict = Depends(get_current_user_payload)
+):
+    import razorpay
+    import razorpay.errors
+    
+    # Validate amount >= 100 paise
+    if data.amount < 100:
+        raise HTTPException(
+            status_code=400,
+            detail="Amount must be at least 100 paise"
+        )
+        
+    key_id = os.getenv("RAZORPAY_KEY_ID")
+    key_secret = os.getenv("RAZORPAY_KEY_SECRET")
+    
+    if not key_id or not key_secret:
+        raise HTTPException(
+            status_code=500,
+            detail="Razorpay credentials not configured"
+        )
+        
+    try:
+        client = razorpay.Client(auth=(key_id, key_secret))
+        order_params = {
+            "amount": data.amount,
+            "currency": data.currency,
+            "receipt": data.receipt or f"receipt_{uuid.uuid4().hex[:10]}"
+        }
+        order = client.order.create(data=order_params)
+        return {
+            "order_id": order["id"],
+            "amount": order["amount"],
+            "currency": order["currency"]
+        }
+    except razorpay.errors.AuthenticationError:
+        raise HTTPException(
+            status_code=401,
+            detail="Razorpay authentication failed"
+        )
+    except razorpay.errors.BadRequestError as bre:
+        raise HTTPException(
+            status_code=400,
+            detail=str(bre)
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Razorpay order creation failed: {str(e)}"
+        )
+
+
+@app.post("/api/verify-payment")
+def verify_standard_payment(
+    data: RazorpayStandardVerifyPaymentRequest,
+    payload: dict = Depends(get_current_user_payload)
+):
+    key_secret = os.getenv("RAZORPAY_KEY_SECRET")
+    if not key_secret:
+        raise HTTPException(
+            status_code=500,
+            detail="Razorpay credentials not configured"
+        )
+        
+    if not data.razorpay_order_id or not data.razorpay_payment_id or not data.razorpay_signature:
+        raise HTTPException(
+            status_code=400,
+            detail="Missing signature verification fields"
+        )
+        
+    # Generate signature using HMAC-SHA256(order_id + "|" + payment_id, KEY_SECRET)
+    msg = f"{data.razorpay_order_id}|{data.razorpay_payment_id}"
+    expected = hmac.new(
+        key_secret.encode(),
+        msg.encode(),
+        hashlib.sha256
+    ).hexdigest()
+    
+    if hmac.compare_digest(expected, data.razorpay_signature):
+        return {"success": True}
+    else:
+        raise HTTPException(
+            status_code=400,
+            detail="Signature verification failed"
+        )
+
 
