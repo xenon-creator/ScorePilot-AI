@@ -19,6 +19,7 @@ import {
 import { UploadQuestionPaper } from '@/components/ui/upload-question-paper'
 import { BulkUpload } from '@/components/ui/bulk-upload'
 import { UpgradePrompt } from '@/components/ui/upgrade-prompt'
+import { PricingModal } from '@/components/ui/pricing-modal'
 
 
 type Tab = 'overview' | 'my-grades' | 'exams' | 'submissions' | 'analytics' | 'audit' | 'lms'
@@ -103,6 +104,7 @@ export default function DashboardPage() {
     status: string
   } | null>(null)
   const [upgradeOpen, setUpgradeOpen] = useState(false)
+  const [showPricingModal, setShowPricingModal] = useState(false)
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -397,13 +399,13 @@ export default function DashboardPage() {
           ))}
           
           {/* Upgrade Item */}
-          <Link
-            href="/pricing"
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 text-cyan-400 hover:from-cyan-500/20 hover:to-blue-500/20 hover:text-cyan-300"
+          <button
+            onClick={() => setShowPricingModal(true)}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 text-cyan-400 hover:from-cyan-500/20 hover:to-blue-500/20 hover:text-cyan-300 text-left"
           >
             <span>💎</span>
             <span>Upgrade</span>
-          </Link>
+          </button>
         </nav>
 
         <div className="mt-auto pt-4 border-t border-white/[0.06] space-y-3">
@@ -433,14 +435,12 @@ export default function DashboardPage() {
             </div>
 
             <Button
-              asChild
+              onClick={() => setShowPricingModal(true)}
               variant="outline"
               size="sm"
               className="w-full justify-center border-cyan-500/20 text-cyan-400 hover:bg-cyan-500/10 hover:text-cyan-300 text-[10px] py-1.5 h-auto rounded-xl"
             >
-              <Link href="/pricing">
-                <span>⚡ Upgrade Plan</span>
-              </Link>
+              <span>⚡ Upgrade Plan</span>
             </Button>
           </div>
 
@@ -713,8 +713,13 @@ export default function DashboardPage() {
                             <p className="text-xs text-slate-400 mt-0.5">Upgrade to Starter for ₹999/month — grade 200 papers.</p>
                           </div>
                         </div>
-                        <Button asChild variant="outline" size="sm" className="border-cyan-500/20 text-cyan-400 hover:bg-cyan-500/10 rounded-xl text-xs px-4 py-2 shrink-0">
-                          <Link href="/pricing">View Plans &rarr;</Link>
+                        <Button
+                          onClick={() => setShowPricingModal(true)}
+                          variant="outline"
+                          size="sm"
+                          className="border-cyan-500/20 text-cyan-400 hover:bg-cyan-500/10 rounded-xl text-xs px-4 py-2 shrink-0 cursor-pointer"
+                        >
+                          View Plans &rarr;
                         </Button>
                       </div>
 
@@ -1669,6 +1674,12 @@ export default function DashboardPage() {
             onClose={() => setUpgradeOpen(false)}
           />
         )}
+        <PricingModal
+          isOpen={showPricingModal}
+          onClose={() => setShowPricingModal(false)}
+          subStatus={subStatus}
+          onSuccess={fetchData}
+        />
       </main>
     </div>
   )
