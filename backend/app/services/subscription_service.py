@@ -54,7 +54,11 @@ def create_razorpay_subscription(user_id: str, plan: str,
         raise ValueError(f"Invalid plan name: {plan}")
 
     if not plan_config["razorpay_plan_id"]:
-        raise ValueError(f"No Razorpay plan ID configured for {plan}")
+        return {
+            "error": "plans_not_configured",
+            "message": "Subscription plans are being set up. Please contact support.",
+            "contact": "support@scorepilot.ai"
+        }
 
     # Generate customer
     customer = client.customer.create({

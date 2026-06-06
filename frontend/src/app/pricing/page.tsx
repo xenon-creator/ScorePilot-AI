@@ -42,7 +42,12 @@ export default function PricingPage() {
   const [isAnnual, setIsAnnual] = useState(false)
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null)
   const [error, setError] = useState('')
+  const [info, setInfo] = useState('')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  const razorpayKeyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID
+  const isKeyConfigured = !!razorpayKeyId
+
 
   useEffect(() => {
     // Check if user is logged in
@@ -107,6 +112,8 @@ export default function PricingPage() {
 
     setLoadingPlan(planKey)
     setError('')
+    setInfo('')
+
 
     try {
       const resScript = await loadRazorpayScript()
@@ -128,6 +135,11 @@ export default function PricingPage() {
       })
 
       const orderData = await orderRes.json()
+
+      if (orderData.error === 'plans_not_configured') {
+        setInfo("Payments launching soon! Contact us at support@scorepilot.ai to get early access.")
+        return
+      }
 
       if (orderData.error === 'payments_not_configured') {
         throw new Error('Online payments are currently not configured. Please contact the administrator.')
@@ -243,6 +255,12 @@ export default function PricingPage() {
           </div>
         )}
 
+        {info && (
+          <div className="max-w-md mx-auto flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 rounded-2xl px-4 py-3.5 text-xs text-amber-400 text-center justify-center">
+            <span>{info}</span>
+          </div>
+        )}
+
         {/* Pricing Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
           {plans ? (
@@ -299,6 +317,10 @@ export default function PricingPage() {
                     ) : isPro ? (
                       <Button asChild className="w-full bg-white/[0.04] hover:bg-white/[0.08] text-white border border-white/[0.08] justify-center rounded-xl text-xs py-5">
                         <Link href="mailto:sales@scorepilot.ai">Contact Sales</Link>
+                      </Button>
+                    ) : !isKeyConfigured ? (
+                      <Button asChild className="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-semibold justify-center rounded-xl text-xs py-5">
+                        <a href="mailto:support@scorepilot.ai">Get Early Access →</a>
                       </Button>
                     ) : (
                       <Button
