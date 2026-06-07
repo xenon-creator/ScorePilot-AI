@@ -542,14 +542,16 @@ python -m pytest tests/ -v
 
 ## 📊 Benchmark Results
 
-ScorePilot AI was benchmarked against the ASAP 2.0 dataset (Automated Student Assessment Prize) containing real student essays with human-assigned scores.
+Benchmarked against ASAP 2.0 dataset (100 student essays, human-assigned scores 0-4).
 
 | Metric | Score |
 |--------|-------|
 | Mean Absolute Error | 0.812 |
-| Within 1 mark accuracy | 73.0% |
+| Within 1 mark accuracy | 73% |
 | Average AI Confidence | 54.5% |
-| Essays tested | 100 |
+| Human-human disagreement MAE* | ~0.7 |
+
+*Industry baseline: human raters disagreeing with each other
 
 To run the benchmark yourself:
 ```bash
