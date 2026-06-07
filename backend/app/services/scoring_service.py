@@ -274,3 +274,20 @@ class ScoringService:
                 "per_sentence_scores": [round(s, 4) for s in best_matches],
             },
         )
+
+
+def score_answer(student_answer: str, model_answer: str, question_type: str, max_marks: float) -> dict:
+    """Convenience wrapper for ScoringService to support dict-based access."""
+    if question_type == "mcq":
+        res = ScoringService.evaluate_mcq(student_answer, model_answer, max_marks)
+    elif question_type == "short":
+        res = ScoringService.evaluate_short_answer(student_answer, model_answer, max_marks)
+    else:
+        res = ScoringService.evaluate_long_answer(student_answer, model_answer, max_marks)
+
+    return {
+        "score": res.score,
+        "confidence": res.confidence,
+        "reasoning": res.reasoning,
+        "flagged_for_review": res.flagged_for_review
+    }
