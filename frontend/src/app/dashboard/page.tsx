@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import {
   Cpu, LayoutDashboard, FileText, Upload, BarChart3, Shield, LogOut, Loader2,
-  ChevronDown, AlertCircle, CheckCircle, Clock, Eye, X, Plus, Trash2,
+  ChevronDown, AlertCircle, CheckCircle, Clock, Eye, EyeOff, X, Plus, Trash2,
   Menu, Gem, Link as LinkIcon
 } from 'lucide-react'
 import { UploadQuestionPaper } from '@/components/ui/upload-question-paper'
@@ -85,6 +85,7 @@ export default function DashboardPage() {
   const [lmsType, setLmsType] = useState<'canvas' | 'moodle'>('canvas')
   const [lmsUrl, setLmsUrl] = useState('')
   const [lmsToken, setLmsToken] = useState('')
+  const [showLmsToken, setShowLmsToken] = useState(false)
   const [lmsConfigured, setLmsConfigured] = useState(false)
   const [lmsCourses, setLmsCourses] = useState<LmsCourse[]>([])
   const [lmsLoading, setLmsLoading] = useState(false)
@@ -1543,12 +1544,27 @@ export default function DashboardPage() {
 
                         <div>
                           <label className="block text-xs font-semibold text-slate-400 mb-1.5">API Developer Token</label>
-                          <input
-                            type="password" placeholder="••••••••••••••••••••••••••••••••" required
-                            value={lmsToken}
-                            onChange={(e) => setLmsToken(e.target.value)}
-                            className="w-full h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] px-4 text-sm text-white focus:outline-none focus:border-cyan-500/40"
-                          />
+                          <div className="relative">
+                            <input
+                              type={showLmsToken ? "text" : "password"} placeholder="••••••••••••••••••••••••••••••••" required
+                              value={lmsToken}
+                              onChange={(e) => setLmsToken(e.target.value)}
+                              className="w-full h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] pl-4 pr-12 text-sm text-white focus:outline-none focus:border-cyan-500/40"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowLmsToken(!showLmsToken)}
+                              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                              tabIndex={-1}
+                              aria-label={showLmsToken ? "Hide token" : "Show token"}
+                            >
+                              {showLmsToken ? (
+                                <EyeOff size={18} />
+                              ) : (
+                                <Eye size={18} />
+                              )}
+                            </button>
+                          </div>
                         </div>
 
                         <Button type="submit" disabled={lmsLoading} className="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-semibold cursor-pointer">
