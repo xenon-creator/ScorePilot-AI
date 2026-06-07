@@ -441,7 +441,7 @@ def create_exam_from_paper(
 
 # --- UPLOADS & SCORING ---
 @app.post("/api/v1/uploads")
-def upload_papers(
+async def upload_papers(
     student_name: str = Form(...),
     student_id: str = Form(...),
     exam_id: str = Form(...),
@@ -476,7 +476,7 @@ def upload_papers(
     object_key = f"uploads/{uuid.uuid4()}_{filename}"
 
     # Read uploaded file bytes
-    file_bytes = file.file.read()
+    file_bytes = await file.read()
 
     # Try uploading to S3/MinIO optionally
     warning = None
@@ -506,19 +506,38 @@ def upload_papers(
         total_score=0.0,
         ai_confidence=0.0,
         extracted_text="",
+        raw_text="",  # will be filled by grading
     )
     db.add(submission)
     db.commit()
     db.refresh(submission)
 
-    # Run grading synchronously in memory
+    # Try Celery first, fall back to sync grading
+    graded = False
+
     try:
-        process_and_score_submission(submission.id, scanned_image_url, filename, file_bytes=file_bytes)
-        db.refresh(submission)
-    except Exception as grading_err:
-        logger.error(f"Failed to grade submission synchronously: {grading_err}")
-        submission.status = SubmissionStatus.flagged
-        db.commit()
+        if os.getenv("REDIS_URL") and os.getenv("USE_CELERY", "false") == "true":
+            from app.workers.tasks import grade_submission
+            grade_submission.delay(submission.id)
+            graded = True
+    except Exception:
+        pass
+
+    if not graded:
+        # Run grading synchronously right now
+        try:
+            from app.workers.tasks import run_grading_pipeline_with_bytes
+            run_grading_pipeline_with_bytes(
+                submission_id=submission.id,
+                file_bytes=file_bytes,
+                file_type=file.content_type,
+                db=db
+            )
+            db.refresh(submission)
+        except Exception as e:
+            logger.error(f"Grading error: {e}")
+            submission.status = SubmissionStatus.flagged
+            db.commit()
 
     # Log initial submission upload event
     _audit(db, current_user.id, "Submission Uploaded", {

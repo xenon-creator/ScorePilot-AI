@@ -152,6 +152,7 @@ class Submission(Base):
     total_score = Column(Float, nullable=True, default=0.0)
     ai_confidence = Column(Float, nullable=True, default=0.0)
     extracted_text = Column(Text, nullable=True, default="")
+    raw_text = Column(Text, nullable=True)
     scanned_image_url = Column(String, nullable=True, default="")
     uploaded_at = Column(DateTime, default=lambda: datetime.datetime.now(datetime.UTC))
 

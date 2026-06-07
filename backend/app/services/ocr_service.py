@@ -375,3 +375,29 @@ class OCRService:
             "blocks": extracted_blocks,
             "raw_text": raw_text
         }
+
+
+def extract_text(file_url: str) -> str:
+    """Wrapper function to extract text from a file path or S3 key."""
+    if not file_url:
+        return ""
+    try:
+        from app.services.storage_service import is_available, download_file_content
+        # Check if it's an S3 key and storage is available
+        if is_available():
+            try:
+                content = download_file_content(file_url)
+                res = OCRService.extract_text(content, file_url)
+                return res.get("extracted_text", "")
+            except Exception:
+                pass
+        
+        # Fallback to local file read if exists
+        if os.path.exists(file_url):
+            with open(file_url, "rb") as f:
+                content = f.read()
+            res = OCRService.extract_text(content, file_url)
+            return res.get("extracted_text", "")
+    except Exception as e:
+        logger.error(f"Module-level extract_text failed for {file_url}: {e}")
+    return ""

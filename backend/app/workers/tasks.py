@@ -251,3 +251,187 @@ def send_score_release_email_task(submission_id: str) -> Dict[str, Any]:
         return {"status": "error", "message": str(e)}
     finally:
         db.close()
+
+
+def run_grading_pipeline(submission_id: str, db=None, file_bytes: bytes = None, file_type: str = None):
+    """
+    Core grading logic — works both sync and async.
+    Can be called directly or via Celery task.
+    """
+    from app.models.database import SessionLocal, Submission, Answer, SubmissionStatus, AuditLog
+    from app.services.ocr_service import extract_text, OCRService
+    from app.services.scoring_service import score_answer
+    import uuid, datetime
+    
+    # Use provided db session or create new one
+    close_db = False
+    if db is None:
+        db = SessionLocal()
+        close_db = True
+        
+    try:
+        submission = db.query(Submission).filter_by(id=submission_id).first()
+        
+        if not submission:
+            print(f"Submission {submission_id} not found")
+            return
+            
+        # Get the exam and its questions
+        from app.models.database import Exam, Question
+        exam = db.query(Exam).filter_by(id=submission.exam_id).first()
+        if not exam:
+            return
+            
+        questions = db.query(Question).filter_by(exam_id=exam.id).all()
+        
+        if not questions:
+            print(f"No questions found for exam {exam.id}")
+            return
+            
+        # Extract text from file if available
+        extracted_text = ""
+        ocr_blocks = {}
+        
+        # If file_bytes are passed directly, do OCR on them
+        if file_bytes:
+            try:
+                # Use the OCR simulation or real OCR
+                exam_lang = exam.language if hasattr(exam, "language") and exam.language else "en"
+                ocr_result = OCRService.simulate_scanning_pipeline(
+                    file_content=file_bytes,
+                    filename="paper.pdf",
+                    language=exam_lang
+                )
+                extracted_text = ocr_result.get("raw_text", "")
+                ocr_blocks = {b["question_number"]: b for b in ocr_result.get("blocks", [])}
+            except Exception as e:
+                print(f"OCR error from bytes: {e}")
+        elif hasattr(submission, 'scanned_image_url') and submission.scanned_image_url:
+            try:
+                # OCR from S3 / stored file key
+                # First let's get the file bytes from storage if available
+                from app.services.storage_service import is_available, download_file_content
+                if is_available():
+                    try:
+                        content = download_file_content(submission.scanned_image_url)
+                        exam_lang = exam.language if hasattr(exam, "language") and exam.language else "en"
+                        ocr_result = OCRService.simulate_scanning_pipeline(
+                            file_content=content,
+                            filename="paper.pdf",
+                            language=exam_lang
+                        )
+                        extracted_text = ocr_result.get("raw_text", "")
+                        ocr_blocks = {b["question_number"]: b for b in ocr_result.get("blocks", [])}
+                    except Exception:
+                        pass
+                if not extracted_text:
+                    extracted_text = extract_text(submission.scanned_image_url)
+            except Exception as e:
+                print(f"OCR error from URL/key: {e}")
+                
+        # If no text from OCR, use student_answer field or placeholder
+        if not extracted_text:
+            extracted_text = getattr(submission, 'raw_text', '') or \
+                            getattr(submission, 'extracted_text', '') or \
+                            f"Student answer for {submission.student_name}"
+                            
+        # Save extracted text to both columns so other features work
+        submission.extracted_text = extracted_text
+        submission.raw_text = extracted_text
+        
+        # Clean existing answers to prevent duplicate rows on retry
+        db.query(Answer).filter(Answer.submission_id == submission.id).delete()
+        
+        # Score each question
+        total_score = 0.0
+        total_confidence = 0.0
+        any_flagged = False
+        
+        for i, question in enumerate(questions):
+            q_num = i + 1
+            # Try to extract answer for this question from text
+            block = ocr_blocks.get(q_num)
+            answer_text = block["answer_text"] if block else extracted_text
+            
+            # Score the answer
+            try:
+                result = score_answer(
+                    student_answer=answer_text,
+                    model_answer=question.model_answer or "",
+                    question_type=question.question_type.value 
+                                  if hasattr(question.question_type, 'value') 
+                                  else str(question.question_type),
+                    max_marks=float(question.max_marks)
+                )
+                
+                ai_score = float(result.get('score', 0))
+                confidence = float(result.get('confidence', 0))
+                reasoning = result.get('reasoning', '')
+                flagged = result.get('flagged_for_review', False)
+                
+            except Exception as e:
+                print(f"Scoring error for question {i}: {e}")
+                ai_score = 0.0
+                confidence = 0.0
+                reasoning = f"Scoring error: {str(e)}"
+                flagged = True
+                
+            # Save answer record
+            answer = Answer(
+                id=str(uuid.uuid4()),
+                submission_id=submission_id,
+                question_id=question.id,
+                question_number=q_num,
+                student_answer=answer_text[:500],
+                ai_score=ai_score,
+                final_score=ai_score,
+                ai_confidence=confidence,
+                ai_reasoning=reasoning,
+                flagged_for_review=flagged,
+                scored_at=datetime.datetime.now(datetime.UTC)
+            )
+            db.add(answer)
+            
+            total_score += ai_score
+            total_confidence += confidence
+            if flagged:
+                any_flagged = True
+                
+        # Update submission
+        num_questions = len(questions)
+        submission.total_score = round(total_score, 2)
+        submission.ai_confidence = round(
+            total_confidence / num_questions if num_questions > 0 else 0, 2
+        )
+        submission.status = SubmissionStatus.flagged if any_flagged else SubmissionStatus.graded
+        
+        # Add Audit log entry
+        audit_log = AuditLog(
+            user_id=None,
+            action="AI Scoring Completed",
+            detail=f"Graded submission {submission.id} for exam '{exam.title}'. Score: {submission.total_score}/{sum(q.max_marks for q in exam.questions)}",
+            timestamp=datetime.datetime.now(datetime.UTC)
+        )
+        db.add(audit_log)
+        
+        db.commit()
+        
+        print(f"Graded submission {submission_id}: score={submission.total_score}, status={submission.status}")
+        
+    except Exception as e:
+        print(f"Pipeline error: {e}")
+        db.rollback()
+    finally:
+        if close_db:
+            db.close()
+
+
+def run_grading_pipeline_with_bytes(submission_id: str, file_bytes: bytes, file_type: str = None, db=None):
+    """Alias function to match name in uploads endpoint."""
+    return run_grading_pipeline(submission_id, db=db, file_bytes=file_bytes, file_type=file_type)
+
+
+@celery_app.task(name="tasks.grade_submission")
+def grade_submission(submission_id: str):
+    """Asynchronous Celery task wrapping the pipeline function."""
+    run_grading_pipeline(submission_id)
