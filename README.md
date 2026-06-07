@@ -551,8 +551,6 @@ Benchmarked against ASAP 2.0 dataset (100 student essays, human-assigned scores 
 | Average AI Confidence | 54.5% |
 | Human-human disagreement MAE* | ~0.7 |
 
-*Industry baseline: human raters disagreeing with each other
-
 To run the benchmark yourself:
 ```bash
 python benchmarks/asap_benchmark.py path/to/ASAP2_train_sourcetexts.csv
