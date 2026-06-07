@@ -475,25 +475,34 @@ def upload_papers(
     filename = file.filename or "paper.pdf"
     object_key = f"uploads/{uuid.uuid4()}_{filename}"
 
-    # Read uploaded file bytes and put directly to S3 storage
-    try:
-        from app.services.storage_service import upload_file_content
-        file_bytes = file.file.read()
-        upload_file_content(
-            file_bytes=file_bytes,
-            object_key=object_key,
-            content_type=file.content_type or "application/pdf"
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to upload file to storage: {str(e)}")
+    # Read uploaded file bytes
+    file_bytes = file.file.read()
 
-    # Create submission in database with pending status and S3 reference
+    # Try uploading to S3/MinIO optionally
+    warning = None
+    scanned_image_url = None
+    try:
+        from app.services.storage_service import upload_file_content, is_available
+        if is_available():
+            upload_file_content(
+                file_bytes=file_bytes,
+                object_key=object_key,
+                content_type=file.content_type or "application/pdf"
+            )
+            scanned_image_url = object_key
+        else:
+            warning = "File not stored (storage unavailable)"
+    except Exception as e:
+        logger.warning(f"Failed to upload file to S3/MinIO: {e}")
+        warning = "File not stored (storage unavailable)"
+
+    # Create submission in database with pending status and S3 reference if available
     submission = Submission(
         exam_id=exam_id,
         student_name=student_name,
         student_id=student_id,
         status=SubmissionStatus.pending,
-        scanned_image_url=object_key,
+        scanned_image_url=scanned_image_url,
         total_score=0.0,
         ai_confidence=0.0,
         extracted_text="",
@@ -502,8 +511,14 @@ def upload_papers(
     db.commit()
     db.refresh(submission)
 
-    # Dispatch Celery background task for asynchronous scoring with object key
-    process_and_score_submission.delay(submission.id, object_key, filename)
+    # Run grading synchronously in memory
+    try:
+        process_and_score_submission(submission.id, scanned_image_url, filename, file_bytes=file_bytes)
+        db.refresh(submission)
+    except Exception as grading_err:
+        logger.error(f"Failed to grade submission synchronously: {grading_err}")
+        submission.status = SubmissionStatus.flagged
+        db.commit()
 
     # Log initial submission upload event
     _audit(db, current_user.id, "Submission Uploaded", {
@@ -516,7 +531,10 @@ def upload_papers(
     # Increment subscription usage count
     increment_usage(current_user.id, db)
 
-    return _format_submission(submission)
+    response_data = _format_submission(submission)
+    if warning:
+        response_data["warning"] = warning
+    return response_data
 
 
 

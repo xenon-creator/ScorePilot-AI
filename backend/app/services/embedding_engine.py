@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 # Set model cache directory
 MODEL_CACHE_DIR = os.getenv("MODEL_CACHE_DIR", os.path.join(os.path.dirname(__file__), "..", "..", "models"))
 os.environ["SENTENCE_TRANSFORMERS_HOME"] = os.path.abspath(MODEL_CACHE_DIR)
+os.environ["HF_HUB_OFFLINE"] = "1"
 
 # Module-level singleton — loaded once on first import
 _model = None

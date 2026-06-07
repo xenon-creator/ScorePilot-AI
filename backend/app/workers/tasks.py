@@ -29,7 +29,7 @@ celery_app.conf.update(
 
 
 @celery_app.task(name="tasks.process_and_score_submission")
-def process_and_score_submission(submission_id: str, object_key: str, filename: str) -> Dict[str, Any]:
+def process_and_score_submission(submission_id: str, object_key: str, filename: str, file_bytes: bytes = None) -> Dict[str, Any]:
     """
     Asynchronous Celery task:
     1. Downloads staged papers from S3/MinIO.
@@ -55,14 +55,15 @@ def process_and_score_submission(submission_id: str, object_key: str, filename: 
             return {"status": "error", "message": f"Exam {submission.exam_id} not found"}
 
         # Download staged file content from S3/MinIO
-        file_bytes = b""
-        if object_key:
-            try:
-                from app.services.storage_service import download_file_content
-                file_bytes = download_file_content(object_key)
-                logger.info(f"[Worker] Downloaded file from S3 successfully: {len(file_bytes)} bytes.")
-            except Exception as se:
-                logger.error(f"[Worker] Could not download file '{object_key}' from S3: {se}")
+        if not file_bytes:
+            file_bytes = b""
+            if object_key:
+                try:
+                    from app.services.storage_service import download_file_content
+                    file_bytes = download_file_content(object_key)
+                    logger.info(f"[Worker] Downloaded file from S3 successfully: {len(file_bytes)} bytes.")
+                except Exception as se:
+                    logger.error(f"[Worker] Could not download file '{object_key}' from S3: {se}")
 
         # Run OCR simulation pipeline
         exam_lang = exam.language if hasattr(exam, "language") and exam.language else "en"
