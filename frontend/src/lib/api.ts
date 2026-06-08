@@ -1,5 +1,27 @@
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
 
+async function fetchWithRetry(
+  url: string,
+  options: RequestInit = {},
+  retries = 2,
+  delay = 2000
+): Promise<Response> {
+  try {
+    const response = await fetch(url, options)
+    if (!response.ok && retries > 0) {
+      await new Promise(r => setTimeout(r, delay))
+      return fetchWithRetry(url, options, retries - 1, delay)
+    }
+    return response
+  } catch (error) {
+    if (retries > 0) {
+      await new Promise(r => setTimeout(r, delay))
+      return fetchWithRetry(url, options, retries - 1, delay)
+    }
+    throw error
+  }
+}
+
 // ============================================
 // TYPES
 // ============================================
@@ -131,7 +153,7 @@ async function apiFetch<T>(
     headers['Authorization'] = `Bearer ${token}`
   }
 
-  const res = await fetch(`${API_BASE}${path}`, {
+  const res = await fetchWithRetry(`${API_BASE}${path}`, {
     ...options,
     headers,
   })
@@ -278,7 +300,7 @@ export async function apiExportExamCsv(examId: string, examTitle: string): Promi
   if (token) {
     headers['Authorization'] = `Bearer ${token}`
   }
-  const res = await fetch(`${API_BASE}/api/v1/exams/${examId}/export/csv`, { headers })
+  const res = await fetchWithRetry(`${API_BASE}/api/v1/exams/${examId}/export/csv`, { headers })
   if (!res.ok) throw new Error('Failed to export CSV')
   const blob = await res.blob()
   const url = window.URL.createObjectURL(blob)
@@ -297,7 +319,7 @@ export async function apiExportSubmissionPdf(submissionId: string, studentName: 
   if (token) {
     headers['Authorization'] = `Bearer ${token}`
   }
-  const res = await fetch(`${API_BASE}/api/v1/submissions/${submissionId}/export/pdf`, { headers })
+  const res = await fetchWithRetry(`${API_BASE}/api/v1/submissions/${submissionId}/export/pdf`, { headers })
   if (!res.ok) throw new Error('Failed to export PDF')
   const blob = await res.blob()
   const url = window.URL.createObjectURL(blob)

@@ -21,6 +21,7 @@ import { UploadQuestionPaper } from '@/components/ui/upload-question-paper'
 import { BulkUpload } from '@/components/ui/bulk-upload'
 import { UpgradePrompt } from '@/components/ui/upgrade-prompt'
 import { PricingModal } from '@/components/ui/pricing-modal'
+import { LoadingSkeleton } from '@/components/ui/loading-skeleton'
 
 
 type Tab = 'overview' | 'my-grades' | 'exams' | 'submissions' | 'analytics' | 'audit' | 'lms'
@@ -54,6 +55,30 @@ export default function DashboardPage() {
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [showError, setShowError] = useState(false)
+  const [showUptimeBanner, setShowUptimeBanner] = useState(false)
+
+  // Only show error after 3 seconds of trying
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => setShowError(true), 3000)
+      return () => clearTimeout(timer)
+    } else {
+      setShowError(false)
+    }
+  }, [error])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const dismissed = localStorage.getItem('sp_dismissed_uptime_banner') === 'true'
+      setShowUptimeBanner(!dismissed)
+    }
+  }, [])
+
+  const handleDismissUptimeBanner = () => {
+    localStorage.setItem('sp_dismissed_uptime_banner', 'true')
+    setShowUptimeBanner(false)
+  }
 
   // Collapsible submissions state for student grades view
   const [expandedSubmissions, setExpandedSubmissions] = useState<Record<string, boolean>>({})
@@ -215,7 +240,12 @@ export default function DashboardPage() {
   }, [user])
 
   useEffect(() => {
-    if (isAuthenticated) fetchData()
+    if (isAuthenticated) {
+      const timer = setTimeout(() => {
+        fetchData()
+      }, 500)
+      return () => clearTimeout(timer)
+    }
   }, [isAuthenticated, fetchData])
 
   // Upload handler
@@ -617,18 +647,27 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {error && (
-            <div className="flex items-center gap-2 rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3 text-sm text-red-400 mb-6">
-              <AlertCircle className="h-4 w-4 flex-shrink-0" />
-              {error}
-              <button onClick={() => setError('')} className="ml-auto cursor-pointer"><X className="h-3.5 w-3.5" /></button>
+          {error && showError && (
+            <div className="flex items-center justify-between bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 mb-4">
+              <div className="flex items-center gap-2">
+                <span className="text-red-400 text-sm">
+                  ⚠️ Could not connect to server
+                </span>
+              </div>
+              <button
+                onClick={() => {
+                  setError('')
+                  fetchData()  // re-trigger the data fetch
+                }}
+                className="text-xs text-cyan-400 hover:text-cyan-300 underline underline-offset-2"
+              >
+                Retry →
+              </button>
             </div>
           )}
 
-          {loading ? (
-            <div className="flex items-center justify-center py-20">
-              <Loader2 className="h-6 w-6 text-cyan-400 animate-spin" />
-            </div>
+          {loading || (error && !showError) ? (
+            <LoadingSkeleton />
           ) : (
             <>
               {/* MY GRADES TAB FOR STUDENT */}
@@ -784,12 +823,33 @@ export default function DashboardPage() {
 
               {/* OVERVIEW TAB */}
               {activeTab === 'overview' && (
-                exams.length === 0 && submissions.length === 0 ? (
-                  <div className="space-y-8 animate-in fade-in duration-300">
-                    <div>
-                      <h1 className="text-2xl font-semibold text-white tracking-tight">Dashboard</h1>
-                      <p className="text-sm text-slate-500 mt-1">Welcome back, {user?.username}</p>
+                <div className="space-y-8 animate-in fade-in duration-300">
+                  <div>
+                    <h1 className="text-2xl font-semibold text-white tracking-tight">Dashboard</h1>
+                    <p className="text-sm text-slate-500 mt-1">Welcome back, {user?.username}</p>
+                  </div>
+
+                  {user?.role?.toLowerCase() === 'admin' && showUptimeBanner && (
+                    <div className="flex items-start justify-between bg-cyan-500/10 border border-cyan-500/20 rounded-xl p-4 text-cyan-300 text-sm">
+                      <div className="flex gap-2">
+                        <span className="text-base mt-0.5">💡</span>
+                        <div>
+                          <p className="font-semibold text-white">Keep your backend awake 24/7 for free:</p>
+                          <p className="text-slate-400 mt-1 leading-relaxed">
+                            Set up UptimeRobot to ping <code className="text-cyan-400 font-mono text-xs bg-white/5 px-1.5 py-0.5 rounded">scorepilot-ai.onrender.com/health</code> every 5 minutes. Without this, first request after idle takes 50 seconds.
+                          </p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={handleDismissUptimeBanner}
+                        className="text-slate-500 hover:text-cyan-400 cursor-pointer ml-4 p-1 rounded-lg hover:bg-white/5 transition-colors"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
                     </div>
+                  )}
+
+                  {exams.length === 0 && submissions.length === 0 ? (
                     <div className="glass-card rounded-3xl p-8 space-y-6">
                       <div className="text-center py-6">
                         <div className="text-6xl mb-4">🚀</div>
@@ -851,64 +911,59 @@ export default function DashboardPage() {
                         </button>
                       </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="space-y-8">
-                    <div>
-                      <h1 className="text-2xl font-semibold text-white tracking-tight">Dashboard</h1>
-                      <p className="text-sm text-slate-500 mt-1">Welcome back, {user?.username}</p>
-                    </div>
-
-                    {/* Stats grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                      {[
-                        { label: 'Active Exams', value: exams.length, icon: FileText, color: 'text-cyan-400' },
-                        { label: 'Total Submissions', value: submissions.length, icon: Upload, color: 'text-blue-400' },
-                        { label: 'Flagged for Review', value: flaggedCount, icon: AlertCircle, color: 'text-yellow-400' },
-                        { label: 'Avg AI Confidence', value: `${avgConfidence}%`, icon: BarChart3, color: 'text-emerald-400' },
-                      ].map((stat) => (
-                        <div key={stat.label} className="glass-card rounded-2xl p-6">
-                          <div className={cn('flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.04] mb-4', stat.color)}>
-                            <stat.icon className="h-5 w-5" />
-                          </div>
-                          <p className="text-3xl font-bold text-white tracking-tight">{stat.value}</p>
-                          <p className="text-sm text-slate-500 mt-1">{stat.label}</p>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Recent submissions */}
-                    <div className="glass-card rounded-2xl overflow-hidden">
-                      <div className="flex items-center justify-between border-b border-white/[0.06] px-6 py-4">
-                        <h2 className="text-sm font-semibold text-white">Recent Submissions</h2>
-                        <Button size="sm" variant="ghost" className="text-slate-400 text-xs" onClick={() => setActiveTab('submissions')}>
-                          View All
-                        </Button>
-                      </div>
-                      <div className="divide-y divide-white/[0.04]">
-                        {submissions.slice(0, 5).map((sub) => (
-                          <div key={sub.id} className="px-6 py-4 flex items-center justify-between">
-                            <div>
-                              <p className="text-sm font-medium text-white">{sub.student_name}</p>
-                              <p className="text-xs text-slate-500">{sub.student_id} • {new Date(sub.created_at).toLocaleDateString()}</p>
+                  ) : (
+                    <>
+                      {/* Stats grid */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {[
+                          { label: 'Active Exams', value: exams.length, icon: FileText, color: 'text-cyan-400' },
+                          { label: 'Total Submissions', value: submissions.length, icon: Upload, color: 'text-blue-400' },
+                          { label: 'Flagged for Review', value: flaggedCount, icon: AlertCircle, color: 'text-yellow-400' },
+                          { label: 'Avg AI Confidence', value: `${avgConfidence}%`, icon: BarChart3, color: 'text-emerald-400' },
+                        ].map((stat) => (
+                          <div key={stat.label} className="glass-card rounded-2xl p-6">
+                            <div className={cn('flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.04] mb-4', stat.color)}>
+                              <stat.icon className="h-5 w-5" />
                             </div>
-                            <div className="flex items-center gap-4">
-                              <span className="text-sm font-bold text-white">{sub.total_score}<span className="text-xs text-slate-500">/{exams.find(e => e.id === sub.exam_id)?.total_marks || '?'}</span></span>
-                              <span className={cn(
-                                'text-xs px-2.5 py-1 rounded-full font-medium',
-                                sub.status === 'Scored' && 'bg-cyan-500/10 text-cyan-400',
-                                sub.status === 'Flagged' && 'bg-yellow-500/10 text-yellow-400',
-                                sub.status === 'Approved' && 'bg-emerald-500/10 text-emerald-400',
-                              )}>
-                                {sub.status}
-                              </span>
-                            </div>
+                            <p className="text-3xl font-bold text-white tracking-tight">{stat.value}</p>
+                            <p className="text-sm text-slate-500 mt-1">{stat.label}</p>
                           </div>
                         ))}
                       </div>
-                    </div>
-                  </div>
-                )
+
+                      {/* Recent submissions */}
+                      <div className="glass-card rounded-2xl overflow-hidden">
+                        <div className="flex items-center justify-between border-b border-white/[0.06] px-6 py-4">
+                          <h2 className="text-sm font-semibold text-white">Recent Submissions</h2>
+                          <Button size="sm" variant="ghost" className="text-slate-400 text-xs" onClick={() => setActiveTab('submissions')}>
+                            View All
+                          </Button>
+                        </div>
+                        <div className="divide-y divide-white/[0.04]">
+                          {submissions.slice(0, 5).map((sub) => (
+                            <div key={sub.id} className="px-6 py-4 flex items-center justify-between">
+                              <div>
+                                <p className="text-sm font-medium text-white">{sub.student_name}</p>
+                                <p className="text-xs text-slate-500">{sub.student_id} • {new Date(sub.created_at).toLocaleDateString()}</p>
+                              </div>
+                              <div className="flex items-center gap-4">
+                                <span className="text-sm font-bold text-white">{sub.total_score}<span className="text-xs text-slate-500">/{exams.find(e => e.id === sub.exam_id)?.total_marks || '?'}</span></span>
+                                <span className={cn(
+                                  'text-xs px-2.5 py-1 rounded-full font-medium',
+                                  sub.status === 'Scored' && 'bg-cyan-500/10 text-cyan-400',
+                                  sub.status === 'Flagged' && 'bg-yellow-500/10 text-yellow-400',
+                                  sub.status === 'Approved' && 'bg-emerald-500/10 text-emerald-400',
+                                )}>
+                                  {sub.status}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
               )}
 
 
