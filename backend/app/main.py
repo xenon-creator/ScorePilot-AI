@@ -45,18 +45,38 @@ app = FastAPI(
 import os
 from fastapi.middleware.cors import CORSMiddleware
 
-allowed_origins_raw = os.getenv(
+# Read allowed origins from environment
+raw_origins = os.getenv(
     "ALLOWED_ORIGINS",
-    "http://localhost:3000"
+    "http://localhost:3000,http://localhost:3001"
 )
-allowed_origins = [o.strip() for o in allowed_origins_raw.split(",")]
+
+# Parse comma-separated list and clean whitespace
+allowed_origins = [
+    origin.strip() 
+    for origin in raw_origins.split(",") 
+    if origin.strip()
+]
+
+# Always add localhost for development
+dev_origins = [
+    "http://localhost:3000",
+    "http://localhost:3001", 
+    "http://127.0.0.1:3000",
+]
+
+all_origins = list(set(allowed_origins + dev_origins))
+
+print(f"CORS allowed origins: {all_origins}")  # log for debugging
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=all_origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
+    expose_headers=["*"],
+    max_age=3600,
 )
 
 # ==========================================
@@ -267,6 +287,14 @@ def read_root():
 @app.get("/health")
 def health_check():
     return {"status": "ok", "service": "ScorePilot AI"}
+
+
+@app.get("/cors-debug")
+def cors_debug():
+    return {
+        "allowed_origins": all_origins,
+        "env_value": os.getenv("ALLOWED_ORIGINS", "NOT SET")
+    }
 
 
 # --- AUTHENTICATION ---
