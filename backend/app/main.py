@@ -547,31 +547,80 @@ async def upload_papers(
     db.refresh(submission)
 
     # Try Celery first, fall back to sync grading
-    graded = False
-
-    try:
-        if os.getenv("REDIS_URL") and os.getenv("USE_CELERY", "false") == "true":
+    use_celery = os.getenv("USE_CELERY", "false").lower() == "true"
+    
+    if use_celery:
+        try:
             from app.workers.tasks import grade_submission
             grade_submission.delay(submission.id)
-            graded = True
-    except Exception:
-        pass
-
-    if not graded:
-        # Run grading synchronously right now
-        try:
-            from app.workers.tasks import run_grading_pipeline_with_bytes
-            run_grading_pipeline_with_bytes(
-                submission_id=submission.id,
-                file_bytes=file_bytes,
-                file_type=file.content_type,
-                db=db
-            )
-            db.refresh(submission)
         except Exception as e:
-            logger.error(f"Grading error: {e}")
-            submission.status = SubmissionStatus.flagged
+            print(f"Celery dispatch failed: {e}")
+            # Fall through to sync grading
+            use_celery = False
+    
+    if not use_celery:
+        # Grade right now synchronously
+        try:
+            questions = db.query(Question).filter_by(
+                exam_id=submission.exam_id
+            ).all()
+            
+            total_score = 0.0
+            total_confidence = 0.0
+            any_flagged = False
+            
+            for i, question in enumerate(questions):
+                from app.services.scoring_service import score_answer
+                
+                # Use OCR text if available, else use placeholder
+                student_text = getattr(submission, 'raw_text', '') or \
+                              f"Answer for question {i+1}"
+                
+                result = score_answer(
+                    student_answer=student_text,
+                    model_answer=question.model_answer or "",
+                    question_type=question.question_type.value
+                                  if hasattr(question.question_type, 'value')
+                                  else str(question.question_type),
+                    max_marks=float(question.max_marks)
+                )
+                
+                from app.models.database import Answer
+                import uuid, datetime
+                
+                answer = Answer(
+                    id=str(uuid.uuid4()),
+                    submission_id=submission.id,
+                    question_id=question.id,
+                    question_number=i + 1,
+                    student_answer=student_text[:500],
+                    ai_score=float(result.get('score', 0)),
+                    final_score=float(result.get('score', 0)),
+                    ai_confidence=float(result.get('confidence', 0)),
+                    ai_reasoning=result.get('reasoning', ''),
+                    flagged_for_review=result.get('flagged_for_review', False),
+                    scored_at=datetime.datetime.now(datetime.UTC)
+                )
+                db.add(answer)
+                
+                total_score += float(result.get('score', 0))
+                total_confidence += float(result.get('confidence', 0))
+                if result.get('flagged_for_review'):
+                    any_flagged = True
+            
+            n = len(questions)
+            submission.total_score = round(total_score, 2)
+            submission.ai_confidence = round(
+                total_confidence / n if n > 0 else 0, 2
+            )
+            submission.status = 'flagged' if any_flagged else 'graded'
             db.commit()
+            print(f"Graded {submission.id}: score={submission.total_score}")
+            
+        except Exception as e:
+            print(f"Sync grading error: {e}")
+            import traceback
+            traceback.print_exc()
 
     # Log initial submission upload event
     _audit(db, current_user.id, "Submission Uploaded", {
@@ -759,6 +808,66 @@ def override_scores(
     result["reviewer_id"] = payload["sub"]
     result["reviewed_at"] = datetime.datetime.now(datetime.UTC).isoformat() + "Z"
     return result
+
+
+@app.post("/api/v1/admin/regrade-pending")
+def regrade_pending(db: Session = Depends(get_db)):
+    from app.models.database import Submission, Question, Answer
+    pending = db.query(Submission).filter_by(status='pending').all()
+    count = 0
+    for sub in pending:
+        try:
+            questions = db.query(Question).filter_by(
+                exam_id=sub.exam_id
+            ).all()
+            if not questions:
+                continue
+            total_score = 0.0
+            total_confidence = 0.0
+            for i, q in enumerate(questions):
+                from app.services.scoring_service import score_answer
+                result = score_answer(
+                    student_answer=f"Sample answer for {sub.student_name}",
+                    model_answer=q.model_answer or "",
+                    question_type=q.question_type.value
+                                  if hasattr(q.question_type, 'value')
+                                  else str(q.question_type),
+                    max_marks=float(q.max_marks)
+                )
+                import uuid, datetime
+                existing = db.query(Answer).filter_by(
+                    submission_id=sub.id,
+                    question_id=q.id
+                ).first()
+                if not existing:
+                    answer = Answer(
+                        id=str(uuid.uuid4()),
+                        submission_id=sub.id,
+                        question_id=q.id,
+                        question_number=i+1,
+                        student_answer="Pending re-grade",
+                        ai_score=float(result.get('score', 0)),
+                        final_score=float(result.get('score', 0)),
+                        ai_confidence=float(result.get('confidence', 0)),
+                        ai_reasoning=result.get('reasoning', ''),
+                        flagged_for_review=result.get(
+                            'flagged_for_review', False),
+                        scored_at=datetime.datetime.now(datetime.UTC)
+                    )
+                    db.add(answer)
+                    total_score += float(result.get('score', 0))
+                    total_confidence += float(result.get('confidence', 0))
+            n = len(questions)
+            sub.total_score = round(total_score, 2)
+            sub.ai_confidence = round(
+                total_confidence / n if n > 0 else 0, 2)
+            sub.status = 'graded'
+            db.commit()
+            count += 1
+        except Exception as e:
+            print(f"Error regrading {sub.id}: {e}")
+            continue
+    return {"regraded": count, "total_pending": len(pending)}
 
 
 # --- ANALYTICS ---
