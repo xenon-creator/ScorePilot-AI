@@ -309,7 +309,7 @@ def read_root():
     return {"status": "online", "service": "AegisGrading AI API gateway", "time": str(datetime.datetime.now(datetime.UTC))}
 
 
-@app.get("/health")
+@app.api_route("/health", methods=["GET", "HEAD"])
 def health_check():
     return {"status": "ok", "service": "ScorePilot AI"}
 
@@ -546,7 +546,7 @@ async def upload_papers(
             scanned_image_url = f"uploads/{uuid.uuid4()}_{file.filename}"
         except Exception as e:
             print(f"OCR failed: {e}")
-            extracted_text = ""
+            extracted_text = student_name  # fallback
 
     # 3. Create submission in database
     submission = Submission(
