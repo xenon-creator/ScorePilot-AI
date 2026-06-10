@@ -21,6 +21,12 @@ from app.services.ocr_service import OCRService
 from app.workers.tasks import process_and_score_submission
 from app.services.lms_service import LMSService
 
+try:
+    from app.services.scoring_service import score_answer
+    print("Scoring service loaded OK")
+except Exception as e:
+    print(f"WARNING: Scoring service failed to load: {e}")
+
 from contextlib import asynccontextmanager
 
 @asynccontextmanager
@@ -811,63 +817,118 @@ def override_scores(
 
 
 @app.post("/api/v1/admin/regrade-pending")
-def regrade_pending(db: Session = Depends(get_db)):
-    from app.models.database import Submission, Question, Answer
-    pending = db.query(Submission).filter_by(status='pending').all()
-    count = 0
-    for sub in pending:
-        try:
-            questions = db.query(Question).filter_by(
-                exam_id=sub.exam_id
-            ).all()
-            if not questions:
-                continue
-            total_score = 0.0
-            total_confidence = 0.0
-            for i, q in enumerate(questions):
-                from app.services.scoring_service import score_answer
-                result = score_answer(
-                    student_answer=f"Sample answer for {sub.student_name}",
-                    model_answer=q.model_answer or "",
-                    question_type=q.question_type.value
-                                  if hasattr(q.question_type, 'value')
-                                  else str(q.question_type),
-                    max_marks=float(q.max_marks)
-                )
-                import uuid, datetime
-                existing = db.query(Answer).filter_by(
-                    submission_id=sub.id,
-                    question_id=q.id
-                ).first()
-                if not existing:
+def regrade_pending_submissions(db: Session = Depends(get_db)):
+    try:
+        from app.models.database import Submission, Question, Answer
+        from app.services.scoring_service import score_answer
+        import uuid, datetime
+        
+        pending = db.query(Submission).filter(
+            Submission.status == 'pending'
+        ).all()
+        
+        regraded = 0
+        errors = []
+        
+        for sub in pending:
+            try:
+                questions = db.query(Question).filter(
+                    Question.exam_id == sub.exam_id
+                ).all()
+                
+                if not questions:
+                    sub.status = 'graded'
+                    sub.total_score = 0.0
+                    sub.ai_confidence = 0.0
+                    db.commit()
+                    regraded += 1
+                    continue
+                
+                # Delete existing answers for this submission
+                db.query(Answer).filter(
+                    Answer.submission_id == sub.id
+                ).delete()
+                db.commit()
+                
+                total_score = 0.0
+                total_confidence = 0.0
+                any_flagged = False
+                
+                for i, q in enumerate(questions):
+                    model_ans = q.model_answer or "No model answer provided"
+                    student_ans = sub.student_name or "Unknown student"
+                    
+                    try:
+                        q_type = q.question_type.value if hasattr(
+                            q.question_type, 'value') else str(q.question_type)
+                        
+                        result = score_answer(
+                            student_answer=student_ans,
+                            model_answer=model_ans,
+                            question_type=q_type,
+                            max_marks=float(q.max_marks or 10)
+                        )
+                        
+                        ai_score = float(result.get('score', 0))
+                        confidence = float(result.get('confidence', 0))
+                        reasoning = str(result.get('reasoning', ''))
+                        flagged = bool(result.get('flagged_for_review', False))
+                        
+                    except Exception as score_err:
+                        print(f"Scoring error: {score_err}")
+                        ai_score = 0.0
+                        confidence = 0.0
+                        reasoning = f"Scoring failed: {str(score_err)}"
+                        flagged = True
+                    
                     answer = Answer(
                         id=str(uuid.uuid4()),
                         submission_id=sub.id,
                         question_id=q.id,
-                        question_number=i+1,
-                        student_answer="Pending re-grade",
-                        ai_score=float(result.get('score', 0)),
-                        final_score=float(result.get('score', 0)),
-                        ai_confidence=float(result.get('confidence', 0)),
-                        ai_reasoning=result.get('reasoning', ''),
-                        flagged_for_review=result.get(
-                            'flagged_for_review', False),
+                        question_number=i + 1,
+                        student_answer=student_ans[:500],
+                        ai_score=ai_score,
+                        final_score=ai_score,
+                        ai_confidence=confidence,
+                        ai_reasoning=reasoning,
+                        flagged_for_review=flagged,
                         scored_at=datetime.datetime.now(datetime.UTC)
                     )
                     db.add(answer)
-                    total_score += float(result.get('score', 0))
-                    total_confidence += float(result.get('confidence', 0))
-            n = len(questions)
-            sub.total_score = round(total_score, 2)
-            sub.ai_confidence = round(
-                total_confidence / n if n > 0 else 0, 2)
-            sub.status = 'graded'
-            db.commit()
-            count += 1
-        except Exception as e:
-            print(f"Error regrading {sub.id}: {e}")
-            continue
-    return {"regraded": count, "total_pending": len(pending)}
+                    
+                    total_score += ai_score
+                    total_confidence += confidence
+                    if flagged:
+                        any_flagged = True
+                
+                n = max(len(questions), 1)
+                sub.total_score = round(total_score, 2)
+                sub.ai_confidence = round(total_confidence / n, 2)
+                sub.status = 'flagged' if any_flagged else 'graded'
+                db.commit()
+                regraded += 1
+                print(f"Regraded {sub.id}: {sub.total_score}")
+                
+            except Exception as sub_err:
+                errors.append(str(sub_err))
+                print(f"Error on submission {sub.id}: {sub_err}")
+                db.rollback()
+                continue
+        
+        return {
+            "success": True,
+            "regraded": regraded,
+            "total_pending": len(pending),
+            "errors": errors
+        }
+        
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(
+            status_code=500,
+            detail=f"Regrade failed: {str(e)}"
+        )
 
 
 # --- ANALYTICS ---
