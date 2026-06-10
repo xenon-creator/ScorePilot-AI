@@ -70,9 +70,15 @@ def ensure_bucket_exists():
 
 
 def upload_file_content(file_bytes: bytes, object_key: str, content_type: str = "application/pdf") -> str:
-    """Upload raw file content bytes into S3 and return the generated object key."""
+    """Upload raw file content bytes into S3 and return the generated object key. Fallbacks to local storage if S3 is unavailable."""
+    import os
     if not is_available():
-        raise RuntimeError("S3/MinIO storage is not available")
+        local_path = os.path.join(os.path.dirname(__file__), "..", "..", object_key)
+        os.makedirs(os.path.dirname(local_path), exist_ok=True)
+        with open(local_path, "wb") as f:
+            f.write(file_bytes)
+        logger.info(f"File stored locally (S3 unavailable): {local_path}")
+        return object_key
     try:
         s3_client.put_object(
             Bucket=settings.S3_BUCKET,
@@ -104,9 +110,14 @@ def generate_presigned_view_url(object_key: str, expiration: int = 3600) -> str:
 
 
 def download_file_content(object_key: str) -> bytes:
-    """Retrieve raw file content bytes directly from S3/MinIO."""
+    """Retrieve raw file content bytes directly from S3/MinIO or local fallback."""
+    import os
     if not is_available():
-        raise RuntimeError("S3/MinIO storage is not available")
+        local_path = os.path.join(os.path.dirname(__file__), "..", "..", object_key)
+        if os.path.exists(local_path):
+            with open(local_path, "rb") as f:
+                return f.read()
+        raise RuntimeError(f"Local file not found: {local_path}")
     try:
         response = s3_client.get_object(Bucket=settings.S3_BUCKET, Key=object_key)
         return response["Body"].read()

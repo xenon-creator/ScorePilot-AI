@@ -5,6 +5,27 @@ import pytest
 # Programmatically append the backend parent directory to sys.path during collection
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+# Configure in-memory SQLite for testing to avoid database timeout when PostgreSQL is offline
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
+import app.models.database
+
+test_engine = create_engine(
+    "sqlite:///:memory:",
+    connect_args={"check_same_thread": False},
+    poolclass=StaticPool
+)
+TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
+
+# Create all tables in the SQLite database
+app.models.database.Base.metadata.create_all(bind=test_engine)
+
+# Patch the engine and SessionLocal in app.models.database
+app.models.database.engine = test_engine
+app.models.database.SessionLocal = TestSessionLocal
+
+
 def pytest_collection_modifyitems(config, items):
     """Skip tests that need real services if services aren't available"""
     pass  # Services are now real in CI, no skipping needed
@@ -23,3 +44,4 @@ def db_url():
 @pytest.fixture(scope="session")
 def minio_url():
     return os.getenv("S3_ENDPOINT", "localhost:9000")
+
