@@ -3,17 +3,19 @@ const API_BASE = ''
 async function fetchWithRetry(
   url: string,
   options: RequestInit = {},
-  retries = 2,
-  delay = 2000
+  retries = 3,
+  delay = 3000
 ): Promise<Response> {
   try {
     const response = await fetch(url, options)
-    if (!response.ok && retries > 0) {
+    // Only retry on server errors (5xx) or 0 status (network fail) — NOT on 4xx
+    if (response.status >= 500 && retries > 0) {
       await new Promise(r => setTimeout(r, delay))
       return fetchWithRetry(url, options, retries - 1, delay)
     }
     return response
   } catch (error) {
+    // Network error (backend down / cold starting)
     if (retries > 0) {
       await new Promise(r => setTimeout(r, delay))
       return fetchWithRetry(url, options, retries - 1, delay)
@@ -134,7 +136,7 @@ class ApiError extends Error {
   }
 }
 
-async function apiFetch<T>(
+export async function apiFetch<T>(
   path: string,
   options: RequestInit = {}
 ): Promise<T> {

@@ -190,25 +190,30 @@ export default function DashboardPage() {
         setExams(examsData)
         setSubmissions(subsData)
 
-        // Fetch subscription status
+        // Fetch subscription status (via proxy, not direct)
         try {
-          const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
-          const token = localStorage.getItem('sp_token') || ''
-          const subRes = await fetch(`${API_BASE}/api/v1/subscription/status`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-          })
-          if (subRes.ok) {
-            const subData = await subRes.json()
-            setSubStatus(subData)
-          }
+          const { apiFetch: subFetch } = await import('@/lib/api')
+          const subData = await subFetch<{
+            plan: string
+            papers_used: number
+            papers_limit: number
+            can_grade: boolean
+            upgrade_required: boolean
+            status: string
+          }>('/api/v1/subscription/status')
+          setSubStatus(subData)
         } catch (subErr) {
           console.error("Subscription status fetch failed:", subErr)
         }
 
 
         if (examsData.length > 0) {
-          const analyticsData = await apiGetAnalytics(examsData[0].id)
-          setAnalytics(analyticsData)
+          try {
+            const analyticsData = await apiGetAnalytics(examsData[0].id)
+            setAnalytics(analyticsData)
+          } catch (analyticsErr) {
+            console.error("Analytics fetch failed:", analyticsErr)
+          }
         }
 
         try {
