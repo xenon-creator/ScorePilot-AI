@@ -10,6 +10,9 @@ import os
 import re
 import time
 import logging
+import urllib.request
+import urllib.error
+import json
 from typing import List, Tuple
 
 import numpy as np
@@ -19,7 +22,15 @@ logger = logging.getLogger(__name__)
 # Set model cache directory
 MODEL_CACHE_DIR = os.getenv("MODEL_CACHE_DIR", os.path.join(os.path.dirname(__file__), "..", "..", "models"))
 os.environ["SENTENCE_TRANSFORMERS_HOME"] = os.path.abspath(MODEL_CACHE_DIR)
-# Allow downloading the model on first run (don't set HF_HUB_OFFLINE)
+
+# Check if running in a low memory environment (default to True on Render or if requested)
+LOW_MEMORY_MODE = (
+    os.getenv("LOW_MEMORY_MODE", "false").lower() in ("true", "1", "yes") or
+    os.getenv("RENDER", "false").lower() == "true"
+)
+
+if LOW_MEMORY_MODE:
+    logger.info("Running in LOW_MEMORY_MODE. Local SentenceTransformer loading is disabled to prevent OOM crashes.")
 
 # Module-level singleton — loaded once on first import
 _model = None
@@ -64,15 +75,58 @@ def _keyword_fallback_similarity(text_a: str, text_b: str) -> float:
     return len(intersection) / len(union) if union else 0.0
 
 
+def _hf_inference_similarity(text_a: str, text_b: str) -> float | None:
+    """
+    Query Hugging Face Inference API for sentence similarity.
+    Returns None if the request fails (e.g. rate limit, network issue).
+    """
+    url = "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2"
+    payload = {
+        "inputs": {
+            "source_sentence": text_a.strip(),
+            "sentences": [text_b.strip()]
+        }
+    }
+    
+    token = os.getenv("HF_TOKEN") or os.getenv("HF_API_KEY")
+    headers = {
+        "Content-Type": "application/json"
+    }
+    if token:
+        headers["Authorization"] = f"Bearer {token}"
+        
+    try:
+        data = json.dumps(payload).encode("utf-8")
+        req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+        # Keep timeout short (4s) to prevent hanging the response
+        with urllib.request.urlopen(req, timeout=4.0) as response:
+            res = json.loads(response.read().decode("utf-8"))
+            if isinstance(res, list) and len(res) > 0:
+                val = float(res[0])
+                return max(0.0, min(val, 1.0))
+    except Exception as e:
+        logger.warning(f"Hugging Face Inference API similarity failed: {e}")
+    return None
+
+
 def get_similarity(text_a: str, text_b: str) -> float:
     """
     Compute cosine similarity between two texts.
     Returns a float between 0.0 and 1.0.
     Returns 0.0 if either input is empty.
-    Falls back to keyword overlap if the ML model is unavailable.
+    Falls back to Hugging Face Inference API or keyword overlap.
     """
     if not text_a or not text_a.strip() or not text_b or not text_b.strip():
         return 0.0
+
+    if LOW_MEMORY_MODE:
+        # Try HF Inference API first
+        api_sim = _hf_inference_similarity(text_a, text_b)
+        if api_sim is not None:
+            return api_sim
+        # Fallback to keyword overlap
+        logger.warning("HF API unavailable. Using keyword fallback similarity in low memory mode")
+        return _keyword_fallback_similarity(text_a, text_b)
 
     model = _load_model()
     if model is None:
@@ -97,10 +151,22 @@ def get_batch_similarity(pairs: List[Tuple[str, str]]) -> List[float]:
     """
     Compute cosine similarities for multiple (text_a, text_b) pairs in one batch.
     Returns list of floats between 0.0 and 1.0.
-    Falls back to keyword overlap if the ML model is unavailable.
+    Falls back to Hugging Face Inference API or keyword overlap.
     """
     if not pairs:
         return []
+
+    if LOW_MEMORY_MODE:
+        results = []
+        for text_a, text_b in pairs:
+            if not text_a or not text_a.strip() or not text_b or not text_b.strip():
+                results.append(0.0)
+                continue
+            sim = _hf_inference_similarity(text_a, text_b)
+            if sim is None:
+                sim = _keyword_fallback_similarity(text_a, text_b)
+            results.append(sim)
+        return results
 
     model = _load_model()
     if model is None:
@@ -133,3 +199,4 @@ def get_batch_similarity(pairs: List[Tuple[str, str]]) -> List[float]:
             results.append(max(0.0, min(float(dot / norm), 1.0)))
 
     return results
+
