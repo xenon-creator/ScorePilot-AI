@@ -256,6 +256,18 @@ export async function apiGetStudentSubmissions(): Promise<Submission[]> {
   return apiFetch<Submission[]>('/api/v1/student/submissions')
 }
 
+export async function apiDeleteExam(examId: string): Promise<{ message: string }> {
+  return apiFetch<{ message: string }>(`/api/v1/exams/${examId}`, {
+    method: 'DELETE',
+  })
+}
+
+export async function apiDeleteSubmission(submissionId: string): Promise<{ message: string }> {
+  return apiFetch<{ message: string }>(`/api/v1/submissions/${submissionId}`, {
+    method: 'DELETE',
+  })
+}
+
 // ============================================
 // REVIEW / OVERRIDE
 // ============================================

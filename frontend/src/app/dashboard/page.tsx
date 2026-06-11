@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { useAuth } from '@/lib/auth-context'
 import {
   apiGetExams, apiGetSubmissions, apiGetAnalytics, apiGetAuditLogs, apiUploadPaper, apiOverrideScores,
-  apiExportExamCsv, apiExportSubmissionPdf, apiCreateExam,
+  apiExportExamCsv, apiExportSubmissionPdf, apiCreateExam, apiDeleteExam, apiDeleteSubmission,
   apiGetLmsSettings, apiSaveLmsSettings, apiGetLmsCourses, apiSyncExamGradesToLms,
   type Exam, type Submission, type AnalyticsData, type AuditLog, type LmsSettings, type LmsCourse
 } from '@/lib/api'
@@ -1234,12 +1234,31 @@ export default function DashboardPage() {
                               {exam.questions.length} questions • {exam.total_marks} total marks • Pass: {exam.passing_marks}
                             </p>
                           </div>
-                          <span className={cn(
-                            'text-xs px-2.5 py-1 rounded-full font-medium',
-                            exam.status === 'Active' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-slate-500/10 text-slate-400'
-                          )}>
-                            {exam.status}
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className={cn(
+                              'text-xs px-2.5 py-1 rounded-full font-medium',
+                              exam.status === 'Active' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-slate-500/10 text-slate-400'
+                            )}>
+                              {exam.status}
+                            </span>
+                            {(user?.role?.toLowerCase() === 'teacher' || user?.role?.toLowerCase() === 'admin') && (
+                              <button
+                                onClick={async () => {
+                                  if (!window.confirm(`Delete exam "${exam.title}"? This will also delete all submissions and scores for this exam. This action cannot be undone.`)) return
+                                  try {
+                                    await apiDeleteExam(exam.id)
+                                    await fetchData()
+                                  } catch (err: any) {
+                                    setError(err.message || 'Failed to delete exam')
+                                  }
+                                }}
+                                className="p-1.5 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all cursor-pointer"
+                                title="Delete exam"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            )}
+                          </div>
                         </div>
 
                         {/* Questions preview */}
@@ -1548,6 +1567,24 @@ export default function DashboardPage() {
                             )}
                             {sub.status === 'Approved' && sub.reviewer_id && (
                               <p className="text-xs text-slate-600 self-center">Reviewed by {sub.reviewer_id} on {sub.reviewed_at ? new Date(sub.reviewed_at).toLocaleString() : 'N/A'}</p>
+                            )}
+                            {(user?.role?.toLowerCase() === 'teacher' || user?.role?.toLowerCase() === 'admin') && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="border-red-500/20 text-red-400 hover:bg-red-500/10 hover:text-red-300 cursor-pointer ml-auto"
+                                onClick={async () => {
+                                  if (!window.confirm(`Delete submission by "${sub.student_name}"? This will permanently remove the submission and all scores. This cannot be undone.`)) return
+                                  try {
+                                    await apiDeleteSubmission(sub.id)
+                                    await fetchData()
+                                  } catch (err: any) {
+                                    setError(err.message || 'Failed to delete submission')
+                                  }
+                                }}
+                              >
+                                <Trash2 className="h-4 w-4 mr-1.5" /> Delete
+                              </Button>
                             )}
                           </div>
                         </div>

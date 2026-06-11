@@ -492,6 +492,41 @@ def create_exam_from_paper(
     return _format_exam(exam)
 
 
+@app.delete("/api/v1/exams/{exam_id}")
+def delete_exam(
+    exam_id: str,
+    db: Session = Depends(get_db),
+    payload: dict = Depends(RoleChecker(["Teacher", "Admin"]))
+):
+    exam = db.query(Exam).filter(Exam.id == exam_id).first()
+    if not exam:
+        raise HTTPException(status_code=404, detail="Exam not found")
+
+    user = db.query(User).filter(User.name == payload["sub"]).first()
+    user_id = user.id if user else None
+
+    exam_title = exam.title
+    questions_count = len(exam.questions)
+    submissions_count = len(exam.submissions)
+
+    _audit(db, user_id, "Exam Deleted", {
+        "exam_id": exam_id,
+        "exam_title": exam_title,
+        "questions_deleted": questions_count,
+        "submissions_deleted": submissions_count,
+    })
+
+    db.delete(exam)
+    db.commit()
+
+    return {
+        "message": f"Exam '{exam_title}' and all associated data deleted successfully",
+        "deleted_id": exam_id,
+        "questions_deleted": questions_count,
+        "submissions_deleted": submissions_count,
+    }
+
+
 # --- UPLOADS & SCORING ---
 @app.post("/api/v1/uploads")
 async def upload_papers(
@@ -614,7 +649,9 @@ async def upload_papers(
                     any_flagged = True
 
             except Exception as e:
-                print(f"Error scoring question {i}: {e}")
+                import traceback
+                print(f"Error scoring question {i}: {type(e).__name__}: {e}")
+                traceback.print_exc()
 
         n = max(len(questions), 1)
         submission.total_score = round(total_score, 2)
@@ -736,6 +773,40 @@ def list_submissions(exam_id: Optional[str] = None, db: Session = Depends(get_db
     except Exception as e:
         print(f"Submissions error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.delete("/api/v1/submissions/{submission_id}")
+def delete_submission(
+    submission_id: str,
+    db: Session = Depends(get_db),
+    payload: dict = Depends(RoleChecker(["Teacher", "Admin"]))
+):
+    submission = db.query(Submission).filter(Submission.id == submission_id).first()
+    if not submission:
+        raise HTTPException(status_code=404, detail="Submission not found")
+
+    user = db.query(User).filter(User.name == payload["sub"]).first()
+    user_id = user.id if user else None
+
+    student_name = submission.student_name
+    exam_id = submission.exam_id
+    answers_count = len(submission.answers)
+
+    _audit(db, user_id, "Submission Deleted", {
+        "submission_id": submission_id,
+        "student_name": student_name,
+        "exam_id": exam_id,
+        "answers_deleted": answers_count,
+    })
+
+    db.delete(submission)
+    db.commit()
+
+    return {
+        "message": f"Submission by '{student_name}' deleted successfully",
+        "deleted_id": submission_id,
+        "answers_deleted": answers_count,
+    }
 
 
 @app.get("/api/v1/student/submissions")
