@@ -35,6 +35,7 @@ htmlcov/
 models/
 backend/uploads/
 uploads/
+backend/tests/*.pdf
 
 # ==========================
 # Node / Frontend
