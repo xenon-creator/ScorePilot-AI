@@ -27,6 +27,12 @@ celery_app.conf.update(
     enable_utc=True,
 )
 
+if os.getenv("TESTING", "false").lower() in ("true", "1", "yes"):
+    celery_app.conf.update(
+        task_always_eager=True,
+        task_eager_propagates=True,
+    )
+
 
 @celery_app.task(name="tasks.process_and_score_submission")
 def process_and_score_submission(submission_id: str, object_key: str, filename: str, file_bytes: bytes = None) -> Dict[str, Any]:
@@ -361,13 +367,16 @@ def run_grading_pipeline(submission_id: str, db=None, file_bytes: bytes = None, 
                     question_type=question.question_type.value 
                                   if hasattr(question.question_type, 'value') 
                                   else str(question.question_type),
-                    max_marks=float(question.max_marks)
+                    max_marks=float(question.max_marks),
+                    marking_scheme=question.marking_scheme,
+                    question_text=question.text or ""
                 )
                 
                 ai_score = float(result.get('score', 0))
                 confidence = float(result.get('confidence', 0))
                 reasoning = result.get('reasoning', '')
                 flagged = result.get('flagged_for_review', False)
+                eval_metadata = result.get('evaluation_metadata')
                 
             except Exception as e:
                 print(f"Scoring error for question {i}: {e}")
@@ -375,6 +384,7 @@ def run_grading_pipeline(submission_id: str, db=None, file_bytes: bytes = None, 
                 confidence = 0.0
                 reasoning = f"Scoring error: {str(e)}"
                 flagged = True
+                eval_metadata = None
                 
             # Save answer record
             answer = Answer(
@@ -388,6 +398,7 @@ def run_grading_pipeline(submission_id: str, db=None, file_bytes: bytes = None, 
                 ai_confidence=confidence,
                 ai_reasoning=reasoning,
                 flagged_for_review=flagged,
+                evaluation_metadata=eval_metadata,
                 scored_at=datetime.datetime.now(datetime.UTC)
             )
             db.add(answer)

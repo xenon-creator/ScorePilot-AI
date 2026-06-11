@@ -38,19 +38,19 @@ class TestAsyncGradingPipeline:
         self.db.commit()
         self.db.refresh(self.exam)
 
-        # Add questions
+        # Add questions matching simulated OCR text (Q1: A, Q2: C)
         self.q1 = Question(
-            exam_id=self.exam.id,
-            text="Explain photosynthesis.",
-            question_type=QuestionType.short,
-            model_answer="Photosynthesis converts light energy into chemical energy stored as glucose using chlorophyll.",
-            max_marks=5.0,
-        )
-        self.q2 = Question(
             exam_id=self.exam.id,
             text="MCQ 1",
             question_type=QuestionType.mcq,
             model_answer="A",
+            max_marks=1.0,
+        )
+        self.q2 = Question(
+            exam_id=self.exam.id,
+            text="MCQ 2",
+            question_type=QuestionType.mcq,
+            model_answer="C",
             max_marks=1.0,
         )
         self.db.add(self.q1)
@@ -91,7 +91,7 @@ class TestAsyncGradingPipeline:
         ensure_bucket_exists()
 
         object_key = f"tests/test_async_{submission.id}.pdf"
-        upload_file_content(b"biology exam paper details", object_key)
+        upload_file_content(b"Photosynthesis converts light energy into chemical energy. Option A.", object_key)
 
         # 3. Call Celery task synchronously via .apply()
         task_result = process_and_score_submission.apply(args=[submission.id, object_key, "biology_exam.pdf"])

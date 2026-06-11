@@ -44,6 +44,8 @@ async def lifespan(app: FastAPI):
                 conn.execute(text("ALTER TABLE submissions ADD COLUMN IF NOT EXISTS raw_text TEXT;"))
                 conn.execute(text("ALTER TABLE submissions ADD COLUMN IF NOT EXISTS extracted_text TEXT;"))
                 conn.execute(text("ALTER TABLE submissions ADD COLUMN IF NOT EXISTS scanned_image_url VARCHAR;"))
+                conn.execute(text("ALTER TABLE questions ADD COLUMN IF NOT EXISTS marking_scheme JSON;"))
+                conn.execute(text("ALTER TABLE answers ADD COLUMN IF NOT EXISTS evaluation_metadata JSON;"))
                 conn.commit()
                 print("Database columns synchronized successfully on startup.")
     except Exception as db_err:
@@ -625,7 +627,9 @@ async def upload_papers(
                     student_answer=extracted_text or f"Answer by {student_name}",
                     model_answer=question.model_answer or "",
                     question_type=q_type,
-                    max_marks=float(question.max_marks or 10)
+                    max_marks=float(question.max_marks or 10),
+                    marking_scheme=question.marking_scheme,
+                    question_text=question.text or ""
                 )
 
                 answer = Answer(
@@ -639,6 +643,7 @@ async def upload_papers(
                     ai_confidence=float(result.get('confidence', 0)),
                     ai_reasoning=str(result.get('reasoning', '')),
                     flagged_for_review=bool(result.get('flagged_for_review', False)),
+                    evaluation_metadata=result.get('evaluation_metadata'),
                     scored_at=datetime.datetime.now(datetime.UTC)
                 )
                 db.add(answer)
@@ -930,7 +935,9 @@ def regrade_pending(db: Session = Depends(get_db)):
                         student_answer=sub.student_name or "student",
                         model_answer=q.model_answer or "",
                         question_type=q_type,
-                        max_marks=float(q.max_marks or 10)
+                        max_marks=float(q.max_marks or 10),
+                        marking_scheme=q.marking_scheme,
+                        question_text=q.text or ""
                     )
                     answer = Answer(
                         id=str(uuid.uuid4()),
@@ -944,6 +951,7 @@ def regrade_pending(db: Session = Depends(get_db)):
                         ai_reasoning=str(result.get('reasoning','')),
                         flagged_for_review=bool(
                             result.get('flagged_for_review',False)),
+                        evaluation_metadata=result.get('evaluation_metadata'),
                         scored_at=datetime.datetime.now(datetime.UTC)
                     )
                     db.add(answer)

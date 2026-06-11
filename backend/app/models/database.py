@@ -4,7 +4,7 @@ import datetime
 
 from sqlalchemy import (
     create_engine, Column, String, Float, Integer, Text, DateTime,
-    ForeignKey, Enum as SAEnum, Boolean, func
+    ForeignKey, Enum as SAEnum, Boolean, func, JSON
 )
 from sqlalchemy.orm import (
     DeclarativeBase, sessionmaker, relationship, Session
@@ -135,6 +135,7 @@ class Question(Base):
     question_type = Column(SAEnum(QuestionType), nullable=False, default=QuestionType.short)
     model_answer = Column(Text, nullable=False)
     max_marks = Column(Float, nullable=False)
+    marking_scheme = Column(JSON, nullable=True)
 
     # Relationships
     exam = relationship("Exam", back_populates="questions")
@@ -176,6 +177,7 @@ class Answer(Base):
     flagged_for_review = Column(Boolean, nullable=False, default=False)
     scored_at = Column(DateTime, nullable=True, default=lambda: datetime.datetime.now(datetime.UTC))
     overridden_by = Column(String, ForeignKey("users.id"), nullable=True)
+    evaluation_metadata = Column(JSON, nullable=True)
 
     # Relationships
     submission = relationship("Submission", back_populates="answers")
