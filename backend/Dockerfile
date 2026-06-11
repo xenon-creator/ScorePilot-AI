@@ -1,27 +1,25 @@
-# Multi-stage production Docker build for FastAPI scoring service
-FROM python:3.11-slim as builder
+FROM python:3.11-slim
 
 WORKDIR /app
 
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    curl \
+    tesseract-ocr \
+    tesseract-ocr-hin \
+    libpq-dev \
+    poppler-utils \
+    libgl1 \
     && rm -rf /var/lib/apt/lists/*
 
+# Copy requirements and install
 COPY requirements.txt .
-RUN pip install --user --no-cache-dir -r requirements.txt
+RUN pip install --user -r requirements.txt
 
-# Final runner footprint
-FROM python:3.11-slim as runner
+# ADD THIS LINE — puts pip scripts on PATH
+ENV PATH="/root/.local/bin:${PATH}"
 
-WORKDIR /app
+# Copy app code
+COPY . .
 
-COPY --from=builder /root/.local /root/.local
-COPY . /app
-
-ENV PATH=/root/.local/bin:$PATH
-ENV PYTHONUNBUFFERED=1
-
-EXPOSE 8000
-
+# Start command
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
