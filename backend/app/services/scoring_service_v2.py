@@ -154,11 +154,14 @@ def score_answer_v2(
         feedback_parts.append(f"Awarded {score_awarded}/{max_marks} marks.")
         
     if matched_pts:
-        feedback_parts.append(f"Matched points: {', '.join([f'\"{p}\"' for p in matched_pts])}.")
+        matched_str = ", ".join(f'"{p}"' for p in matched_pts)
+        feedback_parts.append(f"Matched points: {matched_str}.")
     if partial_pts:
-        feedback_parts.append(f"Partially matched: {', '.join([f'\"{p}\"' for p in partial_pts])}.")
+        partial_str = ", ".join(f'"{p}"' for p in partial_pts)
+        feedback_parts.append(f"Partially matched: {partial_str}.")
     if missing_pts:
-        feedback_parts.append(f"Missing criteria: {', '.join([f'\"{p}\"' for p in missing_pts])}.")
+        missing_str = ", ".join(f'"{p}"' for p in missing_pts)
+        feedback_parts.append(f"Missing criteria: {missing_str}.")
 
     feedback = " ".join(feedback_parts)
 
