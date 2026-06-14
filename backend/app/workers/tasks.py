@@ -266,7 +266,7 @@ def run_grading_pipeline(submission_id: str, db=None, file_bytes: bytes = None, 
     """
     from app.models.database import SessionLocal, Submission, Answer, SubmissionStatus, AuditLog
     from app.services.ocr_service import extract_text, OCRService
-    from app.services.scoring_service import score_answer
+    from app.services.scoring_service_v2 import score_answer
     import uuid, datetime
     
     # Use provided db session or create new one
@@ -369,7 +369,8 @@ def run_grading_pipeline(submission_id: str, db=None, file_bytes: bytes = None, 
                                   else str(question.question_type),
                     max_marks=float(question.max_marks),
                     marking_scheme=question.marking_scheme,
-                    question_text=question.text or ""
+                    question_text=question.text or "",
+                    question_id=getattr(question, "dataset_question_id", None)
                 )
                 
                 ai_score = float(result.get('score', 0))

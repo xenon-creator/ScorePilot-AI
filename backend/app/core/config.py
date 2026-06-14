@@ -53,6 +53,9 @@ class Settings(BaseSettings):
     SMTP_FROM_EMAIL: str = os.getenv("SMTP_FROM_EMAIL", "ScorePilot AI <noreply@scorepilot.ai>")
     STUDENT_PORTAL_URL: str = os.getenv("STUDENT_PORTAL_URL", "http://localhost:3000")
 
+    # V2 Grading Engine Settings
+    USE_V2_GRADING: bool = os.getenv("USE_V2_GRADING", "false").lower() in ("true", "1", "yes")
+
     model_config = ConfigDict(case_sensitive=True)
 
 settings = Settings()

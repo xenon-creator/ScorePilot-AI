@@ -136,6 +136,7 @@ class Question(Base):
     model_answer = Column(Text, nullable=False)
     max_marks = Column(Float, nullable=False)
     marking_scheme = Column(JSON, nullable=True)
+    dataset_question_id = Column(String, nullable=True)
 
     # Relationships
     exam = relationship("Exam", back_populates="questions")

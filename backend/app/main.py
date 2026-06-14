@@ -22,7 +22,7 @@ from app.workers.tasks import process_and_score_submission
 from app.services.lms_service import LMSService
 
 try:
-    from app.services.scoring_service import score_answer
+    from app.services.scoring_service_v2 import score_answer
     print("Scoring service loaded OK")
 except Exception as e:
     print(f"WARNING: Scoring service failed to load: {e}")
@@ -45,9 +45,17 @@ async def lifespan(app: FastAPI):
                 conn.execute(text("ALTER TABLE submissions ADD COLUMN IF NOT EXISTS extracted_text TEXT;"))
                 conn.execute(text("ALTER TABLE submissions ADD COLUMN IF NOT EXISTS scanned_image_url VARCHAR;"))
                 conn.execute(text("ALTER TABLE questions ADD COLUMN IF NOT EXISTS marking_scheme JSON;"))
+                conn.execute(text("ALTER TABLE questions ADD COLUMN IF NOT EXISTS dataset_question_id VARCHAR;"))
                 conn.execute(text("ALTER TABLE answers ADD COLUMN IF NOT EXISTS evaluation_metadata JSON;"))
                 conn.commit()
                 print("Database columns synchronized successfully on startup.")
+            else:
+                # Local SQLite fallback for migrations
+                try:
+                    conn.execute(text("ALTER TABLE questions ADD COLUMN dataset_question_id VARCHAR;"))
+                    conn.commit()
+                except Exception:
+                    pass
     except Exception as db_err:
         import logging
         logging.getLogger(__name__).warning(f"Could not automatically synchronize db columns: {db_err}")
@@ -543,7 +551,7 @@ async def upload_papers(
     from app.services.subscription_service import check_usage_limit, increment_usage
     import uuid, datetime
     from app.models.database import Submission, Question, Answer
-    from app.services.scoring_service import score_answer
+    from app.services.scoring_service_v2 import score_answer
 
     # 1. Retrieve current user and check subscription usage limit
     current_user = db.query(User).filter(User.name == payload["sub"]).first()
@@ -629,7 +637,8 @@ async def upload_papers(
                     question_type=q_type,
                     max_marks=float(question.max_marks or 10),
                     marking_scheme=question.marking_scheme,
-                    question_text=question.text or ""
+                    question_text=question.text or "",
+                    question_id=getattr(question, "dataset_question_id", None)
                 )
 
                 answer = Answer(
@@ -904,7 +913,7 @@ def override_scores(
 @app.post("/api/v1/admin/regrade-pending")
 def regrade_pending(db: Session = Depends(get_db)):
     from app.models.database import Submission, Question, Answer
-    from app.services.scoring_service import score_answer
+    from app.services.scoring_service_v2 import score_answer
     import uuid, datetime
     
     pending = db.query(Submission).filter(
@@ -937,7 +946,8 @@ def regrade_pending(db: Session = Depends(get_db)):
                         question_type=q_type,
                         max_marks=float(q.max_marks or 10),
                         marking_scheme=q.marking_scheme,
-                        question_text=q.text or ""
+                        question_text=q.text or "",
+                        question_id=getattr(q, "dataset_question_id", None)
                     )
                     answer = Answer(
                         id=str(uuid.uuid4()),
@@ -1614,5 +1624,45 @@ def verify_standard_payment(
             status_code=400,
             detail="Signature verification failed"
         )
+
+
+# --- DATASET ENGINE INTEGRATION ---
+@app.get("/api/v1/datasets/search")
+def search_dataset_questions(
+    query: str = "",
+    subject: Optional[str] = None,
+    board: Optional[str] = None,
+    limit: int = 5,
+    payload: dict = Depends(get_current_user_payload)
+):
+    from app.services.dataset_service import DatasetService
+    try:
+        return DatasetService.search_question(query=query, subject=subject, board=board, limit=limit)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to search dataset: {str(e)}")
+
+
+@app.get("/api/v1/datasets/questions/{question_id}")
+def get_dataset_question(
+    question_id: str,
+    payload: dict = Depends(get_current_user_payload)
+):
+    from app.services.dataset_service import DatasetService
+    q = DatasetService.get_question(question_id)
+    if not q:
+        raise HTTPException(status_code=404, detail="Question not found in dataset")
+    return q
+
+
+@app.get("/api/v1/datasets/mark-schemes/{question_id}")
+def get_dataset_mark_scheme(
+    question_id: str,
+    payload: dict = Depends(get_current_user_payload)
+):
+    from app.services.dataset_service import DatasetService
+    ms = DatasetService.get_mark_scheme(question_id)
+    if not ms:
+        raise HTTPException(status_code=404, detail="Mark scheme not found in dataset")
+    return ms
 
 
