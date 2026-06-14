@@ -40,7 +40,7 @@ export default function StudentPortalPage() {
     setError("")
     setSearched(true)
     try {
-      const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+      const API_BASE = ""
       const res = await fetch(`${API_BASE}/api/v1/student/results?student_name=${encodeURIComponent(name.trim())}`)
       if (!res.ok) {
         throw new Error(`Failed to fetch: ${res.statusText}`)

@@ -77,7 +77,7 @@ export function PricingModal({ isOpen, onClose, subStatus, onSuccess }: PricingM
       }
 
       const token = localStorage.getItem('sp_token') || ''
-      const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+      const API_BASE = ''
 
       // 1. Create order
       const orderRes = await fetch(`${API_BASE}/api/v1/subscription/create-order`, {

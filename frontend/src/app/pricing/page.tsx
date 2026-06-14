@@ -57,7 +57,7 @@ export default function PricingPage() {
     // Fetch plans from backend
     const fetchPlans = async () => {
       try {
-        const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+        const API_BASE = ''
         const res = await fetch(`${API_BASE}/api/v1/subscription/plans`)
         if (!res.ok) throw new Error('Failed to load plans.')
         const data = await res.json()
@@ -122,7 +122,7 @@ export default function PricingPage() {
       }
 
       const token = localStorage.getItem('sp_token') || ''
-      const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+      const API_BASE = ''
       
       // 1. Create order
       const orderRes = await fetch(`${API_BASE}/api/v1/subscription/create-order`, {

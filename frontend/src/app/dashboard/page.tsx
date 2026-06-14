@@ -841,7 +841,7 @@ export default function DashboardPage() {
                         <div>
                           <p className="font-semibold text-white">Keep your backend awake 24/7 for free:</p>
                           <p className="text-slate-400 mt-1 leading-relaxed">
-                            Set up UptimeRobot to ping <code className="text-cyan-400 font-mono text-xs bg-white/5 px-1.5 py-0.5 rounded">scorepilot-ai.onrender.com/health</code> every 5 minutes. Without this, first request after idle takes 50 seconds.
+                            Set up UptimeRobot to ping <code className="text-cyan-400 font-mono text-xs bg-white/5 px-1.5 py-0.5 rounded">scorepilot-api.onrender.com/health</code> every 5 minutes. Without this, first request after idle takes 50 seconds.
                           </p>
                         </div>
                       </div>

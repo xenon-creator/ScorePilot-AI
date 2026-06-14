@@ -102,7 +102,7 @@ export default function CheckoutPage() {
       }
 
       const token = localStorage.getItem('sp_token') || ''
-      const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+      const API_BASE = ''
 
       // 1. Create Order on Backend
       const orderRes = await fetch(`${API_BASE}/api/create-order`, {

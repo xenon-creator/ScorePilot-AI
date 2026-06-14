@@ -57,8 +57,8 @@ export function BulkUpload({ onSuccess, onCancel }: BulkUploadProps) {
         setLoading(true)
         setError('')
         try {
-          const token = localStorage.getItem('token') || ''
-          const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+          const token = localStorage.getItem('sp_token') || ''
+          const API_BASE = ''
           const res = await fetch(`${API_BASE}/api/v1/exams`, {
             headers: { 'Authorization': `Bearer ${token}` }
           })
@@ -121,8 +121,8 @@ export function BulkUpload({ onSuccess, onCancel }: BulkUploadProps) {
         formData.append('files', file)
       })
 
-      const token = localStorage.getItem('token') || ''
-      const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+      const token = localStorage.getItem('sp_token') || ''
+      const API_BASE = ''
       const response = await fetch(`${API_BASE}/api/v1/uploads/bulk`, {
         method: 'POST',
         headers: {
@@ -156,8 +156,8 @@ export function BulkUpload({ onSuccess, onCancel }: BulkUploadProps) {
     if (step === 3 && jobId) {
       const pollStatus = async () => {
         try {
-          const token = localStorage.getItem('token') || ''
-          const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+          const token = localStorage.getItem('sp_token') || ''
+          const API_BASE = ''
 
           // 1. Get job status
           const statusRes = await fetch(`${API_BASE}/api/v1/uploads/bulk/status/${jobId}`, {
@@ -206,8 +206,8 @@ export function BulkUpload({ onSuccess, onCancel }: BulkUploadProps) {
 
   // Export CSV helper
   const handleExportCSV = () => {
-    const token = localStorage.getItem('token') || ''
-    const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+    const token = localStorage.getItem('sp_token') || ''
+    const API_BASE = ''
     window.open(`${API_BASE}/api/v1/exams/${selectedExamId}/export/csv?token=${token}`, '_blank')
   }
 

@@ -60,8 +60,8 @@ export function UploadQuestionPaper({ onSuccess, onCancel }: UploadQuestionPaper
       const formData = new FormData()
       formData.append('file', file)
 
-      const token = localStorage.getItem('token') || ''
-      const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+      const token = localStorage.getItem('sp_token') || ''
+      const API_BASE = ''
       const response = await fetch(`${API_BASE}/api/v1/exams/upload-paper`, {
         method: 'POST',
         headers: {
@@ -132,8 +132,8 @@ export function UploadQuestionPaper({ onSuccess, onCancel }: UploadQuestionPaper
         }))
       }
 
-      const token = localStorage.getItem('token') || ''
-      const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+      const token = localStorage.getItem('sp_token') || ''
+      const API_BASE = ''
       const response = await fetch(`${API_BASE}/api/v1/exams/from-paper`, {
         method: 'POST',
         headers: {
