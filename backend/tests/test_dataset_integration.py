@@ -16,11 +16,10 @@ from app.core.config import settings
 client = TestClient(app)
 
 # Override auth dependency for testing endpoint authorization
-app.dependency_overrides[get_current_user_payload] = lambda: {"sub": "test_teacher", "role": "Teacher"}
-
 @pytest.fixture(autouse=True)
 def setup_mock_dataset():
     """Seed DatasetService in-memory cache with test questions."""
+    app.dependency_overrides[get_current_user_payload] = lambda: {"sub": "test_teacher", "role": "Teacher"}
     test_questions = [
         {
             "board": "CBSE",
@@ -55,6 +54,7 @@ def setup_mock_dataset():
     DatasetService._questions_list = []
     DatasetService._questions_by_id = {}
     DatasetService._is_loaded = False
+    app.dependency_overrides.clear()
 
 
 def test_dataset_service_lookups():
