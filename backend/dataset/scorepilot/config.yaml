@@ -1,0 +1,15 @@
+# ScorePilot Configuration File
+
+scrapers:
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+  request_timeout: 30
+  concurrency_limit: 5
+  rate_limit_delay: 0.1
+  max_retries: 5
+  backoff_factor: 2.0
+
+parsers:
+  ocr_enabled: true
+  ocr_confidence_threshold: 0.6
+  dpi: 150
+  extract_tables: true

@@ -1,0 +1,12 @@
+# Ignore raw dataset files (PDFs, downloaded items, etc.)
+scorepilot/datasets/raw/
+
+# Ignore scratch/development files
+scorepilot/scratch/
+
+# Ignore Python compiler caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/

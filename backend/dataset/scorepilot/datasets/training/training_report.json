@@ -1,0 +1,60 @@
+{
+  "overall": {
+    "total_questions": 177,
+    "average_marks": 2.19,
+    "subject_counts": {
+      "Biology": 106,
+      "Chemistry": 32,
+      "Physics": 39
+    },
+    "board_counts": {
+      "CBSE": 103,
+      "AQA": 74
+    }
+  },
+  "splits": {
+    "train": {
+      "total_questions": 135,
+      "average_marks": 2.1,
+      "subject_counts": {
+        "Biology": 80,
+        "Chemistry": 24,
+        "Physics": 31
+      },
+      "board_counts": {
+        "CBSE": 79,
+        "AQA": 56
+      }
+    },
+    "val": {
+      "total_questions": 21,
+      "average_marks": 2.38,
+      "subject_counts": {
+        "Biology": 13,
+        "Chemistry": 4,
+        "Physics": 4
+      },
+      "board_counts": {
+        "CBSE": 12,
+        "AQA": 9
+      }
+    },
+    "test": {
+      "total_questions": 21,
+      "average_marks": 2.52,
+      "subject_counts": {
+        "Biology": 13,
+        "Chemistry": 4,
+        "Physics": 4
+      },
+      "board_counts": {
+        "CBSE": 12,
+        "AQA": 9
+      }
+    }
+  },
+  "duplicate_detection": {
+    "duplicates_found": 0,
+    "status": "PASS"
+  }
+}

@@ -1,0 +1,743 @@
+{
+  "Biology": [
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "1",
+      "question_text": "The male gametes in plants are formed by: A. Mitotic division of nucleus of vegetative cell B. Meiotic division of nucleus of vegetative cell C. Mitotic division of nucleus of generative cell D. Meiotic division of nucleus of generative cell",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "2",
+      "question_text": "The primary endosperm nucleus is formed by fusion of which of the following? A. A male gamete and a female gamete B. A male gamete and two polar nuclei C. A female gamete and two synergids D. Two male gametes and an egg cell",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "3",
+      "question_text": "During the menstrual cycle of a human female, formation of graafian follicle is stimulated by secretion of which of the following gonadotropin hormones? A. Estrogen and progesterone B. FSH and Estrogen C. FSH and LH D. Progesterone and LH",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "4",
+      "question_text": "The experimental proof on the thermal stability of genetic material was first provided by experiments of A. Hershey and Chase B. Meselson and Stahl C. Frederick Griffith D. Jacob an Monod",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "5",
+      "question_text": "Short stretches of DNA used to identify complementary sequences in a sample are called A. Probes B. Markers C. Primers D. Minisatellites",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "6",
+      "question_text": "Select the incorrect statement among the following. A. p2+2pq+q2 = 1. This is binomial expansion of (p+q)2. B. When frequency measured differs from expected values, the difference (direction) indicates the extent of evolutionary change. C. Hardy-Weinberg principle says that phenotype frequencies in a population are stable and are constant from generation to generation. D. The gene pool (total genes and their alleles in a population) remains constant. This is called genetic equilibrium. Sum total of all the allelic frequencies is 1.",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "7",
+      "question_text": "Albinism is known to be due to an autosomal recessive mutation. The first child of a couple with normal skin pigmentation was an albino. What is the probability that their second child will also be an albino? A. 100% B. 25% C. 50% D. 75%",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "8",
+      "question_text": "\"In Cricket species, the sound produced by rubbing the wings or legs together play a crucial role in attracting mates, any change in the morphology of Cricket legs could potentially affect their ability to produce sound”. A mutant Cricket had thicker hind legs. What would you expect for this cricket species? A. The leg mutation will not lead to speciation if they diversify into new habitats. B. The leg mutation will have little effect on other external features, and therefore have little effect on speciation. C. The leg mutation will have no effect on behavior, and thus have little effect on speciation. D. The leg mutation might lead to reproductive isolation and speciation due to an effect on the mating call.",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "9",
+      "question_text": "Plasmodium is a pathogen that causes malaria. Identify the correct sequence of transmission of the pathogen. I II III IV Stage of First site in the host Second site in the Stage of pathogen as it body where the host body where pathogen as it is transferred pathogens infect and the pathogen is transferred to by vector bite proliferates infects and a new vector manifests clinical symptoms A Sporozoites Erythrocyte infection Liver infection Gametocytes B Gametocytes Erythrocyte infection Liver infection Sporozoites C Gametocytes Liver infection Erythrocyte Sporozoites infection D Sporozoites Liver infection Erythrocyte Gametocytes infection",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "10",
+      "question_text": "Which mRNA will be translated to a polypeptide chain containing 8 amino acids? A. AUGUUAAUAGACGAGUAGCGACGAUGU B. AUGAGACGGACUGCAUUCCCAACCUGA C. AUGCCCAACCGUUAUUCAUGCUAG D. AUGUCGACAGUCUAAAACAGCGGG",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "11",
+      "question_text": "In order to isolate genetic material of a bacterium, the cell must be treated with A. Lysozyme, ribonuclease, protease, chilled ethanol B. Cellulase, ribonuclease, protease, chilled ethanol C. Chitinase, ribonuclease, chilled ethanol, water D. Ribonuclease, protease, chilled ethanol, water",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "12",
+      "question_text": "Integrated Pest Management involves I. Using pesticides/insecticides judiciously II. Using biocontrol agents III. Engaging in organic farming A. Only I B. Only II C. Both I and II D. Only III",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "13",
+      "question_text": "Assertion (A): The ability of the pistil to recognise the pollen is the result of a continuous dialogue between pollen and pistil. Reason (R): This electrical dialogue allows only compatible pollen to germinate.",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "14",
+      "question_text": "Assertion (A): Some organisms are better adapted to survive in an otherwise hostile environment. Reason (R): Adaptive ability is inherited and has a genetic basis.",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "15",
+      "question_text": "Assertion (A): Excess dose of coke or crack produces a sense of euphoria, increased energy and causes hallucinations. Reason(R): It interferes with the transport of dopamine",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "16",
+      "question_text": "Assertion (A): Rosie was the first transgenic cow to make more nutritionally balanced milk for consumption by human babies. Reason (R): The milk of Rosie cow contained human beta- lactalbumin which made the milk rich in protein.",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "17",
+      "question_text": "Attempt either option A or B. A. During artificial hybridization, it is important to ensure that only desired pollen grains are used for pollination. How is it ensured? OR B. Why is manual transfer of desired pollen grains relatively easy in pea plants for hybridization, but in wheat, pollen grains are often utilized from pollen banks for hybridization purposes?",
+      "max_marks": 2
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "18",
+      "question_text": "How is the rate of initiation of RNA polymerase at a given promoter in a transcriptional unit of prokaryotes regulated?",
+      "max_marks": 2
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "19",
+      "question_text": "The table below shows a hypothetical blood report of a patient. Test description Observed Unit Reference range value Leucocytes Total leucocyte count 1100 Per Microliter 4400-11000 Neutrophils 31 % 55-70 Lymphocytes 25 % 20-40 Basophils 0.5 % 0.5 - 1 Eosinophils 02 % 1-4 Monocytes 0 % 1-8 A. Looking at the values suggest which defense mechanism/ immunity is affected and state how this defense mechanism provides immunity. B. Name the barrier with least count and enumerate its role in providing immunity.",
+      "max_marks": 2
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "20",
+      "question_text": "Attempt either option A or B. A. A cheese maker claims to be a biotechnologist. How will you support the same? OR B. Why does the 'insertional inactivation' method to detect recombinant DNA is preferred to 'antibiotic resistance' procedure?",
+      "max_marks": 2
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "21",
+      "question_text": "Attempt either option A or B. A. (i) Compare the two ecological pyramids of biomass I and II given below and explain the situations in which this is possible. Fig. I Fig. II (ii) Construct an ideal pyramid of energy if 200,000 joules of sunlight are available. \n(ii) Construct an ideal pyramid of energy if 200,000 joules of \nsunlight are available. \nA. \nB. A tropical rainforest in South America is home to more than 40,000 \nspecies of plants, 3,000 of fishes, 1,300 of birds, 427 of mammals, \n427 of amphibians, 378 of reptiles and 1,25,000 insects, snails and \nworms.",
+      "max_marks": 2
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "22",
+      "question_text": "Suggest a suitable contraceptive device for the following cases with justification. (i) Mohini does not want to take the risk of conception and sexually transmitted infections (STIs). (ii) Lalita has two children and does not want any more children. (iii) Geeta wants a contraceptive that she can take till she wants to avoid conception and can resume back to her fertile life without the intervention of the doctor. Also, it should have a lower failure rate.",
+      "max_marks": 3
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "23",
+      "question_text": "Given below is a figure showing transport of ovum, fertilisation and passage of growing embryo through fallopian tube in a human female. Answer the questions that follow: (i) What will be the ploidy of cells shown in (a) and (c) stage in the figure given below? (ii) What will happen if component L as shown in the figure (g) given below does not attach properly to the endometrium? (iii) In a pregnant mother (case X), during early pregnancy, the fertilised egg splits into two embryos at stage C shown in the figure given below, resulting in the formation of twins. Will the genome of cells of these two embryos exhibit variation? Justify your answer.",
+      "max_marks": 3
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "24",
+      "question_text": "In guinea pigs, black coat colour (G) dominates over white (g) and brown eyes (B) dominate over blue (b). The alleles for coat colour and eye colour are not linked. What will be the probability of the offspring having blue eyes and a white coat if both parents are heterozygous for eye and coat colour? Find the probability using a Punnett square",
+      "max_marks": 3
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "25",
+      "question_text": "Shown below are certain aquatic vertebrates, where natural selection has favoured them to develop certain characteristics which enable them to live in water. A. Name and explain the phenomenon exhibited by the above animals. B. Which one of the above is the most primitive one? What is its significance?",
+      "max_marks": 3
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "26",
+      "question_text": "The Biological Oxygen Demand (BOD) of a primary effluent during sewage treatment is reduced. Enlist the process of how this is achieved.",
+      "max_marks": 3
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "27",
+      "question_text": "Expand ELISA. On what principle is the ELISA test based? List two ways by which an infection can be detected by this test.",
+      "max_marks": 3
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "28",
+      "question_text": "The population pyramids of Japan for the years 1950, 2007 and on the basis of the estimated value for 2050 have been shown below to answer the questions that follow: A. Comment upon the growth status of the population on the basis of shape of the age pyramids. \nB. What insights can you gain about their population dynamics?",
+      "max_marks": 3
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "29",
+      "question_text": "Given below is a set of information about some fruits and seeds. Fruit Fruit and seed formation P Nucellar cells surrounding the embryo sac develop into embryos. Q Ovary develops into the fruit by the application of growth hormones. R Thalamus contributes to fruit formation. S Ovary matures into a fruit after fertilisation. On the basis of the information provided above, answer the following questions with justification for each answer. A. How many embryo sacs will be present in each ovule of S before maturation and how many egg(s) will be present in each embryo sac when the embryo sac is developed from a single megaspore? (1) B. (i) Which of these fruits exhibits polyembryony? Will their embryos exhibit genetic variation? Justify. (ii) What will be ploidy of the embryonic cells in the above case? (2) Attempt either subpart C or D. C. Which of these fruits can be considered as parthenocarpic? Give a reason. (1) OR D. Which of the fruits P, Q, R or S is a true fruit with seeds? Give reason. (1)",
+      "max_marks": 4
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "30",
+      "question_text": "The graph below shows the Antibody concentration in young calves. Study the graph and answer the questions that follow: \nA. What do you think is the difference between passive and active immunity in this case? (1) B. What kind of immunity will be observed when a vaccine is administered to the calf and why? (2) Attempt either subpart C or D. C. What kind of trend does passive immunity show and why? (1) OR D. Why does active immunity start after 14 days as per the above graph?",
+      "max_marks": 4
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "31",
+      "question_text": "A. Construct a complete transcription unit with promoter and terminator on the basis of the hypothetical template strand given below. B. How is transcription a more complex process in eukaryotic cells? \nA. \nimmunity in this case? (1) \nB. What kind of immunity will be observed when a vaccine is \nExplain the additional processes that a precursor mRNA has to undergo in these organisms.",
+      "max_marks": 5
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "32",
+      "question_text": "Some plant and animal pathogens serve as one of the tools of recombinant DNA (rDNA) technology.’ A. Name one animal and one plant pathogen and discuss the pathogenic nature of both. State how they serve as a tool in rDNA technology. B. What are the enzymes needed for rDNA technology? C. A farmer owns a cotton farm land which is getting infested with coleopteran pests. He is not willing to use the microbes to protect his farm. i. Name an alternate method to introduce the gene of interest the pathogen would have otherwise delivered and discuss how the alternate method would deliver the gene. ii. State how this gene would control the pest. \nOR BamH1 is a restriction enzyme which recognizes the sequence- 5' - GGATCC - 3'. The restriction activity of this enzyme is between G and G. A. Construct the palindrome for the above sequence. B. Draw a labeled diagram to show the formation of recombinant DNA (rDNA) using BamH1. C. PBR322 is a plasmid that has a restriction site for this enzyme at the tetracycline resistant gene. If BamH1 were to be used, how will it impact the response of the transformant with rDNA to antibiotics- ampicillin and tetracycline. Justify.",
+      "max_marks": 5
+    },
+    {
+      "board": "CBSE",
+      "subject": "Biology",
+      "question_number": "33",
+      "question_text": "Justify the following statements with suitable proof/examples: - A. ‘competition is not limited to closely related species’ B. ‘competition is not always dependent on resources being limiting’ C. ‘competitive exclusion occurs in nature’ D. ‘competing species may evolve mechanisms for co-existence’ E. ‘competition in nature comes from what is called ‘competitive release’’ OR A. How does a simple food chain exemplify the First Law of Thermodynamics? B. The table below shows the number of species in different parts of the world. Name of Place Number of Bird species Columbia 1400 India 1200 Northern South America 1300 New York 105 Denmark 504 Identify the common factor in regions with a higher number of bird species and suggest at least two reasons for this greater diversity.",
+      "max_marks": 5
+    }
+  ],
+  "Chemistry": [
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "1",
+      "question_text": "Which of the following reaction will lead to formation of ethyl methyl ketone: A. heating CH CH(CH )CH OH with acidified Na Cr O 3 3 2 2 2 7 B. passing CH C(OH) CH over heated copper 3 3 C. ozonolysis of CH CH C(CH )=CHCH 3 2 3 3 D. acetylene on reaction with HgSO /H SO 4 2 4",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "3",
+      "question_text": "The counter ion in the coordination compound [Co(NH ) (NO )] Cl is 3 5 2 2 A. Ammine B. Cobalt \nC. Chloride D. Nitro",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "4",
+      "question_text": "The organic compounds A, B and C are amines having equivalent molecular weight. A and B on reaction with benzene sulphonyl chloride give white precipitate, however white precipitate obtained from compound B remains insoluble in NaOH. The variation in the boiling point of A, B and C can be seen as : A. A> B>C B. B>A>C C. A=B > C D. C>B>A",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "5",
+      "question_text": "70 gm solute is dissolved in 700 gm solvent to prepare a solution having density 1.5 g/ml. The ratio of its molality and molarity will be: A. 0.77 B. 1.4 C. 0.73 D. 1.3",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "6",
+      "question_text": "Match the column I and column II: A. A-(i), B-(ii), C-(iii), D-(iv) B. A-(iv), B-(ii), C-(iii), D-(i) C. A-(i), B-(iii), C-(ii), D-(iv) D. A-(iv), B-(iii), C-(ii), D-(i)",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "7",
+      "question_text": "In o-cresol, the –OH group is attached to the carbon that is: A. sp3 hybrid B. sp2 hybrid C. sp hybrid D. dsp2 hybrid",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "8",
+      "question_text": "Which of the following is laevorotatory in nature : A. alpha D – glucose B. beta -D- glucose C. beta-D- fructose D. sucrose",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "9",
+      "question_text": "The name inner transition metals is often used to refer to the A. lanthanoids B. actinoids C. both lanthanoids and actinoids D. d block elements",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "10",
+      "question_text": "Λ𝑜 CH COOH can be calculated if the values of the following are 𝑚 3 given: 1. Λ𝑜 HCl, Λ𝑜 KCl and Λ𝑜 CH COOK 𝑚 𝑚 𝑚 3 2. Λ𝑜 NaCl, Λ𝑜 KCl and Λ𝑜 CH COONa 𝑚 𝑚 𝑚 3 3. Λ𝑜 H SO , Λ𝑜 Na SO and Λ𝑜 CH COONa 𝑚 2 4 𝑚 2 4 𝑚 3 A. Only 1 B. Either 1 or 2 C. Either 1 or 3 D. Either 2 or 3",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "11",
+      "question_text": "Which of the following will give a yellow or orange ppt. with 2,4 DNP? (i) Porpanal (ii) Propanone (iii) Propanoic acid A. (i) and (ii) B. (ii) and (iii) C. (i) and (iii) D. (i), (ii) and (iii)",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "12",
+      "question_text": "Identify the secondary benzylic halide and primary alkyl halide from the following: A. (i) and (iii) B. (iv) and (ii) C. (iii) and (iv) D. (i) and (ii)",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "13",
+      "question_text": "Assertion (A): Secondary aliphatic amines react with nitrous acid to form aliphatic diazonium salts which being unstable, liberate nitrogen gas quantitatively. Reason: Nitrogen gas evolved on reaction with nitrous acid can be used for the estimation of proteins and amino acids. Select the most appropriate answer from the options given below: A. Both A and R are true, and R is the correct explanation of A. B. Both A and R are true, and R is not the correct explanation of A. C. A is true but R is false. D. A is false but R is true",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "14",
+      "question_text": "Assertion (A): Care should always be taken to ensure that solutions that flow in the blood stream are of the same osmotic pressure as that of the blood. Reason(R): Sodium ion and potassium ions are responsible for maintaining proper osmotic pressure balance inside and outside of the cells of organism. Select the most appropriate answer from the options given below: A. Both A and R are true, and R is the correct explanation of A. B. Both A and R are true, and R is not the correct explanation of A. C. A is true but R is false. D. A is false but R is true",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "15",
+      "question_text": "Assertion (A): Starch forms colloidal solution with water. Reason (R): Starch contains 80-85% of amylopectin which is insoluble in water. Select the most appropriate answer from the options given below: A. Both A and R are true, and R is the correct explanation of A. B. Both A and R are true, and R is not the correct explanation of A. C. A is true but R is false. D. A is false but R is true",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "16",
+      "question_text": "Assertion (A): Secondary cells are used in invertors. Reason (R): A primary cell can be recharged by passing current through it in the opposite direction after it has been used. Select the most appropriate answer from the options given below: A. Both A and R are true, and R is the correct explanation of A. B. Both A and R are true, and R is not the correct explanation of A. C. A is true but R is false. D. A is false but R is true",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "17",
+      "question_text": "Attempt either option A or B A. Answer the following: I. When 50 mL of phenol and 50 mL of aniline are mixed, predict whether the volume of the solution is equal to, greater than or less than 100 mL. Give reason to support your answer. II. Ritesh suggested adding salt to the box containing ice. He said this would keep the cold drink bottles cold for a longer time. How will Ritesh justify his suggestion? OR B. Answer the following: I. BaCl on reaction with Na SO in aqueous solution gives 2 2 4 white precipitate. If the two solutions are separated by a semi-permeable membrane, will there be appearance of a white precipitate due to osmosis? II. Why does water stops boiling when sugar is added to boiling water.",
+      "max_marks": 2
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "18",
+      "question_text": "Consider the graph for the reaction H + I ⇌ 2HI 2 2 I. Calculate enthalpy of reaction and activation energy for the backward reaction. II. How will the catalyst affect the rate of this reaction? Explain. (for visually challenged learners) I. Define activation energy. What will happen to activation energy if we increase the temperature? II. How will the catalyst affect the rate of an endothermic reaction?",
+      "max_marks": 2
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "19",
+      "question_text": "Carry out following conversions : I. Nitrobenzene to 4- bromobenzenamine II. Chlorophenylmethane to 2-phenyl-ethanamine",
+      "max_marks": 2
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "20",
+      "question_text": "Write the formula of the following coordination complex: I. diaquasilver(I) dichloridoargentate(I) II. dihydroxidobis(triphenylphosphine)nickel(II)",
+      "max_marks": 2
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "21",
+      "question_text": "The mechanism of formation of alcohols from alkenes is given below. Rectify the errors in the mechanism and rewrite the corrected steps",
+      "max_marks": 2
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "22",
+      "question_text": "What will be the vapour pressure of a 1 molal aqueous solution of MgCl , assuming dissociation of MgCl to be 70 mole percent? 2 2 (Vapor pressure of pure water at 25 oC is 23.8 mmHg)",
+      "max_marks": 3
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "23",
+      "question_text": "Write the Nernst equation for the following: I. Ni (s) + Cu2+ (aq)  Ni2+ (aq) + Cu (s) II. Al (s) + FeSO (aq)  Al (SO ) (aq) + Fe (s) 4 2 4 3 III. Mg (s)/Mg2+ (aq)//Ag+ (aq)/Ag(s)",
+      "max_marks": 3
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "24",
+      "question_text": "Explain the following: I. Toluene on treatment with Cl in sunlight gives benzyl chloride 2 whereas when treated with Cl in dark gives o-chlorobenzene 2 and p-chlorobenzene. II. Finkelstein reaction is carried out in the presence of dry acetone. III. neo pentylchloride has lower boiling point than isopentylchloride.",
+      "max_marks": 3
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "25",
+      "question_text": "Which of the following elements will: I. exhibit similar magnetic behaviour and why? Magnesium (Atomic No. 12), Chromium (Atomic No. 24), Iron (Atomic No. 26) and Molybdenum (Atomic No. 42). II. form white salts and why? Zinc (Atomic No. 30), Scandium (Atomic No. 21), Nickel (Atomic No. 28) and Vanadium (Atomic No. 23)",
+      "max_marks": 2
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "26",
+      "question_text": "Arrange the products obtained in the following cases in the increasing order of their pKa values: A. Oxidation of ethanol in presence of acidified potassium dichromate B. Reaction of propanoic acid with Br in the presence of red 2 Phosphorus C. Reaction of isopropyl magnesium bromide with carbon dioxide, followed by hydrolysis. D. Reaction of propanoic acid with Cl in the presence of red 2 Phosphorous.",
+      "max_marks": 3
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "27",
+      "question_text": "Carry out the following conversions. (Attempt any 3) I. Butan-2-one to 3-Methylpentan-3-ol II. Anisole to 4-Methoxytoluene III. Phenol to Benzene IV. Chloroethane to Ethoxy ethane",
+      "max_marks": 3
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "28",
+      "question_text": "Answer the following questions: I. Are the enthalpies of atomisation of Zinc and Copper matched correctly? Justify your answer. Element Enthalpy of atomisation/ kJmol-1 339 Zinc 130 Copper II. Out of sulphuric acid and hydrochloric acid, which acid will you prefer for permanganate titrations and why? III. 5NO 2 – + 2MnO 4 – + 6H+ ",
+      "max_marks": 3
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "29",
+      "question_text": "Conductivity of Aqueous Solutions Electrical conductivity is based on the flow of ions. Slightly ionized substances are weak electrolytes. Weak acids and bases would be categorized as weak electrolytes because they do not completely dissociate in solution. Highly ionized substances are strong electrolytes. Strong acids and salts are strong electrolytes because they completely ionize in solution. The ions carry the electric charge through the solution thus creating an electric current. The current, if sufficient enough, will light one or both LEDs on a conductivity meter, shown at right. The meter has a 9V battery, two parallel copper electrodes and \ntwo LED’s – one green and one red. The conductivity of a solution can be tested by switching the meter on and dipping the copper electrodes in the solution to be tested. Substances that do not conduct an electric current are called non- electrolytes. Non-electrolytes do not ionize; they do not contain moveable ions. The LEDs of a conductivity meter will not light because there are no ions to carry the electric current. The table given below is a guide to the possible conductivity measurements Scale Red LED Green LED Conductivity 0 off off low or none 1 dim off low 2 medium off medium 3 bright dim high 4 very bright medium very high source: https://chem.libretexts.org Based on the information provided above, answer the following questions: I. Is it possible to identify whether the given solution is 1 M NaOH or 1 M HCl using the conductivity meter? Justify your answer. II. What is the possible pH value of solution if the glow of green LED is medium and the red LED glows very brightly? (i) 1 (ii) 13 (iii) 5 (iv) 8 (a) (i) and (ii) (b) (i) and (iii) (c) (ii) and (iv) (d) (iii) and (iv) OR Write down the observations if the conductivity meter is dipped in distilled water. \nIII. Refer to the table given below and draw the molar conductivity vs. concentration curve for solution A and B. Solution Red LED Green LED A bright dim B dim off (For Visually Challenged students) Conductivity of Aqueous Solutions Conductivity meter is a device which is used to identify whether the given solution is a strong, weak or non-electrolyte. The meter has a 9V battery, and two parallel copper electrodes and a 5 point scale (0 to 4) to measure conductivity of a solution. The conductivity of a solution can be tested by switching the meter on and dipping the copper electrodes in the solution to be tested. Electrical conductivity is based on the flow of ions. Highly ionized substances are strong electrolytes. Strong acids and salts are strong electrolytes because they completely ionize in solution. The ions carry the electric charge through the solution thus creating an electric current. The current, if sufficient enough, will show a value of 3 or 4 on the conductivity meter. Slightly ionized substances are weak electrolytes. Weak acids and bases would be categorized as weak electrolytes because they do not completely dissociate in solution. The values for weak electrolytes are 1 or 2 on the conductivity scale. Substances that do not conduct an electric current are called non- electrolytes. Non-electrolytes do not ionize; they do not contain moveable ions. The conductivity meter shows a value of 0 in such a case as there are no ions to carry the electric current. The following table is a guide to the possible conductivity values: \nScale Conductivity 0 low or none 1 low 2 medium 3 high 4 very high Based on the information provided above, answer the following questions: I. Is it possible to identify whether the given solution is 1 M NaOH or 1 M HCl using the conductivity meter? Justify your answer. II. What is the possible pH value of solution if the scale shows the value “4” (i) 1 (ii) 13 (iii) 5 (iv) 8 (a) (i) and (ii) (b) (i) and (iii) (c) (ii) and (iv) (d) (iii) and (iv) OR What will be value on the scale if the conductivity meter is dipped in distilled water? III. Predict the electrolyte is a strong or weak electrolyte on the basis of the following observation: Solution Scale A 3 B 2",
+      "max_marks": 5
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "30",
+      "question_text": "Iron-EDTA complex in food fortification Food fortification is defined as the practice of adding vitamins and minerals to commonly consumed foods during processing to increase their nutritional value. It is a proven, safe and cost-effective strategy for improving diets and for the prevention and control of micronutrient deficiencies. A food product (such as rice, wheat flour, edible oil) that is fortified through the addition of fortificants is called a “vehicle”. In African and south Asian countries 40% of the population suffers from anaemia. Average human needs nearly 10mg of iron daily. Iron fortification may be useful in fighting iron deficiencies in humans. Reduced iron and several iron salts have been used in the past as iron fortification, however, not all are suitable for this purpose, in terms of iron absorption. Recent studies have shown that beverages containing sugar fortified with either Ferrous sulphate or Fe(III)- EDTA complex have high rate of absorption of iron. Ferrous sulphate as well as Fe(III)- EDTA is suitable to enrich sugar, but while iron from ferrous sulphate is precipitated and poorly absorbed when fortified sugar is added to beverages such as tea, Fe(III)- EDTA reacts slowly with tea and iron is not precipitated for at least 24 hr. Fe(III)-EDTA as iron fortification, has demonstrated so far, more advantages than that observed from other iron salts, including ferrous sulphate. But, EDTA is a chelating agent and its use in food technology to prevent oxidative damage of food has been restricted. Excessive consumption of EDTA can cause abdominal cramps, nausea, low blood pressure and damage to kidneys. According to National Institute of Health, it is unsafe to consume more than 3 g of EDTA per day or continuously for more than 5 to 7 days. The amount of EDTA necessary for 10 mg of iron fortification, is about 60 mg. This is within the safe limits and is comparable to the usual amount added to the diet. (source: Layrisse, M., & MartInez-Torres, C. (1977). Fe (III)-EDTA complex as iron fortification. The American Journal of Clinical Nutrition, 30(7), 1166-1174.) Based on the information provided above, answer the following questions: I. Why is Fe(III)-EDTA complex stable as compared to Ferrous sulphate? OR \nWhat happens when hard water is titrated against Na EDTA? 2 II. You are a doctor, working in Somalia. Will you recommend iron fortified food to your patients? Support your answer with references from the passage. III. What is the denticity of the ligand in the Fe(III) EDTA complex. Name the atom(s) through which it can bind to the central metal ion. Write the structure of EDTA. (Refer to figure 1) For Visually challenged candidates Iron-EDTA complex in food fortification Food fortification is defined as the practice of adding vitamins and minerals to commonly consumed foods during processing to increase their nutritional value. It is a proven, safe and cost-effective strategy for improving diets and for the prevention and control of micronutrient deficiencies. A food product (such as rice, wheat flour, edible oil) that is fortified through the addition of fortificants is called a “vehicle”. Reduced iron and several iron salts have been used in the past as iron fortification, however, not all are suitable for this purpose, in terms of iron absorption. Recent studies have shown that beverages containing sugar fortified with either Ferrous sulphate or Fe(III)- EDTA complex have high rate of absorption of iron. Ferrous sulphate as well as Fe(III)- EDTA is suitable to enrich sugar, but while iron from ferrous sulphate is precipitated and poorly absorbed when fortified sugar is added to beverages such as tea, Fe(III)- EDTA reacts slowly with tea and iron is not precipitated for at least 24 hr. Fe(III)-EDTA as iron fortification, has demonstrated so far, more advantages than that observed from other iron salts, including ferrous sulphate. But, EDTA is a chelating agent and its use in food technology to prevent oxidative damage of food has been restricted. Excessive consumption of EDTA can cause abdominal cramps, nausea, low blood pressure and damage to kidneys. According to National Institute of Health, it is unsafe to consume more than 3 g of EDTA per day or continuously for more than 5 to 7 days. The amount of EDTA necessary for 10 mg of iron fortification, is about 60 mg. This is within the safe limits and is comparable to the usual amount added to the diet. (source: Layrisse, M., & MartInez-Torres, C. (1977). Fe (III)-EDTA complex as iron fortification. The American Journal of Clinical Nutrition, 30(7), 1166-1174.) \nBased on the information provided above, answer the following questions: I. Why is Fe(III)-EDTA complex stable as compared to Ferrous sulphate? OR What happens when hard water is titrated against Na EDTA? 2 II. You are a doctor, working in Somalia. Will you recommend iron fortified food to your patients? Support your answer with references from the passage. III. (a)What is the denticity of the ligand in the Fe(III) EDTA complex. Name the atom(s) through which it can bind to the central metal ion. (b) EDTA is an electron acceptor or an electron donor?",
+      "max_marks": 5
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "31",
+      "question_text": "Attempt either A or B A. Answer the following questions: I. Write the structure of expected product of Cannizarro reaction of 2-chlorobenzaldehyde. II. How would the presence of -SO H group effect the basic 3 strength of aniline. III. Convert acetic acid to ethanamine. IV. Write the steps to prepare Benzoic acid from Benzoyl chloride. V. Give a chemical test to distinguish between: propanal and propanone OR B. Answer the following questions: I. Write the structure of expected product of Wolf-Kishner reduction of 2 –methylbutanal. II. How would the presence of -SO H group effect the acidic 3 strength of benzoic acid III. Prepare acetic acid from ethanamine. IV. Convert Aniline to benzoic acid. V. Give a chemical test to distinguish between: propanal and ethanal.",
+      "max_marks": 5
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "32",
+      "question_text": "Attempt either A or B A. Answer the following questions: I. Identify and give any one point of difference between the protein present in the hair and protein present in egg albumin. II. Both glucose and sucrose have aldehydic group, then why does only glucose reduces Fehling’s Reagent.and not sucrose? III. Why do amino acids behave as salts? IV. What chemical change takes place during curdling of milk? V. Doctor advised a 50 year old woman enough exposure to sunlight and addition of fish and egg yolk to her diet. What is the possible disease diagnosed by the doctor? OR B. Answer the following questions: I. Identify and give any one point of difference between the carbohydrate present in cane sugar and carbohydrate present in milk. II. Glucose is an aldohexose and a monosaccharide. Which oxidising agent should be used to bring about oxidation of only the aldehydic group present in glucose? III. Amino acid HOOC-CH CH(NH )CH COOH.Predict whether 2 2 2 the pH of this amino acid will be >7, 7 or <7. IV. Name the two major molecular shapes formed due to the folding of secondary structure of proteins. V. Ashish’s gums bleed frequently. The doctor’s prescription mentioned that Ashish is suffering from scurvy. Help him to identify two food sources to help him recover faster. .",
+      "max_marks": 5
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "33",
+      "question_text": "Attempt either A or B A. I. The rate of a reaction triples when the temperature changes from 298 K to 318 K. Calculate the energy of activation of the reaction assuming that it does not change with temperature. (Given R = 8.314 JK-1mol-1, log 3 = 0.4771) II. Identify the order of reaction and write its integrated rate equation mentioning what each term in the equation represents. OR \nB. I. Consider the following first order thermal decomposition of SO Cl at a constant volume 2 2 SO Cl (g) → SO (g) + Cl (g) 2 2 2 2 If the total pressure of the gases is found to be 200 torr after 10 seconds and 300 torr upon the complete decomposition of SO Cl . Calculate the rate constant. 2 2 (Given log 3 = 0.4771, log 2= 0.3010) II. For a bimolecular elementary reaction A + B → Products. Write the expression for the rate of reaction relating temperature and activation energy for the reaction and also mention what each term represents in the equation.",
+      "max_marks": 5
+    },
+    {
+      "board": "CBSE",
+      "subject": "Chemistry",
+      "question_number": "2A",
+      "question_text": "Consider the reaction and identify B and C CH CH CH CH Cl NaOH +Ethanol. A 3 2 2 2 A H 2 O , H + B and A (i ) B 2 H 6 . (i i )H 2 O 2 , O H C A. B=C= Butanol B. B= Butanol, C=Butene C. B= Butan-2-ol, C= Butanol D. B= Butene, C=Butan-2-ol",
+      "max_marks": 1
+    }
+  ],
+  "Physics": [
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "29",
+      "question_text": "When an external voltage is applied across a semiconductor diode such that p-side is connected to the positive terminal of the battery and n-side to the negative terminal it is said to be forward biased. The applied voltage mostly drops across the depletion region and the voltage drop across the p-side and n-side of the junction is negligible. When an external voltage is applied across the diode such that n-side is positive and p-side is negative, it is said to be reverse biased. The applied voltage mostly drops across the depletion region. \n(I) Ge and Si diodes start conducting at 0.3 V and 0.7 V respectively. In the following figure if Ge diode connection are reversed, the value of V changes 0 by (assume that the Ge diode has large breakdown voltage) (A) 0.2 V (B) 0.4 V (C) 0.6 V (D) 0.8 V (II.) The value of V and I for the network are : 0 d Si Ge 12V V 0 5.6K (A) 13 V, 2.32mA (B) 11.7 V, 2.08mA (C) 11.3V, 2.01mA (D) 11V, 1.96mA (III.) The circuit shown below contains two ideal diodes, each with a forward resistance of 50Ω. If the battery voltage is 6 V, the current through the 100Ω resistance (in amperes) is (A) 0.036 (B) 0.020 (C) 0.030 (D) 0.027 (IV) In the figure, potential difference between A and B is (A) Zero (B) 5 V (C) 10 V (D) 15 V",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "1.",
+      "question_text": "If a charged hollow sphere and a solid sphere of aluminum and copper of equal radii are in electrostatic equilibrium, then which of the following statements is true? (A) Both the spheres are having equal charges. (B) The hollow sphere will have more charge than solid sphere at its surface. (C) The aluminum sphere will have more charge on its surface than copper sphere. (D) If hollow sphere is also made up of aluminum then it will have more charge.",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "10.",
+      "question_text": "The emf generated by an AC generator is given by V=V sin ωt, where ω is angular o frequency of armature of generator. What will be the emf if the angular frequency is doubled (A) V=V sin 2ωt ( B) V=2V sin ωt o o (C) V=2V sin 2ωt (D) V=V sin ωt o o",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "11.",
+      "question_text": "The ratio of the nuclear densities of two nuclei having the mass numbers 8 and 27 is (A) 8:27 (B) 3:2 (C)2:3 (D) 1:1",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "12.",
+      "question_text": "When we move magnetic compass from point P to Q then which of the following statement is true \n(A) The deflection of the magnetic needle at P and Q will be in the same direction. (B) The deflection of the magnetic needle at P and Q will be in the opposite directions. (C) The deflection of the magnetic needle at P and Q will be perpendicular to each other. (D) The deflection of the magnetic needle at P and Q will be inclined at 45o with respect to each other. \nFor Questions 13 to 16, two statements are given one labelled Assertion (A) and other labelled Reason (R). Select the correct answer to these questions from the options as given below. (A) Both Assertion and Reason are true and Reason is the correct explanation of Assertion. (B) Both Assertion and Reason are true but Reason is not the correct explanation of Assertion. (C) Assertion is true but Reason is false. (D) Both Assertion and Reason are false.",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "13.",
+      "question_text": "Assertion (A): Total energy of an electron in hydrogen atom is negative. Reason (R): The centripetal force is provided by electrostatic force.",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "14.",
+      "question_text": "Assertion (A): The critical angle of light passing from glass to air is minimum for violet colour. Reason (R): The wavelength of blue light is greater than the light of other colours.",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "15.",
+      "question_text": "Assertion (A): Two light sources emitting waves of similar wavelengths are coherent. Reason (R): Two light sources emitting waves having zero or constant phase difference are known as coherent sources.",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "16.",
+      "question_text": "Assertion (A): For three point charges to be in equilibrium, they must be collinear. Reason(R): One of the three charges must have different polarity than rest of the two.",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "17.",
+      "question_text": "The amplitude of the magnetic field of a plane electromagnetic wave propagating along positive X axis in vacuum is 510 nT𝑘̂ and its angular frequency is 60 x 106 ( ). rad/sec. Write the expression for the electric field → 𝐸",
+      "max_marks": 2
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "18.",
+      "question_text": "The following graph shows the potential difference across the terminals of a cell against its load current. \nFind, (I) the emf of the cell and (II) the internal resistance of the cell. For VI candidates Find the relation between internal resistance, emf, external resistance and the total current in the circuit ?",
+      "max_marks": 2
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "19.",
+      "question_text": "A charge q is placed inside a sphere of radius ‘a’ filled with water and another charge 2q is placed inside cube of side ‘2a’ which is vacuumed inside. Find the ratio of the flux linked with the sphere to that linked with the cube. (Take relative permittivity of water as 80)",
+      "max_marks": 2
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "2.",
+      "question_text": "A coil contains N turns of insulated copper wire of diameter d and resistivity ρ wound on a cylinder of diameter D. What is the total resistance between the two ends of the coil of copper wire?(given: D>>d) 4𝜌𝑁𝐷 8𝜌𝑁𝐷 (A) (B) 𝑑2 𝑑2 2𝜌𝑁𝐷 12𝜌𝑁𝐷 (C) (D) 𝑑2 𝑑2",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "20I",
+      "question_text": "Write an expression for the magnetic force per unit length between two parallel thin current carrying wires. Hence define one ampere. OR",
+      "max_marks": 2
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "20II",
+      "question_text": "Draw a diagram representing the behaviour of magnetic field lines for a (A) diamagnetic & (B) paramagnetic substance. For VI-Candidates Sate Gauss’s law of magnetism? Hence find the magnetic flux linked with the sphere enclosing a current carrying solenoid?",
+      "max_marks": 2
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "21I",
+      "question_text": "How does the impact parameter affect the trajectory of a α – particles scattered by a heavy nucleus? What is the value of impact parameter for head on collision of α – particles with the nucleus? OR",
+      "max_marks": 2
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "21II",
+      "question_text": "1 Plot a graph showing variation of de-Broglie wavelength λ versus , where V is √𝑉 accelerating potential for a particle of mass m and charge q. Obtain the slope of this graph.",
+      "max_marks": 0
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "22.",
+      "question_text": "With the help of circuit diagram explain working of the full wave rectifier.",
+      "max_marks": 3
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "23.",
+      "question_text": "(I) The current I in a wire is getting divided in two wires with currents I and I at a 1 2 3 junction in a circuit.The currents in the three wires are related by I = I + I . 1 2 3 (A) State the fundamental law from which this relation is derived. (B) Explain the validation of law of conservation of energy in Kirchhoff's voltage law? (II) How the balancing condition gets affected if you are interchanging the galvanometer and the cell in the Wheat stone bridge?",
+      "max_marks": 3
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "24.",
+      "question_text": "A fast-moving neutron collides with the nucleus of Plutonium (Pu), thereby producing Xenon (Xe) and Zirconium (Zr) along with neutrons. (I) Write the nuclear fission reaction. (II) Find the energy released in the above nuclear reaction. Given atomic masses: m (239𝑃𝑢) = 239.052157u, 94 m (103𝑍𝑟) = 102.926597u, 40 m (134𝑋𝑒) = 133.905040u & 54 m (1𝑛) = 1.00866u. 0",
+      "max_marks": 3
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "25.",
+      "question_text": "A compound microscope consists of an objective lens of focal length 0.82 cm and an eyepiece lens of focal length 2.9 cm. An object is placed 0.91 cm from the objective lens. The image is formed at the near point (25 cm) from the eye. (I) Calculate that the angular magnification of the microscope. (II) Draw the ray diagram of compound microscope in normal adjustment.",
+      "max_marks": 3
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "26.",
+      "question_text": "Draw the reflected wave front for a plane wave front incident on a plane reflecting surface. Hence verify the laws of reflection using Huygen’s principle. For VI Candidates (I) Define wave front? (II) Define wavelet? (III) What will be the shape of the wave front intercepted by a large reflecting type telescope on earth, due to a star far-away from our solar system?",
+      "max_marks": 3
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "27I",
+      "question_text": "If a point sized object having charge 1C and mass 1g is projected with velocity of 2𝑖̂ m/s from a point (0,2cm,0) in the region of magnetic field -0.1𝑘̂ T which spreads in the first quadrant. (A) What will be the shape of the path followed by the given charged particle? (B) At what point it will cross the X-axis? (C) What will be the kinetic energy of particle when it will enter in the fourth quadrant? OR",
+      "max_marks": 3
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "27II",
+      "question_text": "A solenoid has a core of material with relative permeability 200. The windings of the solenoid are insulated from the core and carry a current of 1A. If the number of turns is 2000 per metre, calculate (A) magnetic intensity, (B) magnetic field & (C) magnetisation",
+      "max_marks": 3
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "28.",
+      "question_text": "5 A conducting coil of 50 turns and area cm2 is rotating along the axis of solenoid 𝜋 of length 50cm and 2000 turns, carrying current of 5 A. What will be the value of maximum emf generated?",
+      "max_marks": 3
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "3.",
+      "question_text": "If the phasor diagram for a device connected to AC supply is as shown in the fig, then which of the following statements is true? (A) When the frequency of the AC source is increased than the impedance of the device decreases. (B) This device behaves as conducting wire when connected across DC source. (C) When the frequency of the AC source is decreased than the impedance of the device decreases. (D) D. This device stores energy in the form of magnetic potential energy.",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "30.",
+      "question_text": "Photoelectric effect is phenomenon of the ejection of electrons when the radiation of suitable frequency is made to fall on the surface of a metal. When light of suitable wavelength falls on the emitter C given in the diagram, the photoelectrons are emitted. These photoelectrons are drawn to the collector A. The photoelectric current of the order of a few microamperes can be normally obtained from the device given in figure. The device given converts a change in intensity of illumination into a change in photocurrent. This current can be used to operate control systems and in light measuring devices. The devices are made up of metals with low ionization enthalpies, for example platinum whose work function is 6.35 eV. \n(I) If infrared radiation of 3 x 1011 Hz is used as incident radiation, determine the reading of microammeter? Justify mathematically. \n(II) In the given diagram, if terminal B is shifted towards the left then how will it affect the reading of the microammeter? (for V.I. candidates) (II) If the supplied voltage is decreased, then what will be effect on the reading of the microammeter? \n(III) Plot a graph showing this variation in reading of micrometre on shifting the terminal B towards the right. (for V.I. candidates) (III) If the intensity of incident radiation is doubled, by what factor will the kinetic energy change?",
+      "max_marks": 4
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "31I",
+      "question_text": "(A) A dielectric slab of thickness t, is introduced between the plates of parallel plate capacitor of area A and separation d (where t<d). Find an expression for the capacitance with the dielectric slab. (B) A copper sphere of capacitor C is dropped in ocean. Will the capacitance of the sphere increase, decrease or remain same? Justify. (C) A capacitor is connected across a source of potential difference V and then the separation ‘d’ between the plates is increased using insulating stick. Plot ‘V’ vs ‘d’ graph for the given capacitor. \nFor VI Candidates (C) A capacitor is connected across potential difference V and is then separation between plates ‘d’ is increase using insulating stick. Will the energy stored in capacitor increase or decrease? Justify OR",
+      "max_marks": 5
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "31II",
+      "question_text": "(A) If a charge of 1µC is placed at the origin and another charge of 3 µC placed at the point (20m,0m,0m) in an external uniform electric field of 40V/m 𝑖̂ with the electric potential at origin to be zero. Find the electrical potential energy of system. (B) If one charge particle is moved from A to C To B and another charge particle of equal magnitude is moved from A to D to B, In uniform external magnetic field. Than for which charge particle more work will be needed? (use fig for reference) (C) Electrostatic potential is constant throughout the volume of conductor has the same value on its surface why? For VI candidates (C) If A charge particle is taken from A to B from two different path one path has resistance of 10Ω and another has capacitance of 3µF. work done by which path will be more.",
+      "max_marks": 5
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "32I",
+      "question_text": "(A) Derive lens maker’s formula. (B) Equi-convex lenses are to be manufactured from a glass of refractive index 1.55, with both faces of the same radius of curvature. What is the radius of curvature required if the focal length is to be 10cm? OR",
+      "max_marks": 5
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "32II",
+      "question_text": "(A) Define angle of deviation in a prism? (B) Obtain the relation A+δ=i+e for a prism where A is the angle of prism, δ is the angle of deviation, iis the angle of incidence and e is the angle of emergence. Write this relation for the minimum deviation? (C) Write the condition for minimum deviation.",
+      "max_marks": 5
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "33I",
+      "question_text": "(A) State the working principle of a moving coil galvanometer? What modification is required in the galvanometer to make its scale linear? (B) If a galvanometer of resistance 49.5Ω has range of 0.05A. What will be the value of resistance needed to convert it in ammeter of range 5A? (C) How these two resistors should be connected to galvanometer in both cases? OR",
+      "max_marks": 5
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "33II",
+      "question_text": "(A) An input potential V =200 Sin 100𝜋𝑡 V is provided to an ideal transformer in having 1000 turns in primary coil and 100 turns in secondary coil as shown in figure. The load circuit has a resistance of 4Ω, a capacitive reactance of 2Ω and an inductive reactance of 6Ω. Find: (i) the output voltage across the load circuit (ii) the current flowing through the load circuit (iii) the power supplied to the load circuit by the transformer (B) State the working principle of a transformer and explain how it is a key component in the transfer of electrical power over long distances.",
+      "max_marks": 5
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "4.",
+      "question_text": "Which of the following statement is true for the radio waves and the gamma rays? (A) The energy of gamma rays is lesser than that of the radio waves. (B) The frequency of the radio waves is higher than that of gamma rays. (C) The radio waves and the gamma rays have the same energy. (D) The energy of radio waves is lesser than that of the gamma rays.",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "5.",
+      "question_text": "A glass prism has internal angles of 45°, 45° and 90°. The glass has a critical angle of 45°. Which of the following ray diagrams depicts the possible path the of light through the prism? (A) (B) \n(C) (D) For VI-Candidates Light passes from a certain medium into air. The critical angle of the given medium is Ɵ, which of the following expressions gives the speed of light in the given medium? Where c is the speed of light in air. 1 SinƟ (A) (B) cSinƟ C C (C) (D) cSinƟ SinƟ",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "6.",
+      "question_text": "The light from a monochromatic source is incident on a single slit and the resulting diffraction pattern is viewed on a screen. The graph shows the variation of the intensity with the distance on the screen. The width of slit is increased keeping the intensity of the source the same. Which of the following graphs is correct? (The original curve is shown with a dashed line.) (A) (B) \n(C) (D) For VI-Candidates The phenomenon of superposition of two waves, resulting in redistribution of energy is known as…………… (A) diffraction (B) interference (C) reflection (D) refraction",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "7.",
+      "question_text": "Which of the following transitions corresponds to the emission of the radiation of the maximum wavelength? (A) I (B) III (C) IV (D) VI \n(for V.I. Candidates) Which of the following transitions corresponds to the emission of the radiation of the maximum wavelength? I From 4th orbit to 2nd orbit. II From 2nd orbit to 1st orbit. III From 3rd orbit to 4th orbit. IV From 3rd orbit to 2nd orbit. V From 1st orbit to 3rd orbit. VI From 2nd orbit to 3rd orbit. (A) I (B) III (C) IV (D) VI",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "8.",
+      "question_text": "A charged particle is projected along the axis of a current carrying loop. Which of the following statements is true? (A) The acceleration of the charged particle will depend on the velocity with which it is projected. (B) The acceleration of the charged particle will depend on the magnitude of the current passing through the coil. (C) The acceleration of the charged particle will depend on the radius of the coil. (D) The charged particle will move with constant velocity.",
+      "max_marks": 1
+    },
+    {
+      "board": "CBSE",
+      "subject": "Physics",
+      "question_number": "9.",
+      "question_text": "Two small identical magnets are allowed to fall freely one through a vertical solenoid of 20 m made up of copper and another in air through the same vertical distance. The time taken by the two magnets to fall will be (A) same in both the cases. (B) more for the magnet falling in air. (C) more for the magnet falling through the solenoid. (D) infinite.",
+      "max_marks": 1
+    }
+  ]
+}

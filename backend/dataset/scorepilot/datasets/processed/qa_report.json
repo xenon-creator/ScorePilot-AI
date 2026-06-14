@@ -1,0 +1,19 @@
+{
+  "statistics": {
+    "total_questions_audited": 177,
+    "valid_questions_count": 177,
+    "linkage_rate": 1.0,
+    "valid_json_rate": 1.0,
+    "issues_by_category": {
+      "broken_records": 0,
+      "missing_mark_schemes": 0,
+      "empty_questions": 0,
+      "duplicate_questions": 0,
+      "invalid_json_validation": 0,
+      "invalid_marks": 0,
+      "question_mark_scheme_mismatches": 0
+    }
+  },
+  "status": "PASS",
+  "failures": []
+}

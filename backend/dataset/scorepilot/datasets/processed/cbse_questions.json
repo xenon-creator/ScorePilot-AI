@@ -1,0 +1,934 @@
+[
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_001",
+    "question": "The male gametes in plants are formed by: A. Mitotic division of nucleus of vegetative cell B. Meiotic division of nucleus of vegetative cell C. Mitotic division of nucleus of generative cell D. Meiotic division of nucleus of generative cell",
+    "max_marks": 1,
+    "mark_scheme": "\n(i) 3000+1300+427+427+378= 5532 (1)\n(ii)\n(a) Animals are mobile and can migrate to escape harsh conditions or\nexplore new areas.\n(b) Animals have adapted to changing environments, developing complex\nnervous systems and receptors. Their responses are adaptive and\nensure survival. Iii. Plants, being fixed, have fewer evolutionary\nadaptations for water, minerals, and sunlight. (Anyone, 1)",
+    "marking_points": [
+      {
+        "point": "i) 3000+1300+427+427+378= 5532",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_002",
+    "question": "The primary endosperm nucleus is formed by fusion of which of the following? A. A male gamete and a female gamete B. A male gamete and two polar nuclei C. A female gamete and two synergids D. Two male gametes and an egg cell",
+    "max_marks": 1,
+    "mark_scheme": "B. A male gamete and two polar nuclei",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_003",
+    "question": "During the menstrual cycle of a human female, formation of graafian follicle is stimulated by secretion of which of the following gonadotropin hormones? A. Estrogen and progesterone B. FSH and Estrogen C. FSH and LH D. Progesterone and LH",
+    "max_marks": 1,
+    "mark_scheme": "C. FSH and LH",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_004",
+    "question": "The experimental proof on the thermal stability of genetic material was first provided by experiments of A. Hershey and Chase B. Meselson and Stahl C. Frederick Griffith D. Jacob an Monod",
+    "max_marks": 1,
+    "mark_scheme": "C. Frederick Griffith",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_005",
+    "question": "Short stretches of DNA used to identify complementary sequences in a sample are called A. Probes B. Markers C. Primers D. Minisatellites",
+    "max_marks": 1,
+    "mark_scheme": "A. Probes",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_006",
+    "question": "Select the incorrect statement among the following. A. p2+2pq+q2 = 1. This is binomial expansion of (p+q)2. B. When frequency measured differs from expected values, the difference (direction) indicates the extent of evolutionary change. C. Hardy-Weinberg principle says that phenotype frequencies in a population are stable and are constant from generation to generation. D. The gene pool (total genes and their alleles in a population) remains constant. This is called genetic equilibrium. Sum total of all the allelic frequencies is 1.",
+    "max_marks": 1,
+    "mark_scheme": "C. Hardy-Weinberg principle says that phenotype frequencies in a population\nare stable and are constant from generation to generation.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_007",
+    "question": "Albinism is known to be due to an autosomal recessive mutation. The first child of a couple with normal skin pigmentation was an albino. What is the probability that their second child will also be an albino? A. 100% B. 25% C. 50% D. 75%",
+    "max_marks": 1,
+    "mark_scheme": "B. 25%",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_008",
+    "question": "\"In Cricket species, the sound produced by rubbing the wings or legs together play a crucial role in attracting mates, any change in the morphology of Cricket legs could potentially affect their ability to produce sound”. A mutant Cricket had thicker hind legs. What would you expect for this cricket species? A. The leg mutation will not lead to speciation if they diversify into new habitats. B. The leg mutation will have little effect on other external features, and therefore have little effect on speciation. C. The leg mutation will have no effect on behavior, and thus have little effect on speciation. D. The leg mutation might lead to reproductive isolation and speciation due to an effect on the mating call.",
+    "max_marks": 1,
+    "mark_scheme": "D. The leg mutation might lead to reproductive isolation and speciation due to\nan effect on the mating call.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_009",
+    "question": "Plasmodium is a pathogen that causes malaria. Identify the correct sequence of transmission of the pathogen. I II III IV Stage of First site in the host Second site in the Stage of pathogen as it body where the host body where pathogen as it is transferred pathogens infect and the pathogen is transferred to by vector bite proliferates infects and a new vector manifests clinical symptoms A Sporozoites Erythrocyte infection Liver infection Gametocytes B Gametocytes Erythrocyte infection Liver infection Sporozoites C Gametocytes Liver infection Erythrocyte Sporozoites infection D Sporozoites Liver infection Erythrocyte Gametocytes infection",
+    "max_marks": 1,
+    "mark_scheme": "D. Sporozoites, Liver infection, Erythrocyte infection, Gametocytes",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_010",
+    "question": "Which mRNA will be translated to a polypeptide chain containing 8 amino acids? A. AUGUUAAUAGACGAGUAGCGACGAUGU B. AUGAGACGGACUGCAUUCCCAACCUGA C. AUGCCCAACCGUUAUUCAUGCUAG D. AUGUCGACAGUCUAAAACAGCGGG",
+    "max_marks": 1,
+    "mark_scheme": "B AUGAGACGGACUGCAUUCCCAACCUGA",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_011",
+    "question": "In order to isolate genetic material of a bacterium, the cell must be treated with A. Lysozyme, ribonuclease, protease, chilled ethanol B. Cellulase, ribonuclease, protease, chilled ethanol C. Chitinase, ribonuclease, chilled ethanol, water D. Ribonuclease, protease, chilled ethanol, water",
+    "max_marks": 1,
+    "mark_scheme": "A. Lysozyme, ribonuclease, protease, chilled ethanol",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_012",
+    "question": "Integrated Pest Management involves I. Using pesticides/insecticides judiciously II. Using biocontrol agents III. Engaging in organic farming A. Only I B. Only II C. Both I and II D. Only III",
+    "max_marks": 1,
+    "mark_scheme": "C. Both I and II",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_013",
+    "question": "Assertion (A): The ability of the pistil to recognise the pollen is the result of a continuous dialogue between pollen and pistil. Reason (R): This electrical dialogue allows only compatible pollen to germinate.",
+    "max_marks": 1,
+    "mark_scheme": "C. A is true but R is false",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_014",
+    "question": "Assertion (A): Some organisms are better adapted to survive in an otherwise hostile environment. Reason (R): Adaptive ability is inherited and has a genetic basis.",
+    "max_marks": 1,
+    "mark_scheme": "A. Both A and R are true and R is the correct explanation of A",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_015",
+    "question": "Assertion (A): Excess dose of coke or crack produces a sense of euphoria, increased energy and causes hallucinations. Reason(R): It interferes with the transport of dopamine",
+    "max_marks": 1,
+    "mark_scheme": "A. Both A and R are true and R is the correct explanation of A",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_016",
+    "question": "Assertion (A): Rosie was the first transgenic cow to make more nutritionally balanced milk for consumption by human babies. Reason (R): The milk of Rosie cow contained human beta- lactalbumin which made the milk rich in protein.",
+    "max_marks": 1,
+    "mark_scheme": "C. A is true but R is false",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_017",
+    "question": "Attempt either option A or B. A. During artificial hybridization, it is important to ensure that only desired pollen grains are used for pollination. How is it ensured? OR B. Why is manual transfer of desired pollen grains relatively easy in pea plants for hybridization, but in wheat, pollen grains are often utilized from pollen banks for hybridization purposes?",
+    "max_marks": 2,
+    "mark_scheme": "A. It is achieved by emasculation and bagging techniques.\nIf the female parent bears bisexual flowers, removal of anthers from the flower\nbud before the anther dehisces using a pair of forceps is necessary. This step\nis referred to as emasculation.\nEmasculated flowers have to be covered with a bag of suitable size, generally\nmade up of butter paper, to prevent contamination of its stigma with unwanted\npollen. This process is called bagging. (1 x 2 = 2)\nOR\nB. In pea plants, manual emasculation is easier and pollen grains are viable\nfor months as it belongs to Leguminosae.\nIn wheat flowers (spikelets) pollen grain loses its viability half an\nhour after release. (1 x 2 = 2)",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_018",
+    "question": "How is the rate of initiation of RNA polymerase at a given promoter in a transcriptional unit of prokaryotes regulated?",
+    "max_marks": 2,
+    "mark_scheme": "In a transcription unit, the activity of RNA polymerase at a given promoter is\nregulated by accessory proteins that have an ability to recognise start sites.\n(1)\nThese regulatory proteins can act both positively (activators) and negatively\n(repressors) with the operator which is adjacent to the promoter in an operon\nunit. (1)",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_019",
+    "question": "The table below shows a hypothetical blood report of a patient. Test description Observed Unit Reference range value Leucocytes Total leucocyte count 1100 Per Microliter 4400-11000 Neutrophils 31 % 55-70 Lymphocytes 25 % 20-40 Basophils 0.5 % 0.5 - 1 Eosinophils 02 % 1-4 Monocytes 0 % 1-8 A. Looking at the values suggest which defense mechanism/ immunity is affected and state how this defense mechanism provides immunity. B. Name the barrier with least count and enumerate its role in providing immunity.",
+    "max_marks": 2,
+    "mark_scheme": "A. Innate immunity/ non-specific type of defense/immunity present at the time\nof birth is effected. It provides different types of barriers to the entry of the\nforeign agents into our body/destroys microbes/ prevents microbial growth.\n(1)\nB. Cellular barrier-monocytes is with least count and it can phagocytose and\ndestroy microbes. (1)",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_020",
+    "question": "Attempt either option A or B. A. A cheese maker claims to be a biotechnologist. How will you support the same? OR B. Why does the 'insertional inactivation' method to detect recombinant DNA is preferred to 'antibiotic resistance' procedure?",
+    "max_marks": 2,
+    "mark_scheme": "Anyone who can use/modify any living organism or their products using\ntechnology is considered to be a biotechnologist. (1)\nThus, cheese maker can be a biotechnologist as he uses microbes like\nbacteria, fungi to make cheese for commercial purpose (1)\nOR\nSelection of recombinants due to inactivation of antibiotics is a cumbersome\nprocedure because it requires simultaneous plating on two plates having\ndifferent antibiotics. (1)\nIn insertional inactivation method, insertion of recombinant DNA within the\ncoding sequence of the enzyme beta galactosidase results into inactivation of\nthis enzyme and the colonies do not produce any colour. The presence of a\nchromogenic substrate gives blue coloured colonies in absence of an insert.\n(1)",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_021",
+    "question": "Attempt either option A or B. A. (i) Compare the two ecological pyramids of biomass I and II given below and explain the situations in which this is possible. Fig. I Fig. II (ii) Construct an ideal pyramid of energy if 200,000 joules of sunlight are available. \n(ii) Construct an ideal pyramid of energy if 200,000 joules of \nsunlight are available. \nA. \nB. A tropical rainforest in South America is home to more than 40,000 \nspecies of plants, 3,000 of fishes, 1,300 of birds, 427 of mammals, \n427 of amphibians, 378 of reptiles and 1,25,000 insects, snails and \nworms.",
+    "max_marks": 2,
+    "mark_scheme": "A.\n(i) The first (upright) pyramid of biomass corresponds to a terrestrial\necosystem. Producers have maximum biomass, decreasing with\nherbivores (primary consumer), secondary consumer and tertiary\nconsumer. Second (inverted) pyramid refers to a small standing crop of\nphytoplankton supporting a large standing crop of zooplankton/aquatic\necosystem. (1)\n(ii)\n(1)\n- - - - - - - - - - - - - - - - - - -\nFor Visually impaired students\n(Answer same as (i) and (ii) above)\nOR\nB.\nA.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_022",
+    "question": "Suggest a suitable contraceptive device for the following cases with justification. (i) Mohini does not want to take the risk of conception and sexually transmitted infections (STIs). (ii) Lalita has two children and does not want any more children. (iii) Geeta wants a contraceptive that she can take till she wants to avoid conception and can resume back to her fertile life without the intervention of the doctor. Also, it should have a lower failure rate.",
+    "max_marks": 3,
+    "mark_scheme": "(i) Condoms; these act by blocking the entry of microbes and sperms in the\ncervix.\n(ii) Surgical methods such as Tubectomy by her or vasectomy by her\nhusband as these are highly effective but irreversible methods.\n(iii) Oral pills containing progestogens or progestogen – estrogen combination\nare very effective and can be repeated as long as the female derives to\nprevent conception. (1 x 3 =3)",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_023",
+    "question": "Given below is a figure showing transport of ovum, fertilisation and passage of growing embryo through fallopian tube in a human female. Answer the questions that follow: (i) What will be the ploidy of cells shown in (a) and (c) stage in the figure given below? (ii) What will happen if component L as shown in the figure (g) given below does not attach properly to the endometrium? (iii) In a pregnant mother (case X), during early pregnancy, the fertilised egg splits into two embryos at stage C shown in the figure given below, resulting in the formation of twins. Will the genome of cells of these two embryos exhibit variation? Justify your answer.",
+    "max_marks": 3,
+    "mark_scheme": "(i) (a) ovum is haploid (n) and (c) – blastomeres are diploid(2n).\n(ii) If the trophoblast (L) does not attach to the endometrium properly, it can\nlead to implantation failure, pregnancy loss, and other pregnancy\ncomplications.\n(iii) In case X, the cells of these embryos will have identical genome as they\nhave developed from the same zygote. (1 x 3 =3)\n- - - - - - - - - - - - - - - - - - -\nFor Visually impaired students\n The mitotic division called cleavage starts as the zygote moves through\nthe isthmus of the oviduct towards the uterus and forms 2,4,8,16 daughter\ncells called blastomeres. The embryo with 8 to 16 cell blastomeres is\ncalled a morula. (1)\n The morula transforms into blastocyst and the blastomeres in the\nblastocyst are arranged into an outer layer called trophoblast and an inner\ngroup of cells attached to trophoblast called the inner cell mass. (1)\n The trophoblast layer then gets attached to the endometrium of the uterus\nand the inner cell mass gets differentiated as the embryo. After\nattachment, the uterine cells divide rapidly and cover the blastocyst which\ngets embedded in the endometrium leading to implantation. (1)",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_024",
+    "question": "In guinea pigs, black coat colour (G) dominates over white (g) and brown eyes (B) dominate over blue (b). The alleles for coat colour and eye colour are not linked. What will be the probability of the offspring having blue eyes and a white coat if both parents are heterozygous for eye and coat colour? Find the probability using a Punnett square",
+    "max_marks": 3,
+    "mark_scheme": "BbGg Male is crossed with BbGg female which are both heterozygous of\nboth the characters for eye and coat colour. (1)\nPunnett square (1)\n1/16 or 6.25 % - blue eyes and white coat (1)",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_025",
+    "question": "Shown below are certain aquatic vertebrates, where natural selection has favoured them to develop certain characteristics which enable them to live in water. A. Name and explain the phenomenon exhibited by the above animals. B. Which one of the above is the most primitive one? What is its significance?",
+    "max_marks": 3,
+    "mark_scheme": "A. These animals exhibit convergent evolution, structures that are not\nanatomically similar are evolved to perform similar functions adapted to\nthe same habitat, the fins of Salmon and Shark, flippers of Dolphins, Seals\nand whales. One can say that it is the similar habitat that has resulted in\nselection of similar adaptive features in different groups of organisms but\ntoward the same function: hence, analogous structures are a result of\nconvergent evolution. (2)\nB. Ichthyosaurs. Some of the land reptiles went back into water to evolve into\nfish like reptiles probably 200 mya. (1)\n- - - - - - - - - - - - - - - - - - -\nFor Visually impaired students\nA. Both Lamarck and Darwin believed that living things had hereditary traits,\ntraits they could pass on to their offspring. They believed that some traits\nwere more useful than others, and that over time the more useful trait\nwould become more common. (1)\nThe difference is that Lamarck believed that the changes in an organism\nexperienced during its life could be passed on to succeeding\ngenerations/Inheritance of acquired characters. So, for instance Giraffe\nstretched its neck its entire life to eat leaves on tall plants, it would have\nlonger-necked offspring (or any other example of Lamarckian theory). (1)\nDarwin believed that small, random and gradual genetic variations\nfollowed by natural selection lead to evolution- that some giraffes just\nnaturally had longer necks, and these were the ones who had more\nchildren. So over time natural selection led to evolution of Giraffes with\nlong neck were fitter than short-necked. (1)",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_026",
+    "question": "The Biological Oxygen Demand (BOD) of a primary effluent during sewage treatment is reduced. Enlist the process of how this is achieved.",
+    "max_marks": 3,
+    "mark_scheme": "'Flocs' and 'activated sludge' in sewage treatment help to reduce the BOD.\n(i) Flocs: These are masses of bacteria held together by slime and fungal\nfilaments to form mesh-like structures. These are used during the\nsecondary sewage treatment in the aeration tank to increase the rate of\ndecomposition. The microbes digest a lot of organic matter, converting it\ninto microbial biomass and releasing a lot of minerals. As a result, the\nBOD of sewage is reduced. As the BOD of waste is reduced to 1% of\nraw sewage. it is passed into the settling tank. In these tanks, flocs are\nallowed to undergo sedimentation.\n(ii) Activated sludge: The sediment of the settling tank is called activated\nsludge. A part of it is used as an inoculum in aeration tanks. The\nremaining part is passed into a large tank called an anaerobic sludge\ndigester. In these tanks, anaerobic microbes are present that digest the\norganic mass as well as aerobic microbes of activated sludge. The\nremaining sludge is used as manure or compost.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_027",
+    "question": "Expand ELISA. On what principle is the ELISA test based? List two ways by which an infection can be detected by this test.",
+    "max_marks": 3,
+    "mark_scheme": "ELISA-Enzyme Linked Immunosorbent Assay. (1)\nELISA is based on antigen-antibody interaction. (1)\nThe ways to detect the presence of infection or disease by ELISA are as\nfollows:\nThe presence of antigens (proteins, glycoproteins, etc.) is detected. /\nAntibodies produced against the pathogens are detected. (1)",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_028",
+    "question": "The population pyramids of Japan for the years 1950, 2007 and on the basis of the estimated value for 2050 have been shown below to answer the questions that follow: A. Comment upon the growth status of the population on the basis of shape of the age pyramids. \nB. What insights can you gain about their population dynamics?",
+    "max_marks": 3,
+    "mark_scheme": "1950 – Expanding - The population structure in 1950 exhibits a broad-based\npyramid with a wider base, indicating a higher percentage of young individuals.\nThis suggests a population with a higher birth rate. (1)\n2007 – Stable - The narrowing of the pyramid towards the top signifies a lower\nproportion of elderly individuals. By 2007, the population was more stable with\nthe number of pre reproductive and reproductive age nearly being the same.\nBell shape indicates static population. (1)\n2050– Declining - By 2050 urn shaped pyramid shows a declining population\nwhere birth rates are very less and the populations of elderly people will\nincrease. (1)\n- - - - - - - - - - - - - - - - - - -\nFor Visually impaired students\nAnswer same as above",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_029",
+    "question": "Given below is a set of information about some fruits and seeds. Fruit Fruit and seed formation P Nucellar cells surrounding the embryo sac develop into embryos. Q Ovary develops into the fruit by the application of growth hormones. R Thalamus contributes to fruit formation. S Ovary matures into a fruit after fertilisation. On the basis of the information provided above, answer the following questions with justification for each answer. A. How many embryo sacs will be present in each ovule of S before maturation and how many egg(s) will be present in each embryo sac when the embryo sac is developed from a single megaspore? (1) B. (i) Which of these fruits exhibits polyembryony? Will their embryos exhibit genetic variation? Justify. (ii) What will be ploidy of the embryonic cells in the above case? (2) Attempt either subpart C or D. C. Which of these fruits can be considered as parthenocarpic? Give a reason. (1) OR D. Which of the fruits P, Q, R or S is a true fruit with seeds? Give reason. (1)",
+    "max_marks": 4,
+    "mark_scheme": "A. One embryo sac is present in each ovule and one egg is present in each\nembryo sac when the embryo sac is developed from a single megaspore.\n(1)\nB.\n(i) P exhibits polyembryony due to occurrence of more than one embryo in\na seed. Embryos developed from nucellar cells by apomixis, a form of\nasexual reproduction, don't show genetic variation. (1)\n(ii) Cells of embryos developed from diploid nucellar cells are diploid (2n)\nas these are formed by apomixis, a form of asexual reproduction. (1)\nStudent to attempt either subpart C or D.\nC. Q, because this fruit is developed without fertilisation and will thus be\nseedless. (1)\nOR\nD. Fruit S is a true fruit with seeds. True fruits develop from the ripened ovary\nafter fertilisation and fertilised ovules mature into seeds. (1)",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_030",
+    "question": "The graph below shows the Antibody concentration in young calves. Study the graph and answer the questions that follow: \nA. What do you think is the difference between passive and active immunity in this case? (1) B. What kind of immunity will be observed when a vaccine is administered to the calf and why? (2) Attempt either subpart C or D. C. What kind of trend does passive immunity show and why? (1) OR D. Why does active immunity start after 14 days as per the above graph?",
+    "max_marks": 4,
+    "mark_scheme": "A. Passive immunity – Ready made antibodies from colostrum / less effective\n/ transient / no memory cells involved\nActive Immunity – Made by host’s immune system/ Lag phase/ memory\nbased/ largely effective. (1)\nB. Active immunity. As the vaccine contains a weakened or inactivated form\nof the pathogen (microbe), which is harmless but still recognized by the\nimmune system as foreign. The immune system responds by activating\nlymphocytes, which produce specific antibodies to fight the pathogen.\nThis process also leads to the creation of memory cells, which provide\nlong-term protection by \"remembering\" to fight this pathogen if the person\nis exposed again. (2)\nAttempt either subpart C or D.\nC. This passive immunity peaks at day 1 and declines as the calf ag as the\nantibodies are used up to develop immunity against diseases/no memory.\n(1)\nOR\nD. Active immunity is slow, and it takes time to give its full effective response.\n(1)\n- - - - - - - - - - - - - - - - - - -\nFor Visually impaired students\nSame answers as given in parts A - D.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_031",
+    "question": "A. Construct a complete transcription unit with promoter and terminator on the basis of the hypothetical template strand given below. B. How is transcription a more complex process in eukaryotic cells? \nA. \nimmunity in this case? (1) \nB. What kind of immunity will be observed when a vaccine is \nExplain the additional processes that a precursor mRNA has to undergo in these organisms.",
+    "max_marks": 5,
+    "mark_scheme": "A.\nB. (2)\n Transcription in eukaryotes involves one of three types of polymerases,\ndepending on the gene being transcribed. RNA polymerase II transcribes\nall of the protein-coding genes, whereas RNA polymerase I transcribes\nrRNA genes, and RNA polymerase III transcribes rRNA, tRNA, and small\nnuclear RNA genes. (1)\n The primary transcripts contains the coding region, exon, and non-coding\nregion, intron, hnRNA undergoes a process where the introns are\nremoved and exons are joined to form mRNA by the process called\nsplicing. (1)\n The hnRNA undergoes two additional processes called capping and\ntailing. In capping, an unusual nucleotide, methyl guanosine triphosphate,\nis added to the 5′-end of hnRNA. In tailing, adenylate residues (about 200–\n300) are added at 3′-end in a template independent manner. (1)\n- - - - - - - - - - - - - - - - - - -\nFor visually impaired students\nA. If both strands act as a template, they will code for RNA molecules with\nOR\ndifferent sequences as complementarity does not mean the strands are\nidentical and hence, the sequence of amino acids in the proteins would be\ndifferent. Hence, one segment of the DNA would be coding for two different\nproteins, and this would complicate the genetic information transfer\nmachinery. (1)\nThe two RNA molecules if produced simultaneously would be\ncomplementary to each other, hence would form a double stranded RNA.\nThis would prevent RNA from being translated into protein and the exercise\nof transcription would become a futile one. (1)\nB. Transcription in eukaryotes involves one of three types of polymerases,\ndepending on the gene being transcribed. RNA polymerase II transcribes\nall of the protein-coding genes, whereas RNA polymerase I transcribes\nrRNA genes, and RNA polymerase III transcribes rRNA, tRNA, and small\nnuclear RNA genes. (1)\nThe primary transcripts contain the coding region, exon, and non-coding\nregion, intron, hnRNA undergoes a process where the introns are removed\nand exons are joined to form mRNA by the process called splicing. (1)\nThe hnRNA undergoes two additional processes called capping and tailing.\nIn capping, an unusual nucleotide, methyl guanosine triphosphate, is added\nto the 5′-end of hnRNA. In tailing, adenylate residues (about 200–300) are\nadded at 3′-end in a template independent manner. (1)\nOR\nA. Aminoacylation is the process by which amino acids become activated by\nbinding with its aminoacyl tRNA synthetase in the presence of ATP. If two\ncharged tRNAs come close during translation process the formation of\npeptide bond between them is energetically favourable. (1)\nB. The cellular factory responsible for synthesising proteins is the ribosome.\nIn its inactive state it exists as two subunits: a large subunit and a small\nsubunit. When the small subunit encounters an mRNA the process of\ntranslation of the mRNA to protein begins. There are two sites in the large\nsubunit for subsequent amino acids to bind to and thus be close enough\nto each other for the formation of a peptide bond. The ribosome also acts\nas a catalyst 23S rRNA in bacteria is the enzyme-ribozyme for the\nformation of peptide bonds. (2)\nC. ARGININE, THREONINE, HISTIDINE, LEUCINE, PROLINE, GLYCINE,\nPROLINE PROLINE, PROLINE, LEUCINE SERINE (1)\nStop codon UGA/UAG/UAA (1)\n- - - - - - - - - - - - - - - - - - -\nFor visually impaired students\nA and B as above\nC. Insertion or deletion of one or two bases changes the reading frame from\nthe point of insertion or deletion. Such mutations are referred to as frame-\nshift mutations. Insertion or deletion of three or multiple of three bases\ndoes not alter the frame. However, the mutation takes place. This proves\nthat codon is a triplet and it is read in a contiguous manner. (2)",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_032",
+    "question": "Some plant and animal pathogens serve as one of the tools of recombinant DNA (rDNA) technology.’ A. Name one animal and one plant pathogen and discuss the pathogenic nature of both. State how they serve as a tool in rDNA technology. B. What are the enzymes needed for rDNA technology? C. A farmer owns a cotton farm land which is getting infested with coleopteran pests. He is not willing to use the microbes to protect his farm. i. Name an alternate method to introduce the gene of interest the pathogen would have otherwise delivered and discuss how the alternate method would deliver the gene. ii. State how this gene would control the pest. \nOR BamH1 is a restriction enzyme which recognizes the sequence- 5' - GGATCC - 3'. The restriction activity of this enzyme is between G and G. A. Construct the palindrome for the above sequence. B. Draw a labeled diagram to show the formation of recombinant DNA (rDNA) using BamH1. C. PBR322 is a plasmid that has a restriction site for this enzyme at the tetracycline resistant gene. If BamH1 were to be used, how will it impact the response of the transformant with rDNA to antibiotics- ampicillin and tetracycline. Justify.",
+    "max_marks": 5,
+    "mark_scheme": "A. Retrovirus in animals and Agrobacterium tumefaciens can transform\nnormal cells into cancerous cells/Agrobacterium tumefaciens is\nresponsible for causing crown gall disease/ it can transfer its T-DNA to\ntransform normal plant cell into tumorous cells (1). They are used as\ncloning vectors to deliver desirable genes into animal/plant cells. (1)\nB. restriction enzyme and ligase. (1).\nC.\n(i) Biolistic/ gene guns can be used. The plant cells are bombarded with\nhigh velocity micro particles of gold or tungsten coated with DNA. (1)\n(ii) the cry gene will create Bt toxin inside the pest which will get activated\nin the alkaline gut of the pest and cause the gut epithelial lining to\ndisintegrate. (1)\nOR\nA. 5' - GGATCC - 3'.\n3’- CCTAGG-5’ (1)\nB. drawing and labelling (2)\nC. If ampicillin is added, the bacteria will show resistance as the gene is\nintact and will survive;\nif tetracycline is added, the bacteria will die as it will show insertional\ninactivation/ gene is not functional owing to insertion of the gene of\ninterest in the tetracycline region of selectable marker. (2)",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Biology",
+    "question_id": "cbse_biology_033",
+    "question": "Justify the following statements with suitable proof/examples: - A. ‘competition is not limited to closely related species’ B. ‘competition is not always dependent on resources being limiting’ C. ‘competitive exclusion occurs in nature’ D. ‘competing species may evolve mechanisms for co-existence’ E. ‘competition in nature comes from what is called ‘competitive release’’ OR A. How does a simple food chain exemplify the First Law of Thermodynamics? B. The table below shows the number of species in different parts of the world. Name of Place Number of Bird species Columbia 1400 India 1200 Northern South America 1300 New York 105 Denmark 504 Identify the common factor in regions with a higher number of bird species and suggest at least two reasons for this greater diversity.",
+    "max_marks": 5,
+    "mark_scheme": "A. Totally unrelated species could also compete for the same resource. For\ninstance, in some shallow South American lakes, visiting flamingoes and\nresident fishes compete for their common food, the zooplankton in the\nlake. (1)\nB. Resources need not be limiting for competition to occur; in interference\ncompetition, the feeding efficiency of one species might be reduced due\nto the interfering and inhibitory presence of the other species, even if\nresources (food and space) are abundant. (1)\nC. Gause and other experimental ecologists believed when resources are\nlimited the competitively superior species will eventually eliminate the\nother species. The Abingdon tortoise in Galapagos Islands became\nextinct within a decade after goats were introduced on the island,\napparently due to the greater browsing efficiency of the goats. (1)\nD. One such mechanism is ‘resource partitioning’. If two species compete for\nthe same resource, they could avoid competition by choosing, for\ninstance, different times for feeding or different foraging patterns.\nMacArthur showed that five closely related species of warblers living on\nthe same tree were able to avoid competition and co-exist due to\nbehavioural differences in their foraging activities. (1)\nE. A species whose distribution is limited to a smaller area because of the\npresence of a competitively superior organism, is found to increase its\nrange when the competing species is experimentally removed. For\nexample, in the coasts of Scotland the superior barnacle (Balanus)\ndominates the intertidal region and excludes the smaller barnacle from\nthat zone. (1)\nOR\nA. Food chain and the first law of thermodynamics. The solar energy trapped\nby the plants is transformed to chemical energy through the process of\nphotosynthesis. When the plants are consumed by the animals, the\norganic matter (chemical energy) is transferred to the animal, some\namount of this organic matter is lost as heat through the process of\nrespiration. Death of the producers or consumers will result in the organic\nmatter getting transferred to detritivores. As demonstrated, energy is not\ncreated nor destroyed but transformed from one form to another. (2)\nB. Greater diversity is seen in regions closer to equator/ tropics (latitudinal\nrange of 23.5° N to 23.5° S) harbour more species. (1)\nReasons for this greater diversity are: (Any two reason)\n● Speciation is generally a function of time, unlike temperate regions\nsubjected to frequent glaciations in the past, tropical latitudes have\nremained relatively undisturbed for millions of years and thus, had a\nlong evolutionary time for species diversification\n● Tropical environments, unlike temperate ones, are less seasonal,\nrelatively more constant and predictable. Such constant\nenvironments promote niche specialisation and lead to a greater\nspecies diversity\n● There is more solar energy available in the tropics, which contributes\nto higher productivity; this in turn might contribute indirectly to\ngreater diversity. (2, any two)",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_001",
+    "question": "Which of the following reaction will lead to formation of ethyl methyl ketone: A. heating CH CH(CH )CH OH with acidified Na Cr O 3 3 2 2 2 7 B. passing CH C(OH) CH over heated copper 3 3 C. ozonolysis of CH CH C(CH )=CHCH 3 2 3 3 D. acetylene on reaction with HgSO /H SO 4 2 4",
+    "max_marks": 1,
+    "mark_scheme": "C. Ozonolysis of CH CH C(CH )=CHCH\n3 2 3 3",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_002",
+    "question": "The counter ion in the coordination compound [Co(NH ) (NO )] Cl is 3 5 2 2 A. Ammine B. Cobalt \nC. Chloride D. Nitro",
+    "max_marks": 1,
+    "mark_scheme": "C. chloride\nThe formula of coordination complex, the ions outside the square\nbracket are called counter ions.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_003",
+    "question": "The organic compounds A, B and C are amines having equivalent molecular weight. A and B on reaction with benzene sulphonyl chloride give white precipitate, however white precipitate obtained from compound B remains insoluble in NaOH. The variation in the boiling point of A, B and C can be seen as : A. A> B>C B. B>A>C C. A=B > C D. C>B>A",
+    "max_marks": 1,
+    "mark_scheme": "A. A> B>C\nA is primary, B is secondary amine, C is tertiary amine.Primary amines\nare having higher boiling point as compared to secondary and tertiary\namines.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_004",
+    "question": "70 gm solute is dissolved in 700 gm solvent to prepare a solution having density 1.5 g/ml. The ratio of its molality and molarity will be: A. 0.77 B. 1.4 C. 0.73 D. 1.3",
+    "max_marks": 1,
+    "mark_scheme": "C. 0.73\n𝑚2 1000\nm = x\n𝑀𝑀2 𝑚1\n70 1000\nm = x\n𝑀𝑀2 700\n𝑚2 1000 𝑚1+𝑚2 770\nM = x Here, V = =\n𝑀𝑀2 𝑉 𝑑 1.5\n70 1000 𝑥 1.5\nM = x\n𝑀𝑀2 770\n𝑚 770\n= = 0.73\n𝑀 700 𝑥 1.5",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_005",
+    "question": "Match the column I and column II: A. A-(i), B-(ii), C-(iii), D-(iv) B. A-(iv), B-(ii), C-(iii), D-(i) C. A-(i), B-(iii), C-(ii), D-(iv) D. A-(iv), B-(iii), C-(ii), D-(i)",
+    "max_marks": 1,
+    "mark_scheme": "D. A-(iv), B-(iii), C-(ii), D-(i)",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_006",
+    "question": "In o-cresol, the –OH group is attached to the carbon that is: A. sp3 hybrid B. sp2 hybrid C. sp hybrid D. dsp2 hybrid",
+    "max_marks": 1,
+    "mark_scheme": "B. sp2 hybrid.\nThe –OH group has replaced –H of benzene ring. All\ncarbons of benzene are sp2 hybrid.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_007",
+    "question": "Which of the following is laevorotatory in nature : A. alpha D – glucose B. beta -D- glucose C. beta-D- fructose D. sucrose",
+    "max_marks": 1,
+    "mark_scheme": "C. Beta D – fructose",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_008",
+    "question": "The name inner transition metals is often used to refer to the A. lanthanoids B. actinoids C. both lanthanoids and actinoids D. d block elements",
+    "max_marks": 1,
+    "mark_scheme": "C. both lanthanoids and actinoids",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_009",
+    "question": "Λ𝑜 CH COOH can be calculated if the values of the following are 𝑚 3 given: 1. Λ𝑜 HCl, Λ𝑜 KCl and Λ𝑜 CH COOK 𝑚 𝑚 𝑚 3 2. Λ𝑜 NaCl, Λ𝑜 KCl and Λ𝑜 CH COONa 𝑚 𝑚 𝑚 3 3. Λ𝑜 H SO , Λ𝑜 Na SO and Λ𝑜 CH COONa 𝑚 2 4 𝑚 2 4 𝑚 3 A. Only 1 B. Either 1 or 2 C. Either 1 or 3 D. Either 2 or 3",
+    "max_marks": 1,
+    "mark_scheme": "C. Either 1 or 3\nΛ𝑜 CH COOH = Λ𝑜 HCl + Λ𝑜 CH COOK - Λ𝑜 KCl\n𝑚 3 𝑚 𝑚 3 𝑚\nΛ𝑜 CH COOH = 1/2 Λ𝑜 H SO + Λ𝑜 CH COONa – 1/2 Λ𝑜 Na SO\n𝑚 3 𝑚 2 4 𝑚 3 𝑚 2 4",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_010",
+    "question": "Which of the following will give a yellow or orange ppt. with 2,4 DNP? (i) Porpanal (ii) Propanone (iii) Propanoic acid A. (i) and (ii) B. (ii) and (iii) C. (i) and (iii) D. (i), (ii) and (iii)",
+    "max_marks": 1,
+    "mark_scheme": "A. (i) and (ii)\nAldehydes and ketones react with 2,4 dinitrophenylhydrazine to give a\nyellow/orange ppt of 2,4 dintirophenylhydrazone",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_011",
+    "question": "Assertion (A): Secondary aliphatic amines react with nitrous acid to form aliphatic diazonium salts which being unstable, liberate nitrogen gas quantitatively. Reason: Nitrogen gas evolved on reaction with nitrous acid can be used for the estimation of proteins and amino acids. Select the most appropriate answer from the options given below: A. Both A and R are true, and R is the correct explanation of A. B. Both A and R are true, and R is not the correct explanation of A. C. A is true but R is false. D. A is false but R is true",
+    "max_marks": 1,
+    "mark_scheme": "D. A is false but R is true\nPrimary aliphatic amines react with nitrous acid to form aliphatic\ndiazonium salts which being unstable, liberate nitrogen gas",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_012",
+    "question": "Assertion (A): Care should always be taken to ensure that solutions that flow in the blood stream are of the same osmotic pressure as that of the blood. Reason(R): Sodium ion and potassium ions are responsible for maintaining proper osmotic pressure balance inside and outside of the cells of organism. Select the most appropriate answer from the options given below: A. Both A and R are true, and R is the correct explanation of A. B. Both A and R are true, and R is not the correct explanation of A. C. A is true but R is false. D. A is false but R is true",
+    "max_marks": 1,
+    "mark_scheme": "B. Both A and R are true, and R is not the correct explanation of A.\nIf osmotic pressure of the solutions that flow in the blood stream is not\nsame as that of the blood, exosmosis or endosmosis will take place.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_013",
+    "question": "Assertion (A): Starch forms colloidal solution with water. Reason (R): Starch contains 80-85% of amylopectin which is insoluble in water. Select the most appropriate answer from the options given below: A. Both A and R are true, and R is the correct explanation of A. B. Both A and R are true, and R is not the correct explanation of A. C. A is true but R is false. D. A is false but R is true",
+    "max_marks": 1,
+    "mark_scheme": "A. Both A and R are true, and R is the correct explanation of A.\nIn starch, the major component is 80-85% of amylopectin is insoluble\nin water. Hence starch is not completely soluble in water and form\ncolloidal solution.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_014",
+    "question": "Assertion (A): Secondary cells are used in invertors. Reason (R): A primary cell can be recharged by passing current through it in the opposite direction after it has been used. Select the most appropriate answer from the options given below: A. Both A and R are true, and R is the correct explanation of A. B. Both A and R are true, and R is not the correct explanation of A. C. A is true but R is false. D. A is false but R is true",
+    "max_marks": 1,
+    "mark_scheme": "C. A is true but R is false.\nA primary cell becomes dead after use, it cannot be recharged.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_015",
+    "question": "Attempt either option A or B A. Answer the following: I. When 50 mL of phenol and 50 mL of aniline are mixed, predict whether the volume of the solution is equal to, greater than or less than 100 mL. Give reason to support your answer. II. Ritesh suggested adding salt to the box containing ice. He said this would keep the cold drink bottles cold for a longer time. How will Ritesh justify his suggestion? OR B. Answer the following: I. BaCl on reaction with Na SO in aqueous solution gives 2 2 4 white precipitate. If the two solutions are separated by a semi-permeable membrane, will there be appearance of a white precipitate due to osmosis? II. Why does water stops boiling when sugar is added to boiling water.",
+    "max_marks": 2,
+    "mark_scheme": "Option A\nI. The volume will be less than 100 ml. The intermolecular forces\nbetween phenol and aniline is stronger than phenol-phenol and aniline-\naniline which results in decrease in volume.\nII. Salt lowers the freezing point of water ie. it leads to depression in\nfreezing point. This will delay the melting of ice.\nOR\nOption B\nI. Precipitate of BaSO will not appear as osmosis involves movement\n4\nof solvent molecules and not solute.\nII. Sugar being non-volatile solute, lowers the vapour pressure above\nthe solution. This leads to elevation in boiling point.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_016",
+    "question": "Consider the graph for the reaction H + I ⇌ 2HI 2 2 I. Calculate enthalpy of reaction and activation energy for the backward reaction. II. How will the catalyst affect the rate of this reaction? Explain. (for visually challenged learners) I. Define activation energy. What will happen to activation energy if we increase the temperature? II. How will the catalyst affect the rate of an endothermic reaction?",
+    "max_marks": 2,
+    "mark_scheme": "I. Ea for backward reaction = 40 kJ/mol, H= 10 kJ/mol\nII. Catalyst will increase the rate of reaction as the activation energy\nrequired to form intermediate activated complex between reactant and\ncatalyst is lower than the activation energy required for forming\ncomplex without catalyst.\n(for visually challenged learners)\nI. The minimum energy required to form the intermediate activated\ncomplex, is known as activation energy (Ea). Activation energy is the\nleast possible energy required to start a chemical reaction. The\nactivation energy doesn’t change with change in temperature.\nII. Catalyst will increase the rate of reaction as the activation energy\nrequired to form intermediate activated complex between reactant and\ncatalyst is lower than the activation energy required for forming complex\nwithout catalyst.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_017",
+    "question": "Carry out following conversions : I. Nitrobenzene to 4- bromobenzenamine II. Chlorophenylmethane to 2-phenyl-ethanamine",
+    "max_marks": 2,
+    "mark_scheme": "I\nII.\nLiAlH4\nC H CH Cl + KCN C H CH CN C H CH CH NH\n6 5 2 6 5 2 6 5 2 2 2",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_018",
+    "question": "Write the formula of the following coordination complex: I. diaquasilver(I) dichloridoargentate(I) II. dihydroxidobis(triphenylphosphine)nickel(II)",
+    "max_marks": 2,
+    "mark_scheme": "I. [Ag(H O) ][Ag(Cl) ]\n2 2 2\nII. [Ni(OH) (PPh ) ]\n2 3 2",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_020",
+    "question": "What will be the vapour pressure of a 1 molal aqueous solution of MgCl , assuming dissociation of MgCl to be 70 mole percent? 2 2 (Vapor pressure of pure water at 25 oC is 23.8 mmHg)",
+    "max_marks": 3,
+    "mark_scheme": "𝑃𝑜 = 23.8 mm of Hg\n𝐴\n𝑚 = 1molal ,1mol of solute in1000g of water\nn 1mol\nB\n1 0 0 0\nn   5 5 .5 m o l\nA 1 8\nM g C l  M g 2   2 C l \n2\n1 0 0\n1  0 .7 0 .7 1 .4\n𝛼 = (𝑖 −1)/(𝑛−1) n=3\ni  0 . 7  2   1\n= 1.4+1 = 2.4\n𝑃𝑜 −𝑃 𝑛\n𝐴 𝑠 𝐵\n= 𝑖\n𝑃𝑜 𝑛 +𝑛\n𝐴 𝐴 𝐵\n2 3 . 8  P s 1\n 2 . 4\n2 3 . 8 5 6 . 5\n 2 .4 \n2 3 .8 1   P s\n5 6 .5\n22.9mm of HgPs",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_021",
+    "question": "Write the Nernst equation for the following: I. Ni (s) + Cu2+ (aq)  Ni2+ (aq) + Cu (s) II. Al (s) + FeSO (aq)  Al (SO ) (aq) + Fe (s) 4 2 4 3 III. Mg (s)/Mg2+ (aq)//Ag+ (aq)/Ag(s)",
+    "max_marks": 3,
+    "mark_scheme": "I. 𝐸 = 𝐸𝑜 – 2.303 𝑅𝑇 log [𝑁𝑖2+]\n𝑐𝑒𝑙𝑙 𝑐𝑒𝑙𝑙 2𝐹 [ 𝐶𝑢2+]\nII. 𝐸 = 𝐸𝑜 – 2.303 𝑅𝑇 log [𝐴𝑙3+] 2\n𝑐𝑒𝑙𝑙 𝑐𝑒𝑙𝑙 6𝐹 [ 𝐹𝑒2+]3\nIII. 𝐸 = 𝐸𝑜 – 2.303 𝑅𝑇 log [𝑀𝑔2+]\n𝑐𝑒𝑙𝑙 𝑐𝑒𝑙𝑙 2𝐹 [ 𝐴𝑔+]2",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_022",
+    "question": "Explain the following: I. Toluene on treatment with Cl in sunlight gives benzyl chloride 2 whereas when treated with Cl in dark gives o-chlorobenzene 2 and p-chlorobenzene. II. Finkelstein reaction is carried out in the presence of dry acetone. III. neo pentylchloride has lower boiling point than isopentylchloride.",
+    "max_marks": 3,
+    "mark_scheme": "I. Cl in presence of sunlight forms free radical as an intermediate and\n2\nhence toluene undergoes free radical substitution of the alky group\nto form benzyl alcohol whereas Cl in dark forms Cl+, an electrophile\n2\nas an intermediate, making toluene undergo electrophilic substitution\nand form o-chlorobenzene and p-chlororbenzene.\nII. NaI is soluble in dry acetone but NaCl is insoluble. NaCl precipitates\nout of the reaction mixture and shifts the equilibrium towards the right\naccoding to Le Chatelier's principle.\nIII. The branching of the chain in neo pentylchloride is more than iso\npentylchloride, which makes the molecule more compact and\ndecreases its surface area. This decrease the magnitude of the Van\nder Waal's forces of attraction existing between the two molecules of\nneopentyl chloride. and consequently the boiling point decreases\nand is less than isopentyl chloride",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_024",
+    "question": "Arrange the products obtained in the following cases in the increasing order of their pKa values: A. Oxidation of ethanol in presence of acidified potassium dichromate B. Reaction of propanoic acid with Br in the presence of red 2 Phosphorus C. Reaction of isopropyl magnesium bromide with carbon dioxide, followed by hydrolysis. D. Reaction of propanoic acid with Cl in the presence of red 2 Phosphorous.",
+    "max_marks": 3,
+    "mark_scheme": "Acidified K Cr O\n2 2 7\nA. CH CH OH CH COOH\n3 2 3\nB. CH CH COOH Br / Red P CH CHBrCOOH\n3 2 2 3\nC. (CH ) CHMgCl (i)CO (ii)H+,H O (CH ) CHCOOH\n3 2 2 2 3 2\nD. CH CH COOH Cl / Red P CH CHClCOOH\n3 2 2 3\nOrder of acidity : CH CHClCOOH > CH CHBrCOOH > CH COOH >\n3 3 3\n(CH ) CHCOOH\n3 2\nOrder of pKa values: CH CHClCOOH < CH CHBrCOOH < CH COOH\n3 3 3\n< (CH ) CHCOOH\n3 2",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_025",
+    "question": "Carry out the following conversions. (Attempt any 3) I. Butan-2-one to 3-Methylpentan-3-ol II. Anisole to 4-Methoxytoluene III. Phenol to Benzene IV. Chloroethane to Ethoxy ethane",
+    "max_marks": 3,
+    "mark_scheme": "Attempt any 3",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_026",
+    "question": "Answer the following questions: I. Are the enthalpies of atomisation of Zinc and Copper matched correctly? Justify your answer. Element Enthalpy of atomisation/ kJmol-1 339 Zinc 130 Copper II. Out of sulphuric acid and hydrochloric acid, which acid will you prefer for permanganate titrations and why? III. 5NO 2 – + 2MnO 4 – + 6H+ ",
+    "max_marks": 3,
+    "mark_scheme": "I. No. Enthapy of atomisation of Zinc is 130kJ/mol because it has\nno unpaired electrons in d subshell so the interatomic interaction\nis weaker than Cu.\nII. Sulphuric acid because hydrochloric acid is oxidised to chlorine.\nIII. 5NO – + 2MnO – + 6H+  2Mn2+ + 5NO – + 3H O\n2 4 3 2",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_027",
+    "question": "Conductivity of Aqueous Solutions Electrical conductivity is based on the flow of ions. Slightly ionized substances are weak electrolytes. Weak acids and bases would be categorized as weak electrolytes because they do not completely dissociate in solution. Highly ionized substances are strong electrolytes. Strong acids and salts are strong electrolytes because they completely ionize in solution. The ions carry the electric charge through the solution thus creating an electric current. The current, if sufficient enough, will light one or both LEDs on a conductivity meter, shown at right. The meter has a 9V battery, two parallel copper electrodes and \ntwo LED’s – one green and one red. The conductivity of a solution can be tested by switching the meter on and dipping the copper electrodes in the solution to be tested. Substances that do not conduct an electric current are called non- electrolytes. Non-electrolytes do not ionize; they do not contain moveable ions. The LEDs of a conductivity meter will not light because there are no ions to carry the electric current. The table given below is a guide to the possible conductivity measurements Scale Red LED Green LED Conductivity 0 off off low or none 1 dim off low 2 medium off medium 3 bright dim high 4 very bright medium very high source: https://chem.libretexts.org Based on the information provided above, answer the following questions: I. Is it possible to identify whether the given solution is 1 M NaOH or 1 M HCl using the conductivity meter? Justify your answer. II. What is the possible pH value of solution if the glow of green LED is medium and the red LED glows very brightly? (i) 1 (ii) 13 (iii) 5 (iv) 8 (a) (i) and (ii) (b) (i) and (iii) (c) (ii) and (iv) (d) (iii) and (iv) OR Write down the observations if the conductivity meter is dipped in distilled water. \nIII. Refer to the table given below and draw the molar conductivity vs. concentration curve for solution A and B. Solution Red LED Green LED A bright dim B dim off (For Visually Challenged students) Conductivity of Aqueous Solutions Conductivity meter is a device which is used to identify whether the given solution is a strong, weak or non-electrolyte. The meter has a 9V battery, and two parallel copper electrodes and a 5 point scale (0 to 4) to measure conductivity of a solution. The conductivity of a solution can be tested by switching the meter on and dipping the copper electrodes in the solution to be tested. Electrical conductivity is based on the flow of ions. Highly ionized substances are strong electrolytes. Strong acids and salts are strong electrolytes because they completely ionize in solution. The ions carry the electric charge through the solution thus creating an electric current. The current, if sufficient enough, will show a value of 3 or 4 on the conductivity meter. Slightly ionized substances are weak electrolytes. Weak acids and bases would be categorized as weak electrolytes because they do not completely dissociate in solution. The values for weak electrolytes are 1 or 2 on the conductivity scale. Substances that do not conduct an electric current are called non- electrolytes. Non-electrolytes do not ionize; they do not contain moveable ions. The conductivity meter shows a value of 0 in such a case as there are no ions to carry the electric current. The following table is a guide to the possible conductivity values: \nScale Conductivity 0 low or none 1 low 2 medium 3 high 4 very high Based on the information provided above, answer the following questions: I. Is it possible to identify whether the given solution is 1 M NaOH or 1 M HCl using the conductivity meter? Justify your answer. II. What is the possible pH value of solution if the scale shows the value “4” (i) 1 (ii) 13 (iii) 5 (iv) 8 (a) (i) and (ii) (b) (i) and (iii) (c) (ii) and (iv) (d) (iii) and (iv) OR What will be value on the scale if the conductivity meter is dipped in distilled water? III. Predict the electrolyte is a strong or weak electrolyte on the basis of the following observation: Solution Scale A 3 B 2",
+    "max_marks": 5,
+    "mark_scheme": "I. No. Both are strong electrolytes so both the LEDs will glow. Red\nwill be very bright and green will be medium in both cases.\nII. (a) (i) and (ii)\nOR\nScale Red LED Green LED Conductivity\n0 off off low or none\nIII. A is strong electrolyte while B is a weak electrolyte. (marks\nallotted for correct curve)\nFor Visually challenged\nI. No. Both are strong electrolytes so both will have value of 3 or 4\non the scale\nII. (a) (i) and (ii)\nOR\nThe value will be 0.\nIII. A is a strong electrolyte and B is a weak electrolyte",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_028",
+    "question": "Iron-EDTA complex in food fortification Food fortification is defined as the practice of adding vitamins and minerals to commonly consumed foods during processing to increase their nutritional value. It is a proven, safe and cost-effective strategy for improving diets and for the prevention and control of micronutrient deficiencies. A food product (such as rice, wheat flour, edible oil) that is fortified through the addition of fortificants is called a “vehicle”. In African and south Asian countries 40% of the population suffers from anaemia. Average human needs nearly 10mg of iron daily. Iron fortification may be useful in fighting iron deficiencies in humans. Reduced iron and several iron salts have been used in the past as iron fortification, however, not all are suitable for this purpose, in terms of iron absorption. Recent studies have shown that beverages containing sugar fortified with either Ferrous sulphate or Fe(III)- EDTA complex have high rate of absorption of iron. Ferrous sulphate as well as Fe(III)- EDTA is suitable to enrich sugar, but while iron from ferrous sulphate is precipitated and poorly absorbed when fortified sugar is added to beverages such as tea, Fe(III)- EDTA reacts slowly with tea and iron is not precipitated for at least 24 hr. Fe(III)-EDTA as iron fortification, has demonstrated so far, more advantages than that observed from other iron salts, including ferrous sulphate. But, EDTA is a chelating agent and its use in food technology to prevent oxidative damage of food has been restricted. Excessive consumption of EDTA can cause abdominal cramps, nausea, low blood pressure and damage to kidneys. According to National Institute of Health, it is unsafe to consume more than 3 g of EDTA per day or continuously for more than 5 to 7 days. The amount of EDTA necessary for 10 mg of iron fortification, is about 60 mg. This is within the safe limits and is comparable to the usual amount added to the diet. (source: Layrisse, M., & MartInez-Torres, C. (1977). Fe (III)-EDTA complex as iron fortification. The American Journal of Clinical Nutrition, 30(7), 1166-1174.) Based on the information provided above, answer the following questions: I. Why is Fe(III)-EDTA complex stable as compared to Ferrous sulphate? OR \nWhat happens when hard water is titrated against Na EDTA? 2 II. You are a doctor, working in Somalia. Will you recommend iron fortified food to your patients? Support your answer with references from the passage. III. What is the denticity of the ligand in the Fe(III) EDTA complex. Name the atom(s) through which it can bind to the central metal ion. Write the structure of EDTA. (Refer to figure 1) For Visually challenged candidates Iron-EDTA complex in food fortification Food fortification is defined as the practice of adding vitamins and minerals to commonly consumed foods during processing to increase their nutritional value. It is a proven, safe and cost-effective strategy for improving diets and for the prevention and control of micronutrient deficiencies. A food product (such as rice, wheat flour, edible oil) that is fortified through the addition of fortificants is called a “vehicle”. Reduced iron and several iron salts have been used in the past as iron fortification, however, not all are suitable for this purpose, in terms of iron absorption. Recent studies have shown that beverages containing sugar fortified with either Ferrous sulphate or Fe(III)- EDTA complex have high rate of absorption of iron. Ferrous sulphate as well as Fe(III)- EDTA is suitable to enrich sugar, but while iron from ferrous sulphate is precipitated and poorly absorbed when fortified sugar is added to beverages such as tea, Fe(III)- EDTA reacts slowly with tea and iron is not precipitated for at least 24 hr. Fe(III)-EDTA as iron fortification, has demonstrated so far, more advantages than that observed from other iron salts, including ferrous sulphate. But, EDTA is a chelating agent and its use in food technology to prevent oxidative damage of food has been restricted. Excessive consumption of EDTA can cause abdominal cramps, nausea, low blood pressure and damage to kidneys. According to National Institute of Health, it is unsafe to consume more than 3 g of EDTA per day or continuously for more than 5 to 7 days. The amount of EDTA necessary for 10 mg of iron fortification, is about 60 mg. This is within the safe limits and is comparable to the usual amount added to the diet. (source: Layrisse, M., & MartInez-Torres, C. (1977). Fe (III)-EDTA complex as iron fortification. The American Journal of Clinical Nutrition, 30(7), 1166-1174.) \nBased on the information provided above, answer the following questions: I. Why is Fe(III)-EDTA complex stable as compared to Ferrous sulphate? OR What happens when hard water is titrated against Na EDTA? 2 II. You are a doctor, working in Somalia. Will you recommend iron fortified food to your patients? Support your answer with references from the passage. III. (a)What is the denticity of the ligand in the Fe(III) EDTA complex. Name the atom(s) through which it can bind to the central metal ion. (b) EDTA is an electron acceptor or an electron donor?",
+    "max_marks": 5,
+    "mark_scheme": "I. EDTA is a chelating agent, it forms ringed complex with the\ncentral metal ion and makes the complex stable.\nOR\nHardness of water is estimated by simple titration with\nNa 2 EDTA. The Ca²⁺ and Mg²⁺ ions form stable complexes with\nEDTA.\nII. Yes, 40% of the population in Africa suffers from anaemia. Most\nof the patients in Somalia are likely to be anaemic. Iron fortified\nfood will have increased the nutritional value. In the same\namount of food product the patient will get higher amount of the\nmicronutrient than present in natural product.\nThis will help reduce cases of iron deficiency in Somalia.\nHowever, patients will be advised to consume the food product\naccording to the recommended safe limits of the fortificant.\nOR\nNo, though 40% of the population suffers from anaemia, iron\nfortified food will be recommended to patients whose reports\nsuggest iron deficiency. Iron fortified food will have increased the\nnutritional value. In the same amount of food product the patient\nwill get higher amount of the micronutrient than present in\nnatural product.\nThis fortificant can cause other ill effects to the non- anaemic\npopulation as well as could lead to higher levels of iron in the\nbody than required.\nIII. (a)6\n2 Nitrogen and 4 oxygen are electron donors\n(b)\nFor Visually challenged\nI. Same as above\nII. Same as above\nIII. (a) 6\n2 Nitrogen and 4 oxygen are electron donors.\n(b) EDTA is an electron donor.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_029",
+    "question": "Attempt either A or B A. Answer the following questions: I. Write the structure of expected product of Cannizarro reaction of 2-chlorobenzaldehyde. II. How would the presence of -SO H group effect the basic 3 strength of aniline. III. Convert acetic acid to ethanamine. IV. Write the steps to prepare Benzoic acid from Benzoyl chloride. V. Give a chemical test to distinguish between: propanal and propanone OR B. Answer the following questions: I. Write the structure of expected product of Wolf-Kishner reduction of 2 –methylbutanal. II. How would the presence of -SO H group effect the acidic 3 strength of benzoic acid III. Prepare acetic acid from ethanamine. IV. Convert Aniline to benzoic acid. V. Give a chemical test to distinguish between: propanal and ethanal.",
+    "max_marks": 5,
+    "mark_scheme": "Option A\nI. The structures of expected products of Cannizarro reaction of 2-\nchloro -benzaldehyde\nII. -SO H is electron withdrawing in nature, hence it decreases the\n3\navailability of lone pair for donation, hence basic nature of\naniline decrease due to the presence of sulphonic group.\nIII. Following are the steps to convert acetic acid to ethanamine.\nexcess of\nCH COOH LiAlH CH CH OH SOCl2 CH CH Cl NH3\n3 4 3 2 3 2\nCH CH NH\n3 2 2\nIV. Benzoic acid from Benzoyl chloride:\nC 6 H 5 COCl H2-Pd/BaSO4 C 6 H 5 CHO acidified KMnO 4 C 6 H 5 COOH\nV. The chemical test to distinguish between propanal and\npropanone is Tollen test (Silver Mirror)\nPropanal on heating in a water bath with ammonical silver nitrate\n(Tollen’s reagent) forms a silver mirror on the sides of the test tube.\nPropanone on heating in a water bath with Tollen’s reagent does not\nshow any reaction.\nOR\nOption B\nI. Product formed on Wolf-Kishner reduction of 2 –methylbutanal is\nII. The strength of benzoic acid depends on its ability to donate the\nproton and stability of the conjugate base formed .Sulphonic\nacid is an electron withdrawing group , it presence increases the\nability to release proton . Hence the acidic strength will be\nincreased .\nIII. To convert acetic acid from ethanamine following are the steps\ninvolved :\nCH 3 CH 2 NH 2 HNO2 CH 3 CH 2 OH acidified KMnO 4 CH 3 COOH\nIV. Aniline to benzoic acid:\nC H NH NaNO2/ HCl C H N +Cl- KCN C H CN complete hydrolysis C H COOH\n6 5 2 6 5 2 6 5 6 5\nV. a chemical test to distinguish between: propanal and ethanal\nEthanal gives yellow precipitate on heating with iodine in the presence\nof sodium hydroxide (positive Iodoform test)\nPropanal will not give any reaction on heating with iodine in the\npresence of sodium hydroxide (negative Iodoform test)",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_030",
+    "question": "Attempt either A or B A. Answer the following questions: I. Identify and give any one point of difference between the protein present in the hair and protein present in egg albumin. II. Both glucose and sucrose have aldehydic group, then why does only glucose reduces Fehling’s Reagent.and not sucrose? III. Why do amino acids behave as salts? IV. What chemical change takes place during curdling of milk? V. Doctor advised a 50 year old woman enough exposure to sunlight and addition of fish and egg yolk to her diet. What is the possible disease diagnosed by the doctor? OR B. Answer the following questions: I. Identify and give any one point of difference between the carbohydrate present in cane sugar and carbohydrate present in milk. II. Glucose is an aldohexose and a monosaccharide. Which oxidising agent should be used to bring about oxidation of only the aldehydic group present in glucose? III. Amino acid HOOC-CH CH(NH )CH COOH.Predict whether 2 2 2 the pH of this amino acid will be >7, 7 or <7. IV. Name the two major molecular shapes formed due to the folding of secondary structure of proteins. V. Ashish’s gums bleed frequently. The doctor’s prescription mentioned that Ashish is suffering from scurvy. Help him to identify two food sources to help him recover faster. .",
+    "max_marks": 5,
+    "mark_scheme": "Option A\nI. Protein present in the hair are fibrous while in egg are globular.\nFibrous proteins are long fibre like and usually insoluble in water\nwhereas globular proteins are globular and usually soluble in\nwater.\nII. Glucose reduces Fehling’s Reagent however sucrose cannot\nthough both have aldehydic group because glucose contains\nfree aldehydic group whereas sucrose is a disaccharide and\ndoes not have free aldehydic group.\nIII. Alpha -Amino acids behave as salts. This behaviour is due to\nthe presence of both acidic (carboxyl group) and basic (amino\ngroup) groups in the same molecule.\nIV. The chemical change takes place during curdling of milk caused\ndue to the formation of lactic acid from the lactose sugar by the\nbacteria present in milk.\nV. The possible disease is Osteoporosis, which can be cured by\ntaking Vitamin D rich diet.\nOR\nOption B\nI. Carbohydrate present in cane sugar is sucrose which is a\ndisaccharide composed of glucose and fructose while the\ncarbohydrate present in milk is lactose which is a disaccharide\ncomposed of glucose and galactose\nII. Glucose is an aldohexose and a monosaccharide. Bromine\nwater is a mild oxidising agent which can be used to bring\nabout oxidation of only the aldehydic group present in glucose.\nIII. Amino acid P is with structural formula given as –\nHOOC-CH CH(NH )CH COOH\n2 2 2\nThe presence of two carboxylic acids shows that it is an\nacidic amino acid The pH will be less than 7\nIV. The two major molecular shapes formed due to the folding of\nsecondary structure of proteins are alpha helix and beta pleated\nsheets\nV. Ashish is suffering from scurvy, which occurs due to deficiency\nof Vitamin C The sources of food are – Citrus fruits, amla and\ngreen leafy vegetables",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_031",
+    "question": "Attempt either A or B A. I. The rate of a reaction triples when the temperature changes from 298 K to 318 K. Calculate the energy of activation of the reaction assuming that it does not change with temperature. (Given R = 8.314 JK-1mol-1, log 3 = 0.4771) II. Identify the order of reaction and write its integrated rate equation mentioning what each term in the equation represents. OR \nB. I. Consider the following first order thermal decomposition of SO Cl at a constant volume 2 2 SO Cl (g) → SO (g) + Cl (g) 2 2 2 2 If the total pressure of the gases is found to be 200 torr after 10 seconds and 300 torr upon the complete decomposition of SO Cl . Calculate the rate constant. 2 2 (Given log 3 = 0.4771, log 2= 0.3010) II. For a bimolecular elementary reaction A + B → Products. Write the expression for the rate of reaction relating temperature and activation energy for the reaction and also mention what each term represents in the equation.",
+    "max_marks": 5,
+    "mark_scheme": "Option A\nHere,T 298K,T 318K\nI. 1 2\n𝐾2\n= 3\n𝐾1\nK E  1 1 \nlog 2   \n \nK 2.303R T T\n \n1 1 2\nE  1 1 \nlog 3  \n \n2.3038.314 298 318\nE 1 0  \n0 . 4 7 7 1  \n2 . 3 0 3 8 . 3 1 4 2 9 8 3 1 8  \n0 .4 7 7 1 2 .3 0 3 8 .3 1 4 2 9 8 3 1 8    \nE \n1 0 \n 8 6 5 6 7 .8 7 J m o l  1\nE = 8 6 .5 6 7 K J m o l -1\na (½ mark for anwer anmd ½ for correct unit)\nII. It is zero order reaction.\n R    R \nk  0\nt\nHere, k is rate constant, [R] – concentration of reactant at time t, [Ro]\ninitial concentration of reactant.\nOR\nOption B\nI. S O C l  g   S O  g   C l  g \n2 2 2 2\nt  0 P 0 0\ni\no n c o m p l e t i o n 0 P P\ni i\nt  1 0 s e c P  x x x\ni\nOn completion\nP  P P\nT i i\nP 2P\nT i\n3 0 0\nP \ni 2\n 1 5 0 t o r r\nAfter 10 seconds\nP  P xxx\nT i\nx P P\nT i\nx200150\nx50 torr\nFirst order integrated rate equation\n2.303 P\nk  log i\nt P x\ni\n2.303 150\nk  log\n10 15050\n2 .3 0 3 1 5 0\nk  l o g\n1 0 1 0 0\n2 .3 0 3 3\nk  l o g\n1 0 2\n2 . 3 0 3\nk   l o g 3  l o g 2 \n1 0\n2 . 3 0 3\nk    0 . 4 7 7 1  0 . 3 0 1 0 \n1 0\n2 .3 0 3\nk   0 .1 7 6 1\n1 0\nk  0 . 0 4 0 s  1\nII. Rate of reaction can be expressed as\nRate = Z e−Ea /RT\nAB\nwhere Z represents the collision frequency of reactants, A and B\nAB\nand e-Ea /RT represents the fraction of molecules with energies equal\nto or greater than Ea.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_032",
+    "question": "Identify the secondary benzylic halide and primary alkyl halide from the following: A. (i) and (iii) B. (iv) and (ii) C. (iii) and (iv) D. (i) and (ii)",
+    "max_marks": 1,
+    "mark_scheme": "B. (iv) and (ii)",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Chemistry",
+    "question_id": "cbse_chemistry_033",
+    "question": "Consider the reaction and identify B and C CH CH CH CH Cl NaOH +Ethanol. A 3 2 2 2 A H 2 O , H + B and A (i ) B 2 H 6 . (i i )H 2 O 2 , O H C A. B=C= Butanol B. B= Butanol, C=Butene C. B= Butan-2-ol, C= Butanol D. B= Butene, C=Butan-2-ol",
+    "max_marks": 1,
+    "mark_scheme": "C. B= Butan-2-ol, C= Butanol\nCH CH CH CH Cl NaOH +Ethanol. CH CH CH=CH\n3 2 2 2 3 2 2\nCH 3 CH 2 CH=CH 2 H 2 O , H + CH 3 CH 2 CH(OH)CH 2\n(i) B H\nCH CH CH=CH 2 6. CH CH CH CHOH\n3 2 2 3 2 2\n(ii)HO, OH\n2 2",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_001",
+    "question": "When an external voltage is applied across a semiconductor diode such that p-side is connected to the positive terminal of the battery and n-side to the negative terminal it is said to be forward biased. The applied voltage mostly drops across the depletion region and the voltage drop across the p-side and n-side of the junction is negligible. When an external voltage is applied across the diode such that n-side is positive and p-side is negative, it is said to be reverse biased. The applied voltage mostly drops across the depletion region. \n(I) Ge and Si diodes start conducting at 0.3 V and 0.7 V respectively. In the following figure if Ge diode connection are reversed, the value of V changes 0 by (assume that the Ge diode has large breakdown voltage) (A) 0.2 V (B) 0.4 V (C) 0.6 V (D) 0.8 V (II.) The value of V and I for the network are : 0 d Si Ge 12V V 0 5.6K (A) 13 V, 2.32mA (B) 11.7 V, 2.08mA (C) 11.3V, 2.01mA (D) 11V, 1.96mA (III.) The circuit shown below contains two ideal diodes, each with a forward resistance of 50Ω. If the battery voltage is 6 V, the current through the 100Ω resistance (in amperes) is (A) 0.036 (B) 0.020 (C) 0.030 (D) 0.027 (IV) In the figure, potential difference between A and B is (A) Zero (B) 5 V (C) 10 V (D) 15 V",
+    "max_marks": 1,
+    "mark_scheme": "(I) (B)\nVoltage drop across diode will change from 0.3 to 0.7 V.\nValue of V changes by 0.4 V.\n0\n(II) (D) 11V, 1.96Ma\nV = E – V – V = 12.07 – 0.3 = 11V\n0 si Ge\nI = V /R = 11/5.6 × 10–3 = 1.96 Ma\nd 0\n(III) (B)\n6 6\nI   A0.02 A\n50150100 300\n(IV) (C)\nHere the diode is in forward bias. So we replace it by a connecting wire.\nl\nV V  10\na b 2\n30\n 10 V10 V\n152",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_002",
+    "question": "If a charged hollow sphere and a solid sphere of aluminum and copper of equal radii are in electrostatic equilibrium, then which of the following statements is true? (A) Both the spheres are having equal charges. (B) The hollow sphere will have more charge than solid sphere at its surface. (C) The aluminum sphere will have more charge on its surface than copper sphere. (D) If hollow sphere is also made up of aluminum then it will have more charge.",
+    "max_marks": 1,
+    "mark_scheme": "Answer: (A)\nBoth are having equal charges\nFor two bodies to be in equilibrium, both should have same potential(V).\n𝐶\nAs V=\n𝑞\nWhere C of sphere is 4𝜋𝜀 𝑟. Which is independent of all the factors\n𝑜\nmentioned in options.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_003",
+    "question": "The emf generated by an AC generator is given by V=V sin ωt, where ω is angular o frequency of armature of generator. What will be the emf if the angular frequency is doubled (A) V=V sin 2ωt ( B) V=2V sin ωt o o (C) V=2V sin 2ωt (D) V=V sin ωt o o",
+    "max_marks": 1,
+    "mark_scheme": "Answer: (C)\nV=2V sin 2ωt\no\nAs V= NBA𝜔 sin 𝜔𝑡",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_004",
+    "question": "The ratio of the nuclear densities of two nuclei having the mass numbers 8 and 27 is (A) 8:27 (B) 3:2 (C)2:3 (D) 1:1",
+    "max_marks": 1,
+    "mark_scheme": "Answer: (D)\n1:1\nNuclear density does not depend on mass number.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_005",
+    "question": "When we move magnetic compass from point P to Q then which of the following statement is true \n(A) The deflection of the magnetic needle at P and Q will be in the same direction. (B) The deflection of the magnetic needle at P and Q will be in the opposite directions. (C) The deflection of the magnetic needle at P and Q will be perpendicular to each other. (D) The deflection of the magnetic needle at P and Q will be inclined at 45o with respect to each other. \nFor Questions 13 to 16, two statements are given one labelled Assertion (A) and other labelled Reason (R). Select the correct answer to these questions from the options as given below. (A) Both Assertion and Reason are true and Reason is the correct explanation of Assertion. (B) Both Assertion and Reason are true but Reason is not the correct explanation of Assertion. (C) Assertion is true but Reason is false. (D) Both Assertion and Reason are false.",
+    "max_marks": 1,
+    "mark_scheme": "Answer: (B)\nThe deflection of the magnetic needle at P and Q will be in the opposite\ndirections.\nAs magnetic field at equator is antiparallel to magnetic field at pole.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_006",
+    "question": "Assertion (A): Total energy of an electron in hydrogen atom is negative. Reason (R): The centripetal force is provided by electrostatic force.",
+    "max_marks": 1,
+    "mark_scheme": "Answer: (B)\nboth Assertion and Reason are true but Reason is not the correct\nexplanation of Assertion.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_007",
+    "question": "Assertion (A): The critical angle of light passing from glass to air is minimum for violet colour. Reason (R): The wavelength of blue light is greater than the light of other colours.",
+    "max_marks": 1,
+    "mark_scheme": "Answer: (C)\nAssertion is true but Reason is false.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_008",
+    "question": "Assertion (A): Two light sources emitting waves of similar wavelengths are coherent. Reason (R): Two light sources emitting waves having zero or constant phase difference are known as coherent sources.",
+    "max_marks": 1,
+    "mark_scheme": "Answer: (D)\nboth Assertion and Reason are false",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_009",
+    "question": "Assertion (A): For three point charges to be in equilibrium, they must be collinear. Reason(R): One of the three charges must have different polarity than rest of the two.",
+    "max_marks": 1,
+    "mark_scheme": "Answer: (B)\nboth Assertion and Reason are true but Reason is not the correct\nexplanation of Assertion.\nIf three point charges are in equilibrium then forces acting on each\ncharges should be linearly opposite.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_010",
+    "question": "The amplitude of the magnetic field of a plane electromagnetic wave propagating along positive X axis in vacuum is 510 nT𝑘̂ and its angular frequency is 60 x 106 ( ). rad/sec. Write the expression for the electric field → 𝐸",
+    "max_marks": 2,
+    "mark_scheme": "Given, B = 510 nT = 510 x 10-9 T\no\nω = 60 x 106 rad/sec\nE = cB = 153 N/C\no o\nk = ω/c = 20 x 10-2rad/m\nE = E sin (ωt – kz)\no\nE = 153 sin (60 x 106 t – 20 x10-2x) N/C",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_011",
+    "question": "The following graph shows the potential difference across the terminals of a cell against its load current. \nFind, (I) the emf of the cell and (II) the internal resistance of the cell. For VI candidates Find the relation between internal resistance, emf, external resistance and the total current in the circuit ?",
+    "max_marks": 2,
+    "mark_scheme": "(I) E.m.f of the cell is 6V, As when load current is zero potential\ndifference becomes equal to emf of the cell.\n(II) Explanation: The internal resistance of a cell can be determined as the\nnegative slope of its voltage–current graph.\nFirst, we can determine the slope by choosing two points on the line:\n𝟎−𝟔\nSlope = = - 0.5\n𝟏𝟐−𝟎\nThis means that the internal resistance must be 0.50 ohm (Ω).\nFor VI-Candidates\nE = V + v = IR + Ir\n(where V is potential drop in the external circuit and v is potential drop in\nthe cell)\nOr, E = I (R + r)\nOr, I = E / (R + r)\nThis is the relation.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_012",
+    "question": "A charge q is placed inside a sphere of radius ‘a’ filled with water and another charge 2q is placed inside cube of side ‘2a’ which is vacuumed inside. Find the ratio of the flux linked with the sphere to that linked with the cube. (Take relative permittivity of water as 80)",
+    "max_marks": 2,
+    "mark_scheme": "From Gauss’s theorem\n𝑞\nØ= [Where 𝜀 is relative permittivity of medium inside Gaussian\n𝑟\n𝜀 𝜀\n𝑟 𝑜\nsurface]\nFor sphere,\n𝑞\nØ = ……………..(i)\nsphere\n𝜀 𝜀\n𝑤𝑎𝑡𝑒𝑟 𝑜\nFor cube\n2𝑞\nØ = …………………(ii)\ncube\n𝜀\n𝑜\nDividing (i) by (ii)\nØsphere 1 1\n= =\nØcube 2𝜀 160\n𝑤𝑎𝑡𝑒𝑟",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_013",
+    "question": "A coil contains N turns of insulated copper wire of diameter d and resistivity ρ wound on a cylinder of diameter D. What is the total resistance between the two ends of the coil of copper wire?(given: D>>d) 4𝜌𝑁𝐷 8𝜌𝑁𝐷 (A) (B) 𝑑2 𝑑2 2𝜌𝑁𝐷 12𝜌𝑁𝐷 (C) (D) 𝑑2 𝑑2",
+    "max_marks": 1,
+    "mark_scheme": "Answer: (A)\nDiameter of copper wire d,\nDiameter of cylindrical iron is D\nNo.of turns N,(D>>d)\nLength=N x Circumference of cylinder\nL= NπD\n𝜌𝐿 𝜌𝑁𝛱𝐷\nR= =\n𝐴 𝑑2𝛱\n4\n4𝜌𝑁𝐷\nR=\n𝑑2",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_014",
+    "question": "Write an expression for the magnetic force per unit length between two parallel thin current carrying wires. Hence define one ampere. OR",
+    "max_marks": 2,
+    "mark_scheme": "𝐹 µ 𝐼 𝐼\n= 0 1 2 (I is the current in first wire and I is the current in second wire)\n1 2\n𝐿 2𝜋𝑟\nThus we define ampere as the current flowing in each conductor separated\nby a\nunit distance so that one conductor applies a force of 2 x 10-7 N on a unit\nlength of another parallel conductor.\nOr",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_015",
+    "question": "Draw a diagram representing the behaviour of magnetic field lines for a (A) diamagnetic & (B) paramagnetic substance. For VI-Candidates Sate Gauss’s law of magnetism? Hence find the magnetic flux linked with the sphere enclosing a current carrying solenoid?",
+    "max_marks": 2,
+    "mark_scheme": "For VI-Candidates\nGauss’s law for magnetism is: The net magnetic flux through any closed\nsurface is zero.\nHence magnetic flux linked to given sphere will also be zero.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_016",
+    "question": "With the help of circuit diagram explain working of the full wave rectifier.",
+    "max_marks": 3,
+    "mark_scheme": "In the full wave rectifier:D and D are pn junction diode which allow\n1 2\ncurrent to pass only in forward biasing.\nDuring odd half cycle the diode D will be forward biased hence potential\n1\nat the Q will be more then Potential at P and during this cycle D will not\n2\npermit current through it.\nDuring even half cycle the diode D will be forward biased hence\n2\npotential at the Q will be more then Potential at P and during this cycle\nD1 will not permit current through it.\nHence we will get DC as output as shown in diagram.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_017",
+    "question": "(I) The current I in a wire is getting divided in two wires with currents I and I at a 1 2 3 junction in a circuit.The currents in the three wires are related by I = I + I . 1 2 3 (A) State the fundamental law from which this relation is derived. (B) Explain the validation of law of conservation of energy in Kirchhoff's voltage law? (II) How the balancing condition gets affected if you are interchanging the galvanometer and the cell in the Wheat stone bridge?",
+    "max_marks": 3,
+    "mark_scheme": "(I) (A)Conservation of electric charge\n(B) KVL is obeys law of conservation of energy as it is supplied\nvoltage is equal to the voltage across each component in the loop. (OR)\nalgebraic sum of voltages equal to zero.\n(II) No change in balancing condition is observed.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_018",
+    "question": "A fast-moving neutron collides with the nucleus of Plutonium (Pu), thereby producing Xenon (Xe) and Zirconium (Zr) along with neutrons. (I) Write the nuclear fission reaction. (II) Find the energy released in the above nuclear reaction. Given atomic masses: m (239𝑃𝑢) = 239.052157u, 94 m (103𝑍𝑟) = 102.926597u, 40 m (134𝑋𝑒) = 133.905040u & 54 m (1𝑛) = 1.00866u. 0",
+    "max_marks": 3,
+    "mark_scheme": "A fast-moving neutron collides with the nucleus of Plutonium (Pu),\nthereby producing Xenon (Xe) and Zirconium (Zr) along with neutrons.\n(I) Nuclear fission reaction.\n239𝑃𝑢 + 1𝑛 → 134𝑋𝑒 + 103𝑍𝑟 + 3 1𝑛\n94 0 54 40 0\n(II) ∆ 𝑚 = [m (239𝑃𝑢)+ m (1𝑛)] - [m (134𝑋𝑒) + m (103𝑍𝑟) +\n94 0 54 40\n3 m (1𝑛) ]\n0\n= [239.052157 + 1.00866] - [ 133.905040 + 102.926597 +\n3 𝑋 1.00866 ]\n= 240.060817 – 239.857617\n= 0.2032 amu\nQ value = ∆ 𝑚c2\n= 0.2032 x 931.5 MeV\n= 189.2808 MeV",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_019",
+    "question": "A compound microscope consists of an objective lens of focal length 0.82 cm and an eyepiece lens of focal length 2.9 cm. An object is placed 0.91 cm from the objective lens. The image is formed at the near point (25 cm) from the eye. (I) Calculate that the angular magnification of the microscope. (II) Draw the ray diagram of compound microscope in normal adjustment.",
+    "max_marks": 3,
+    "mark_scheme": "1 1 1\n(I) = −\n𝑣 𝑓 𝑢\n0 0 0\n𝑣 = 8.3 cm\n0\nAngular magnification M=m xm\n0 e\n𝑣 𝐷\n0\nM= ( +1)\n𝑢 𝑓\n0 𝑒\n8.3 25\n+ 1)\nM= - X (\n0.91 2.9\nM= -87.7\n(II)",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_020",
+    "question": "Draw the reflected wave front for a plane wave front incident on a plane reflecting surface. Hence verify the laws of reflection using Huygen’s principle. For VI Candidates (I) Define wave front? (II) Define wavelet? (III) What will be the shape of the wave front intercepted by a large reflecting type telescope on earth, due to a star far-away from our solar system?",
+    "max_marks": 3,
+    "mark_scheme": "If c be the speed of light, t be the time taken by light to go from B to C or\nA to D or E to G through F, then\nEF FG\nt= +\nC C\n𝐴F Sin i FC Sinr\nt = +\nC C\nAC Sin r+AF(Sin i−Sin r)\nt =\nC\nFor rays of light from different parts on the incident wavefront, the values\nof AF are different. But light from different points of the incident\nwavefront should take the same time to reach the corresponding points on\nthe reflected wavefront.\nSo, t should not depend upon AF. This is possible only if sin i – sin r = 0.\ni.e. sin i = sin r or i = r\nHence proved.\nFor VI candidates\n(i) A wavefront is the locus of points (wavelets) having the same phase\nof oscillations\n(ii) Each point on a wavefront acts as a fresh source of disturbance of\nlight known as wavefront.\n(iii) Planer.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_021",
+    "question": "If a point sized object having charge 1C and mass 1g is projected with velocity of 2𝑖̂ m/s from a point (0,2cm,0) in the region of magnetic field -0.1𝑘̂ T which spreads in the first quadrant. (A) What will be the shape of the path followed by the given charged particle? (B) At what point it will cross the X-axis? (C) What will be the kinetic energy of particle when it will enter in the fourth quadrant? OR",
+    "max_marks": 3,
+    "mark_scheme": "As charge particle is moving perpendicular to magnetic field it will follow\ncircular trajectory in clock wise direction. Magnetic force will act as\ncentripetal force.\nGiven:\nQ=1C;\nM=10-3kg;\nv=2m/s &\n̂\nB=-0.1T𝑘\nRadius of trajectory is given by\n𝑚𝑣\nR= = 2cm\n𝑞𝑏\n(A) Quarter Circle\n(B) It will cross the X axis at 2cm.\n(C) As work done by B is on charge particle is zero it’s kinetic energy(K)\nwill remain same\n1\nK= mv2\n2\n1\nOr, K = x10-3x22J = 2 x 10-3J\n2",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_022",
+    "question": "A solenoid has a core of material with relative permeability 200. The windings of the solenoid are insulated from the core and carry a current of 1A. If the number of turns is 2000 per metre, calculate (A) magnetic intensity, (B) magnetic field & (C) magnetisation",
+    "max_marks": 3,
+    "mark_scheme": "Given:\nµ=200\nr\nI=1A\nN=200turn/m\n(A) H=nI\nOr,H=2000/m X 1A=2 X 103A/m\n(B) B= 𝜇 𝜇 H\no r\nOr, B=200 x 4𝜋 x 10-7x 2 X 103A/m\nOr, B= 0.50T\n(C) Magnetisation is given by\nM=(𝜇 -1)H=199 x 103 A/m\nr\nOr,M = 1.99 x 105 A/m",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_023",
+    "question": "5 A conducting coil of 50 turns and area cm2 is rotating along the axis of solenoid 𝜋 of length 50cm and 2000 turns, carrying current of 5 A. What will be the value of maximum emf generated?",
+    "max_marks": 3,
+    "mark_scheme": "Given:\nNo of turns of coil N =50\nc\n5 5\nArea of coil= cm2= x 10-4m2\n𝜋 𝜋\nFor solenoid:\nN =2000,\ns\nL=0.5m,\nn = N/L=4000turns/m,\nI= 5A\nMagnetic field due to solenoid ‘B’=𝜇 nI\no\nOr,B=4000 x 4𝜋 x 10-7 x 5 T\nOr,B= 8𝜋 x 10-2 T\nFlux linked to coil Ø =N 𝐵⃑ . 𝐴\nB c\nOr, Ø =N BA cos𝜔𝑡\nB c\n𝑑Ø\nEmf ε = 𝐵 = N BA𝜔 sin 𝜔𝑡\nc\n𝑑𝑡\nOr, ε = N BA\nmax c\n5\nOr, ε = 50 x 8𝜋 x 10-2 T x x 10-4m2\nmax\n𝜋\nOr, ε = 2Mv\nmax",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_024",
+    "question": "If the phasor diagram for a device connected to AC supply is as shown in the fig, then which of the following statements is true? (A) When the frequency of the AC source is increased than the impedance of the device decreases. (B) This device behaves as conducting wire when connected across DC source. (C) When the frequency of the AC source is decreased than the impedance of the device decreases. (D) D. This device stores energy in the form of magnetic potential energy.",
+    "max_marks": 1,
+    "mark_scheme": "Answer: (A)\nWhen the frequency of the AC source is increased than the impedance of\nthe device decreases.\nAs in phasor diagram current leads the voltage, so given appliance is\ncapacitor.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_025",
+    "question": "Photoelectric effect is phenomenon of the ejection of electrons when the radiation of suitable frequency is made to fall on the surface of a metal. When light of suitable wavelength falls on the emitter C given in the diagram, the photoelectrons are emitted. These photoelectrons are drawn to the collector A. The photoelectric current of the order of a few microamperes can be normally obtained from the device given in figure. The device given converts a change in intensity of illumination into a change in photocurrent. This current can be used to operate control systems and in light measuring devices. The devices are made up of metals with low ionization enthalpies, for example platinum whose work function is 6.35 eV. \n(I) If infrared radiation of 3 x 1011 Hz is used as incident radiation, determine the reading of microammeter? Justify mathematically. \n(II) In the given diagram, if terminal B is shifted towards the left then how will it affect the reading of the microammeter? (for V.I. candidates) (II) If the supplied voltage is decreased, then what will be effect on the reading of the microammeter? \n(III) Plot a graph showing this variation in reading of micrometre on shifting the terminal B towards the right. (for V.I. candidates) (III) If the intensity of incident radiation is doubled, by what factor will the kinetic energy change?",
+    "max_marks": 4,
+    "mark_scheme": "(I) If infrared radiation is used as incident radiation, determine the reading\nW = hν\no o\nWo 6.35 x 1.6 x 10−19\nThreshold frequency, ν 1.5 x 1015 hz\no = = =\nh 6.63 x 10−34\nFrequency of infrared radiation < threshold frequency (ν ) ,\no\nhence no emmision of photoelectrons will take place, therefore reading of\nthe microammeter = 0\n(II) Photoelectric current decreases with decrease in potential. At some\nstage, for a certain potential of plate A, all the emitted electrons are\nstopped by the plate A and the photoelectric current becomes zero.\n(III)\n(for V.I. candidates)\nNo change in Kinetic Energy.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_026",
+    "question": "(A) A dielectric slab of thickness t, is introduced between the plates of parallel plate capacitor of area A and separation d (where t<d). Find an expression for the capacitance with the dielectric slab. (B) A copper sphere of capacitor C is dropped in ocean. Will the capacitance of the sphere increase, decrease or remain same? Justify. (C) A capacitor is connected across a source of potential difference V and then the separation ‘d’ between the plates is increased using insulating stick. Plot ‘V’ vs ‘d’ graph for the given capacitor. \nFor VI Candidates (C) A capacitor is connected across potential difference V and is then separation between plates ‘d’ is increase using insulating stick. Will the energy stored in capacitor increase or decrease? Justify OR",
+    "max_marks": 5,
+    "mark_scheme": "(A) In absence of dielectric slab, the capacitance of parallel plate\n𝐴𝜀\ncapacitor is given by C= 0\n𝑑\nWhen a dielectric slab of thickness t(t < d) is introduced between the\nplates\nwithout touching the plates , the electric field in air\n𝜎 𝑞\nE = (𝜎 𝑖𝑠 𝑐ℎ𝑎𝑟𝑔𝑒 𝑑𝑒𝑛𝑠𝑖𝑡𝑦 𝑔𝑖𝑣𝑒𝑛 𝑏𝑦 )\no\n𝜀 𝐴\n0\nbut on account of polarisation of dielectric the electric field inside the\ndielectric changes to\nEo\nE =\n𝐾\nIf potential difference between the plates of capacitor be V. now , then\nclearly\nV= E (d-t) + Et;\no\nEo\nOr, V= E (d-t) + t;\no\n𝐾\n𝑡 𝜎 𝑡\nOr, V= E (d-t+ )= (d-t+ )\no\n𝑘 𝜀 𝑘\n0\n𝑞 𝑡\nOr, V= (d-t+ )\n𝐴𝜀 𝑘\n0\n(B) Capacitance of sphere will Increase.\nJustification:\n𝑞\nAs C=\n𝑉\n& V=∫𝐸⃑ .𝑑 ⃑⃑⃑ 𝑙\nAs, electric field will decrease, due to polarization of water. Resulting in\ndecrease in potential.\nHence, capacitance of sphere will increase\n(C)\nFor VI Candidates\n(C) energy stored in capacitor will decrease.\nJustification\n𝑄2\nEnergy=\n2𝐶\nWhen separation is increased capacitance will increase and charge will\nremain same.\nOr",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_027",
+    "question": "(A) If a charge of 1µC is placed at the origin and another charge of 3 µC placed at the point (20m,0m,0m) in an external uniform electric field of 40V/m 𝑖̂ with the electric potential at origin to be zero. Find the electrical potential energy of system. (B) If one charge particle is moved from A to C To B and another charge particle of equal magnitude is moved from A to D to B, In uniform external magnetic field. Than for which charge particle more work will be needed? (use fig for reference) (C) Electrostatic potential is constant throughout the volume of conductor has the same value on its surface why? For VI candidates (C) If A charge particle is taken from A to B from two different path one path has resistance of 10Ω and another has capacitance of 3µF. work done by which path will be more.",
+    "max_marks": 5,
+    "mark_scheme": "𝐾𝑞 𝑞\n(A) U= 1 2+q V(r )+ q V(r )\n1 1 2 2\n𝑟\n12\n𝐾𝑞 𝑞\nOr, U= 1 2+q (E r )+ q (E r )\n1 1-0 2 2-0\n𝑟\n12\n9𝑋109𝑋10−6𝑋3𝑋10−6\nOr, U=( + 0 +3 x 10-6 x 40x20) J\n20\nOr, U=37.5 x 10-4J\n(B) Work done will be same for both paths, as electric field is\nconservative in nature.\n(C) As electric field inside the conductor is zero so there will be no work\nneeded in moving unit positive charge inside or on the surface.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_028",
+    "question": "(A) Derive lens maker’s formula. (B) Equi-convex lenses are to be manufactured from a glass of refractive index 1.55, with both faces of the same radius of curvature. What is the radius of curvature required if the focal length is to be 10cm? OR",
+    "max_marks": 5,
+    "mark_scheme": "(A) Lens Maker’s Formula:\nFor refraction at LP N,\n1\nµ µ µ −µ\n1+ 2 = 2 1\nCO CI1 CC1\n(as if the image is formed in the denser medium)\nFor refraction at LP N\n2\nµ µ µ −µ\n2 + 1 = 2 1\n−CI CI CC\n1 2\n(as if the object is in the denser medium and the image is formed in the\nrarer medium)\nCombining the refractions at both the surfaces.\nµ µ 1 1\n1+ 2 = µ − µ ( + )\n2 1\nCO CI CC CC\n1 2\nSubstituting the values with sign convections,\n1 1 µ −µ 1 1\n+ = 2 1( - )\n−𝑢 𝑣 µ R R\n1 1 2\nµ\nSince 2=µ\nµ\n1\n1 1 µ −µ 1 1\n+ = 2 1( - )\n−𝑢 𝑣 µ R R\n1 1 2\n(or)\n1 1 1 1\n+ = (µ − 1)( - )\n−𝑢 𝑣 R R\n1 2\nWhen the object is kept at infinity, the image is formed at the principal\nfocus.\ni.e. u = - ∞, v = + f.\n1 1 1\n= (µ − 1)( - )\n𝑓 R R\n1 2\nThis equation is called ‘Lens Maker’s Formula’.\n(B) Refractive index of glass, μ = 1.55\nFocal length of the convexo-concave lens, f = 10 cm\nRadius of curvature of one face of the first Convex surface = R\n1\nRadius of curvature of the other face of the second convex surface = -R\n1\nTherefore, R = R and R = -R\n1 2\nThe value of R can be calculated from Lens – Maker formula:\n(1/f) = (μ – 1) [(1/ R ) – (1/ R )]\n1 2\n(1/10) = (1.55 -1) [(1/R) + (1/R)]\n(1/10) = 0.55 x (2/R)\nTherefore R = (0.55 x 2 x10)\n=11cm\nHence, the radius of curvature of the convexo-concave is 11cm\n(OR)",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_029",
+    "question": "(A) Define angle of deviation in a prism? (B) Obtain the relation A+δ=i+e for a prism where A is the angle of prism, δ is the angle of deviation, iis the angle of incidence and e is the angle of emergence. Write this relation for the minimum deviation? (C) Write the condition for minimum deviation.",
+    "max_marks": 5,
+    "mark_scheme": "(A) The angle of deviation represents the angle by which a light ray is\ndeviated after passing through a prism.\n(B) Refraction of light through prism :\nIn quadrilateral APOQ,\nA + O = 180° …….(1)\nIn triangle OPQ,\nr + r + O = 180° …….(2)\n1 2\nIn triangle DPQ\nδ = (i - r ) + (e - r )\n1 2\nδ = (i + e) – (r + r ) …….(3)\n1 2\nFrom (1) and (2),\nA = r + r\n1 2\nFrom (3),\nδ = (i + e) – (A)\ni + e = A + δ\nSum of angle of incidence and angle of emergence is equal to the sum of\nangle of prism and angle of deviation.\n(C) When angle of incidence increases, the angle of deviation decreases.\nAt a particular value of angle of incidence the angle of deviation becomes\nminimum and is called ‘angle of minimum deviation’.\nAt δ ,\nm\n i = e and r = r = r (say)\n1 2\n At minimum deviation, refracted ray become parallel to incident\nray.\n(Award full marks if either of condition is mentioned)",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_030",
+    "question": "(A) State the working principle of a moving coil galvanometer? What modification is required in the galvanometer to make its scale linear? (B) If a galvanometer of resistance 49.5Ω has range of 0.05A. What will be the value of resistance needed to convert it in ammeter of range 5A? (C) How these two resistors should be connected to galvanometer in both cases? OR",
+    "max_marks": 5,
+    "mark_scheme": "(A) Torque due to current carrying coil.\nModification in designing of galvanometer are\n(i) Poles of magnet are made spherical\n(ii) Iron ore is placed inside the coil.\n(B) Given: R 49.5Ω; Range=0.05A\ng =\nFor ammeter let resistance needed be R .\na\nAs per requirement\nRange x R =R (5-0.05)\ng a\n0.5 𝑋 49.5\nR = = 0.5 Ω\na\n4.95\n(C) R will be connected in series & R is connected in parallel.\na v\nOr",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_031",
+    "question": "(A) An input potential V =200 Sin 100𝜋𝑡 V is provided to an ideal transformer in having 1000 turns in primary coil and 100 turns in secondary coil as shown in figure. The load circuit has a resistance of 4Ω, a capacitive reactance of 2Ω and an inductive reactance of 6Ω. Find: (i) the output voltage across the load circuit (ii) the current flowing through the load circuit (iii) the power supplied to the load circuit by the transformer (B) State the working principle of a transformer and explain how it is a key component in the transfer of electrical power over long distances.",
+    "max_marks": 5,
+    "mark_scheme": "(A)Given:\nIn load circuit,\nR=4Ω,\nX =2 Ω,\nc\nX=6 Ω,\nl\nN =1000,\np\nN =100,\ns\nV =200Vsin100𝜋𝑡\nin\n(i) Output voltage Across Load Circuit\n𝑉 𝑁\n𝑜𝑢𝑡 = 𝑠=0.1\n𝑉 𝑁\n𝑖𝑛 𝑝\nOr, V =0.1 x 200Vsin100𝜋𝑡,\nout\nOr, V =20Vsin100𝜋𝑡.\nout\n(ii) Current flowing through load circuit\nAs, I=I sin(𝜔𝑡+Ø)\nm\nWhere,\n𝑉\nI = 𝑚,\nm\n𝑍\nZ=√𝑅2 + (𝑋 2 − 𝑋 2 )\n𝑐 𝐿\nOr,Z=4√2 Ω,&\n20 5√2\nI = A = A;\nm\n4√2 2\n𝑋 −𝑋 𝜋\nØ = tan-1 𝑐 𝐿 = tan-1 1 =\n𝑅 4\n5√2 𝜋\nI= Asin(100𝜋𝑡+ )’\n2 4\n(iii) Find the Power supplied to load circuit By the transformer.\n𝑉 𝐼\nP= 𝑚 𝑚CosØ\n2\n𝜋 1\nWhere, CosØ=cos =\n4 √2\n5√2 1\nP=20V x Ax =50W\n2 √2\n(B) Ac transformer works on the principal of ‘ Mutual Induction’\nA.C transformer can increase output potential.\nAs P=V/I\nSo increase in output potential results in decrease in output current,\nresulting in significant decrease in power loss in transmission wires\nbetween power plants and\nCities. In respective cities they are stepped down.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_032",
+    "question": "Which of the following statement is true for the radio waves and the gamma rays? (A) The energy of gamma rays is lesser than that of the radio waves. (B) The frequency of the radio waves is higher than that of gamma rays. (C) The radio waves and the gamma rays have the same energy. (D) The energy of radio waves is lesser than that of the gamma rays.",
+    "max_marks": 1,
+    "mark_scheme": "Answer: (D)\nThe energy of radio waves is lesser than that of the gamma rays.\nSince the frequency of radio waves is less than gamma waves.\nE = hν\nHence, energy of radio waves is less than gamma waves",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_033",
+    "question": "A glass prism has internal angles of 45°, 45° and 90°. The glass has a critical angle of 45°. Which of the following ray diagrams depicts the possible path the of light through the prism? (A) (B) \n(C) (D) For VI-Candidates Light passes from a certain medium into air. The critical angle of the given medium is Ɵ, which of the following expressions gives the speed of light in the given medium? Where c is the speed of light in air. 1 SinƟ (A) (B) cSinƟ C C (C) (D) cSinƟ SinƟ",
+    "max_marks": 1,
+    "mark_scheme": "Answer: (A)\nTotal Internal reflection\nFor VI- Students\nAnswer: (D)\n𝑣 𝑆𝑖𝑛Ɵ\n1 𝑐\n=\n𝑐 𝑠𝑖𝑛90\ncSinƟ",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_034",
+    "question": "The light from a monochromatic source is incident on a single slit and the resulting diffraction pattern is viewed on a screen. The graph shows the variation of the intensity with the distance on the screen. The width of slit is increased keeping the intensity of the source the same. Which of the following graphs is correct? (The original curve is shown with a dashed line.) (A) (B) \n(C) (D) For VI-Candidates The phenomenon of superposition of two waves, resulting in redistribution of energy is known as…………… (A) diffraction (B) interference (C) reflection (D) refraction",
+    "max_marks": 1,
+    "mark_scheme": "Answer: (D)\nSlit width increases hence amplitude will increase, so intensity will also\nincrease.\nFor VI- Students\nAnswer: (B)\nInterference",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_035",
+    "question": "Which of the following transitions corresponds to the emission of the radiation of the maximum wavelength? (A) I (B) III (C) IV (D) VI \n(for V.I. Candidates) Which of the following transitions corresponds to the emission of the radiation of the maximum wavelength? I From 4th orbit to 2nd orbit. II From 2nd orbit to 1st orbit. III From 3rd orbit to 4th orbit. IV From 3rd orbit to 2nd orbit. V From 1st orbit to 3rd orbit. VI From 2nd orbit to 3rd orbit. (A) I (B) III (C) IV (D) VI",
+    "max_marks": 1,
+    "mark_scheme": "Answer: (C)\nIV\nTransition III, V, VI corresponds to absorption of energy.\nMaximum emitted wavelength corresponds minimum energy difference.\n∆𝐸 > ∆𝐸 > ∆𝐸\n𝐼 𝐼𝐼 𝐼𝑉\nTherefore, maximum emitted wavelength corresponds to transition IV.\nFor VI- Students\nTransition III, V, VI corresponds to absorption of energy.\nMaximum emitted wavelength corresponds minimum energy difference.\n∆𝐸 > ∆𝐸 > ∆𝐸\n𝐼𝐼 𝐼 𝐼𝑉\nTherefore, maximum emitted wavelength corresponds to transition IV.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_036",
+    "question": "A charged particle is projected along the axis of a current carrying loop. Which of the following statements is true? (A) The acceleration of the charged particle will depend on the velocity with which it is projected. (B) The acceleration of the charged particle will depend on the magnitude of the current passing through the coil. (C) The acceleration of the charged particle will depend on the radius of the coil. (D) The charged particle will move with constant velocity.",
+    "max_marks": 1,
+    "mark_scheme": "Answer: (D)\nThe charged particle will move with constant velocity.\nAs charge particle is moving parallel to magnetic field, there will be no\nacceleration.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_037",
+    "question": "Two small identical magnets are allowed to fall freely one through a vertical solenoid of 20 m made up of copper and another in air through the same vertical distance. The time taken by the two magnets to fall will be (A) same in both the cases. (B) more for the magnet falling in air. (C) more for the magnet falling through the solenoid. (D) infinite.",
+    "max_marks": 1,
+    "mark_scheme": "Answer: (C)\nmore for the magnet falling through the solenoid.\nEmf will be induced in solenoid due to motion of magnet through it. As\nper Lenz’s law induced emf will oppose the motion of magnet.",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_038",
+    "question": "How does the impact parameter affect the trajectory of a α – particles scattered by a heavy nucleus? What is the value of impact parameter for head on collision of α – particles with the nucleus? OR",
+    "max_marks": 2,
+    "mark_scheme": "Smaller is the impact parameter, larger is the angle at which α – particles\nscatters.\nLarger is the impact parameter, α – particles scatter less keeping its\noriginal trajectory.\nFor head on collision, the value of impact parameter is zero.\nOR",
+    "marking_points": []
+  },
+  {
+    "board": "CBSE",
+    "subject": "Physics",
+    "question_id": "cbse_physics_039",
+    "question": "1 Plot a graph showing variation of de-Broglie wavelength λ versus , where V is √𝑉 accelerating potential for a particle of mass m and charge q. Obtain the slope of this graph.",
+    "max_marks": 1,
+    "mark_scheme": "ℎ\nλ=\n𝑚𝑣\nℎ\nλ= , comparing this equation with y = mx\n√2𝑚𝑞𝑉\nℎ\nslope= .\n√2𝑚𝑞",
+    "marking_points": []
+  }
+]

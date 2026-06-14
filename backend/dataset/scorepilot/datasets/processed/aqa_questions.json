@@ -1,0 +1,798 @@
+[
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_1_1",
+    "question": "Give the THREE structural features found in ALL virus particles AND describe the function of ONE of these features. [2 marks] Function of ONE named feature",
+    "max_marks": 2,
+    "mark_scheme": "1. Substrate binds to the active site/enzyme\nOR\nEnzyme-substrate complex forms;\n2. Active site changes shape (slightly) so it is\ncomplementary to substrate\nOR\nActive site changes shape (slightly) so\ndistorting/breaking/forming bonds in the\nsubstrate;\n3. Reduces activation energy; [3 marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_1_2",
+    "question": "Explain why viruses are described as acellular and non-living. [2 marks]",
+    "max_marks": 2,
+    "mark_scheme": "Adenosine diphosphate; [1 marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_1_3",
+    "question": "Give ONE reason why antibiotics are NOT effective against viruses. [1 mark]",
+    "max_marks": 1,
+    "mark_scheme": "Mark in pairs, 1 and 2 OR 3 and 4 OR 5 and 6\n1. Boil\nOR\nAdd (strong) acid/alkali;\n2. Denatures the enzyme/ATP synthase;\nOR\n3. Put in ice/fridge/freezer;\n4. Lower kinetic energy so no enzyme-substrate\ncomplexes form;\nOR\n5. Add high concentration of inhibitor;\n6. Enzyme-substrate complexes do not form; [2 marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_2_1",
+    "question": "Chitin is a polysaccharide. The chitin monomer is a β-glucose molecule with one OH group replaced by an NHCOCH3 group. NHCOCH3 can be represented by N(Ac). FIGURE 1 shows the monomer that forms chitin and the chitin polymer. FIGURE 1 Chitin has a similar structure to cellulose. Use FIGURE 1 to describe THREE ways the structure of chitin is similar to the structure of cellulose. [3 marks]",
+    "max_marks": 3,
+    "mark_scheme": "1. Large(r) organisms have a small(er) surface\narea:volume (ratio);\nOR\nSmall(er) organisms have a large(r) surface\narea:volume (ratio);\n2. Overcomes long diffusion pathway\nOR\nFaster diffusion; [2 marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_2_2",
+    "question": "Chitin keeps the tracheae open in the tracheal system of gas exchange in an insect. Gas exchange does NOT occur in the tracheae. Explain the importance of ONE adaptation of the gas exchange surface in the tracheal system of an insect. [2 marks]",
+    "max_marks": 2,
+    "mark_scheme": "Mark in pairs, 1, and 2 OR 3. and 4.\n1. Water has low(er) oxygen partial\npressure/concentration (than air);\n2. So (system on outside) gives large surface area\n(in contact with water)\nOR\nSo (system on outside) reduces diffusion\ndistance (between water and blood);\n3. Water is dense(r) (than air);\n4. (So) water supports the systems/gills; [2 marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_2_3",
+    "question": "Lignin is a polymer found in the walls of xylem vessels in plants. Lignin keeps the xylem vessel open as a continuous tube. Explain the importance of the xylem being kept open as a continuous tube. [3 marks]",
+    "max_marks": 3,
+    "mark_scheme": "1. In fish, blood leaving (V) has more oxygen than\nwater leaving (E);\n2. (But) in humans, blood leaving (V) has less\noxygen than air leaving (E);\n3. Difference in oxygen (concentration) between\nartery and vein is greater in fish than in humans;\n4. (So) fish remove a greater proportion from the\noxygen they take in; [2 max marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_3_1",
+    "question": "The human disease, malaria, is caused by infection with a single-celled eukaryotic organism. FIGURE 2, on the opposite page, shows a diagram of ‘Plasmodium vivax’, one of the species that can cause malaria. Other than the Golgi apparatus, name ONE structure in FIGURE 2 which shows that ‘P. vivax’ is a eukaryote. [1 mark]",
+    "max_marks": 1,
+    "mark_scheme": "1. tRNA brings specific amino acid (to ribosome);\n2. Anticodon (on tRNA) binds to codon (on\nmRNA);\n3. Amino acids join by condensation reaction\n(using ATP)\nOR\nAmino acids join to form a peptide bond (using\nATP); [3 marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_3_2",
+    "question": "FIGURE 2\n\nDescribe TWO functions of the Golgi apparatus in a eukaryotic cell. [2 marks]",
+    "max_marks": 2,
+    "mark_scheme": "1. Hydrogen bonds form instead of ionic bonds;\n2. Changes the tertiary structure (of the crystallin); [2 marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_3_3",
+    "question": "FIGURE 2 ‘P. vivax’ evolved from a common ancestor in Africa. As humans migrated around the world, new strains of ‘P. vivax’ evolved. ‘P. vivax’ is now extremely rare in Africa but there are several different strains of ‘P. vivax’ in other parts of the world. FIGURE 3, on page 16, shows a phylogenetic diagram of the evolution of these different strains. FIGURE 3\n\nWhat does FIGURE 3 suggest is the order of human migration out of Africa? [1 mark] Tick () ONE box. Europe, India, East Asia, Central America, South America India, East Asia, Europe, South America, Central America India, Europe, East Asia, Central America, South America South America, Central America, East Asia, Europe, India",
+    "max_marks": 1,
+    "mark_scheme": "3 correct = 2 marks;;\n2 correct = 1 mark;\n0 or 1 correct = 0 marks\nmRNA codon for the non-mutant triplet AGG\nMutated mRNA codon GGG\nMutated DNA triplet CCC [2 marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_4_1",
+    "question": "Some hospital patients suffer from diarrhoea caused by infection with the bacterium ‘Clostridium difficile’. The ‘C. difficile’ bacteria release toxins. These toxins cause the diarrhoea. The toxins damage the cells lining the ileum, causing them to lose their microvilli. The damage to the cells reduces the absorption of the products of digestion and reduces the absorption of water, resulting in diarrhoea. Explain why the damage to the cells lining the ileum reduces absorption of the products of digestion AND why this reduces absorption of water. [3 marks]",
+    "max_marks": 3,
+    "mark_scheme": "1. Only use single lines/do not use sketching\n(lines)/ensure lines are continuous/connected;\n2. Add labels/annotations/title;\n3. Add magnification/scale (bar);\n4. Draw all parts to same scale/relative size;\n5. Do not use shading/hatching; [2 max marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_4_2",
+    "question": "Not all patients in hospital with ‘C. difficile’ develop diarrhoea. Scientists measured the anti-toxin antibody concentration in hospital patients with and without ‘C. difficile’ infection. They measured the anti-toxin antibody concentration FOUR times: • on admission to hospital (day 0) • on day 3 • on day 6 • on the day the patient left the hospital. FIGURE 4, on page 26, shows the scientists’ results. FIGURE 4\n\nThe scientists suggest that the anti-toxin antibody could be given to some patients as a form of passive immunity. Use FIGURE 4 to suggest how this passive immunity would work AND which patients should be offered this anti-toxin antibody. [3 marks]",
+    "max_marks": 3,
+    "mark_scheme": "1. Blood vessel X – artery/arteriole and\nBlood vessel Y – vein/venule;\n2. (Difference in) lumen size\nOR\n(Difference in) wall thickness; [2 marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_4_3",
+    "question": "Not all patients in hospital with ‘C. difficile’ develop diarrhoea. Scientists measured the anti-toxin antibody concentration in hospital patients with and without ‘C. difficile’ infection. They measured the anti-toxin antibody concentration FOUR times: • on admission to hospital (day 0) • on day 3 • on day 6 • on the day the patient left the hospital. FIGURE 4, on page 26, shows the scientists’ results. FIGURE 4\n\nTo be used as passive immunity treatment, the anti-toxin antibody would be injected. If it was given by mouth, it would be digested. Describe how the anti-toxin antibody would be digested. [3 marks]",
+    "max_marks": 3,
+    "mark_scheme": "1. Carry/wash sharp instruments by holding handle\nOR\nCarry/wash sharp instruments by pointing away\n(from body)/down;\n2. Disinfect instruments/surfaces;\n3. Disinfect hands\nOR\nWash hands with soap (and water);\n4. Put organ/gloves/paper towels in a (separate)\nbag/bin/tray to dispose; [2 max marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_5_1",
+    "question": "A student investigated the use of cinnamon oil as an antimicrobial substance. She investigated the effect of cinnamon oil on the growth of five different bacterial cultures grown on agar plates.\n\nThe student added 100 mm3 of each bacterial culture from its glass bottle onto a separate agar plate. She spread each bacterial culture evenly over the agar using a spreader. Describe the aseptic techniques she should use. [3 marks]",
+    "max_marks": 3,
+    "mark_scheme": "1. Break open cells/tissue and filter\nOR\nGrind/blend cells/tissue/leaves and filter;\n2. In cold, same water potential/concentration, pH\ncontrolled solution;\n3. Centrifuge/spin and remove nuclei/cell debris;\n4. (Centrifuge/spin) at high(er) speed, chloroplasts\nsettle out; [4 marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_5_2",
+    "question": "A student investigated the use of cinnamon oil as an antimicrobial substance. She investigated the effect of cinnamon oil on the growth of five different bacterial cultures grown on agar plates.\n\nOn each agar plate, the student cut a well (a hole) in the agar. The well had a diameter of 6 mm. The student added 50 mm3 of cinnamon oil into the well. Calculate the minimum depth of the well to allow the addition of 50 mm3 of cinnamon oil. Use the following equation in your calculation: Volume of a cylinder = πr2 × l Use 3.14 as the value for π. Show your working. [2 marks]",
+    "max_marks": 2,
+    "mark_scheme": "Mark in pairs, 1 and 2 OR 3 and 4\n1. DNA;\n2. Is not associated with protein/histones but\nnuclear DNA is\nOR\nIs circular but nuclear DNA is linear\nOR\nIs shorter than nuclear DNA;\n3. Ribosomes;\n4. Are smaller than cytoplasmic ribosomes; [2 marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_5_3",
+    "question": "A student investigated the use of cinnamon oil as an antimicrobial substance. She investigated the effect of cinnamon oil on the growth of five different bacterial cultures grown on agar plates. Answer mm The student kept the plates at 25 °C for 24 hours. FIGURE 5 shows what one of her plates looked like after 24 hours. FIGURE 5 The student measured the diameter of the clear zone with no bacterial growth around each well. She made these measurements to the nearest whole mm TABLE 1, on page 36, shows her results. TABLE 1 | BACTERIAL CULTURE | DIAMETER OF CLEAR ZONE / mm | | | | --- | --- | --- | --- | | | Cinnamon oil | Positive control | Negative control | | ‘Bacillus’ spp. | 15 | 14 | 0 | | ‘Staphylococcus aureus’ | 20 | 17 | 0 | | ‘Listeria monocytogenes’ | 18 | 12 | 0 | | ‘Escherichia coli’ | 16 | 12 | 0 | | ‘Klebsiella’ spp. | 14 | 12 | 0 | | Median for all cultures | | | 0 | | Mean for all cultures | | | 0 | | Standard deviation for all cultures | 02.4 | 02.2 | 0 | BACTERIAL CULTURE DIAMETER OF CLEAR ZONE / mm Cinnamon oil Positive control Negative control ‘Bacillus’ spp. ‘Staphylococcus aureus’ ‘Listeria monocytogenes’ ‘Escherichia coli’ ‘Klebsiella’ spp. Median for all cultures Mean for all cultures Standard deviation for all cultures 02.4 02.2\n\nSuggest exactly what the student added to the wells to get the positive control AND negative control results. [2 marks]",
+    "max_marks": 2,
+    "mark_scheme": "Correct answer for 1 mark, 36:1; [1 marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_5_4",
+    "question": "A student investigated the use of cinnamon oil as an antimicrobial substance. She investigated the effect of cinnamon oil on the growth of five different bacterial cultures grown on agar plates. Answer mm The student kept the plates at 25 °C for 24 hours. FIGURE 5 shows what one of her plates looked like after 24 hours. FIGURE 5 The student measured the diameter of the clear zone with no bacterial growth around each well. She made these measurements to the nearest whole mm TABLE 1, on page 36, shows her results. TABLE 1 | BACTERIAL CULTURE | DIAMETER OF CLEAR ZONE / mm | | | | --- | --- | --- | --- | | | Cinnamon oil | Positive control | Negative control | | ‘Bacillus’ spp. | 15 | 14 | 0 | | ‘Staphylococcus aureus’ | 20 | 17 | 0 | | ‘Listeria monocytogenes’ | 18 | 12 | 0 | | ‘Escherichia coli’ | 16 | 12 | 0 | | ‘Klebsiella’ spp. | 14 | 12 | 0 | | Median for all cultures | | | 0 | | Mean for all cultures | | | 0 | | Standard deviation for all cultures | 02.4 | 02.2 | 0 | BACTERIAL CULTURE DIAMETER OF CLEAR ZONE / mm Cinnamon oil Positive control Negative control ‘Bacillus’ spp. ‘Staphylococcus aureus’ ‘Listeria monocytogenes’ ‘Escherichia coli’ ‘Klebsiella’ spp. Median for all cultures Mean for all cultures Standard deviation for all cultures 02.4 02.2\n\nComplete TABLE 1, on the opposite page, to show the median and mean diameters. [1 mark]",
+    "max_marks": 1,
+    "mark_scheme": "1. Less (thylakoid) membrane\nOR\nFewer/smaller grana;\n2. Smaller surface area (of membrane in\nchloroplast)/less chlorophyll;\n3. (Less chlorophyll so) reduced light absorption;\n4. (So) slower rate of photosynthesis; [3 max marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_6_1",
+    "question": "Define genome and proteome. [2 marks] Genome Proteome",
+    "max_marks": 2,
+    "mark_scheme": "Correct answer for 2 marks, 1.286;;\nAccept for 1 mark,\n1.28571429 (correct answer not to 3 decimal\nplaces)\nOR\n1.285 (incorrect rounding to 3 decimal places)\nOR\nEvidence of 0.02142857\nOR\nEvidence of 19 and 4 and 700\nOR\nEvidence of 15 and 1800 and 2500\nOR\nEvidence of 15 and 700 [2 marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_6_2",
+    "question": "The classification system used in the early 20th century grouped different species of bacteria according to the position and shape of flagella on bacterial cells and by the number of flagella per cell. These were observed using an optical microscope. Each species of bacterium has a characteristic cell shape and arrangement of flagella. These characteristics may be shared with other species within a genus. Flagella are fragile, difficult to stain and may extend from the cell at any angle.\n\nConsider the accuracy and limitations of the early classification of bacteria using the arrangement of flagella. [3 marks]",
+    "max_marks": 3,
+    "mark_scheme": "1. C = prophase and\nD = metaphase and\nE = anaphase;\n2. (In) prophase, chromosomes condense;\n3. (In) prophase OR metaphase, centromeres\nattach to spindle fibres;\n4. (In) metaphase, chromosomes/pairs of\nchromatids at equator/centre of spindle/cell;\n5. (In) anaphase, centromeres divide;\n6. (In) anaphase, chromatids (from each pair)\npulled to (opposite) poles/ends (of cell);\n7. (In) prophase/metaphase/anaphase, spindle\nfibres shorten; [5 max marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_7_1",
+    "question": "Carbon monoxide (CO) is released during incomplete combustion of fossil fuels. FIGURE 7 shows the dissociation curve for oxyhaemoglobin when: • NOT exposed to CO • exposed to CO such that 50% of the oxygen binding sites are occupied by CO (50% COHb). FIGURE 7 Using FIGURE 7, what can you conclude about how exposure to CO affects the loading and unloading of oxygen by haemoglobin? Explain your answer. [3 marks]",
+    "max_marks": 3,
+    "mark_scheme": "1. Cell ingests/engulfs the antibody/ADC\nOR\nCell membrane surrounds the antibody/ADC (to\ntake it inside the cell);\n2. Lysosomes fuse with vesicle/phagosome\n(containing ADC);\n3. Lysozymes breakdown/digest the antibody/ADC\nto release the drug; [3 marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_7_2",
+    "question": "The World Health Organisation (WHO) suggests that to avoid long-term health effects, COHb concentrations should be kept below 2.5%. WHO recommends that people should not be exposed to: • air with > 10 mg m–3 CO for more than 8 hours • air with > 30 mg m–3 CO for more than 1 hour. Scientists have used a mathematical model to calculate the exposure to carbon monoxide that would result in 2.5% COHb in both adults and children. TABLE 2 shows the scientists’ results. | Exposure duration at rest / hours | CO concentration in the –3 air / mg m resulting in 2.5% COHb | | | --- | --- | --- | | | Child | Adult | | 1 | 31.2 | 40.2 | | 8 | 9.6 | 10.6 | TABLE 2 Exposure duration at rest / hours CO concentration in the air / mg m–3 resulting in 2.5% COHb Child Adult 31.2 40.2 9.6 10.6 The scientists suggest that the WHO recommendations for carbon monoxide concentrations resulting in 2.5% COHb should be reduced. Evaluate the scientists’ conclusion. [3 marks]",
+    "max_marks": 3,
+    "mark_scheme": "1. ADC will bind to non-tumour/healthy cells;\n2. Cause death/damage of non-tumour/healthy\ncells\nOR\nCause damage to other organs/systems; [2 marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_8_1",
+    "question": "Scientists investigated a drug called MiTMAB as a treatment for cancer. MiTMAB inhibits cytokinesis. FIGURE 8 shows drawings of cancer cells seen with an optical microscope from a: • sample treated with MiTMAB • control sample. FIGURE 8 A B The cells in drawing A can be identified as those treated with MiTMAB. Explain why. [2 marks]",
+    "max_marks": 2,
+    "mark_scheme": "1. One glycerol and three fatty acids;\n2. Condensation (reactions) and removal of\nthree molecules of water;\n3. Ester bond(s) (formed); [3 marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_8_2",
+    "question": "MiTMAB acts as a non-competitive inhibitor of an enzyme called dynamin. Suggest how MiTMAB can cause dynamin to become inactive. [3 marks]",
+    "max_marks": 3,
+    "mark_scheme": "Palmitoleic acid is an unsaturated fatty acid\nrepresented by diagram K; [1 marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_8_3",
+    "question": "When active, dynamin has TWO functions: • it stimulates cytokinesis • it inhibits cell death. The scientists treated actively growing cultures of cancer cells with MiTMAB. They incubated: • one sample of 2500 cells without MiTMAB as a control • eight samples, each with 2500 cells and a different concentration of MiTMAB. After 72 hours, the scientists measured the number of cells in each sample. FIGURE 9, on the opposite page, shows the scientists’ results. A negative value for proportion of control growth means that fewer than 2500 cells were counted after 72 hours. FIGURE 9\n\nUse all the information given to explain the results shown in FIGURE 9, on page 53. [3 marks]",
+    "max_marks": 3,
+    "mark_scheme": "1. To increase accuracy/resolution because\ndifferences/lengths are small;\n2. To increase accuracy because reduces risk of\nhuman error;\n3. To increase accuracy because roots are less\n(likely to be) damaged;\n4. To reduce error/uncertainty because\ndifferences/lengths are small; [1 max marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_8_4",
+    "question": "When active, dynamin has TWO functions: • it stimulates cytokinesis • it inhibits cell death. The scientists treated actively growing cultures of cancer cells with MiTMAB. They incubated: • one sample of 2500 cells without MiTMAB as a control • eight samples, each with 2500 cells and a different concentration of MiTMAB. After 72 hours, the scientists measured the number of cells in each sample. FIGURE 9, on the opposite page, shows the scientists’ results. A negative value for proportion of control growth means that fewer than 2500 cells were counted after 72 hours. FIGURE 9\n\n0.01 dm3 of MiTMAB solution was added to the treated cells. Calculate the increase in mass of MiTMAB (in μg) added to the cells to reduce the cell growth from equal to the control to 0.0 of the control. Show your working. [2 marks] Answer μg",
+    "max_marks": 2,
+    "mark_scheme": "1. Population 1 grew longer roots in warm\ntemperatures and population 2 grew longer\nroots in cool temperatures;\n2. Standard deviations do not overlap so\ndifference (in mean) unlikely to be/not due to\nchance;\n3. Population 1 (is better adapted to warm\nconditions because it) has more saturated fatty\nacids so more energy available (and more\ngrowth);\n4. Population 2 (is better adapted to cool\nconditions because it) has more\nunsaturated/liquid fatty acids so more lipase\nactivity (and more growth); [4 marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_9_1",
+    "question": "Dengue fever is a human disease caused by the dengue virus. Scientists designed an ELISA test to detect antibodies to the dengue virus in a patient’s blood sample. FIGURE 10 shows a diagram of this test and some information about how it works. FIGURE 10 FIGURE 11 shows the negative and positive results that were produced 20 minutes after the use of the test shown in FIGURE 10. FIGURE 11\n\nSuggest what is on the test at line T and explain what causes the line to appear in a positive test. [2 marks]",
+    "max_marks": 2,
+    "mark_scheme": "4 rows correct = 2 marks;;\n2 or 3 rows correct = 1 mark;\n0 or 1 row correct = 0 marks\nBiological Element\nmolecules Carbon Nitrogen Oxygen Phosphorous\nGalactose ✓ ✓\nPhospholipid ✓ ✓ ✓\nRNA ✓ ✓ ✓ ✓\nSucrose ✓ ✓ [2 marks]\n\nAnswer: Element\nAnswer: Carbon | Extra info: Nitrogen [Oxygen marks]\nAnswer: ✓ [✓ marks]\nAnswer: ✓ [✓ marks]\nAnswer: ✓ | Extra info: ✓ [✓ marks]\nAnswer: ✓ [✓ marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_9_2",
+    "question": "Dengue fever is a human disease caused by the dengue virus. Scientists designed an ELISA test to detect antibodies to the dengue virus in a patient’s blood sample. FIGURE 10 shows a diagram of this test and some information about how it works. FIGURE 10 FIGURE 11 shows the negative and positive results that were produced 20 minutes after the use of the test shown in FIGURE 10. FIGURE 11\n\nA line at C shows that the test has worked. Suggest ONE reason why a line at C shows the test has worked. [1 mark]",
+    "max_marks": 1,
+    "mark_scheme": "Correct answer for 2 marks, 0.8376308/0.84/0.8\n(hours);;\nAccept for 1 mark,\nEvidence of 4 x 106 and 3 x 109 (written in any\nformat, for correct readings from graph)\nOR\nEvidence of 9.550746785 (correct number of\ngenerations)\nOR\nEvidence of 1.1938443348 (correct generations/\nhour)\nOR\nEvidence of 50.26 (correct generation time in\nminutes)\nIncorrect reading of graph, 3 x 106 and 2 x 109\nAccept for 1 mark, calculation carried out correctly\nEvidence of 9.380821784 (correct calculation of\nnumber of generations) [2 marks]\n\nOR\nEvidence of 1.172602723 (correct calculation of\ngenerations/ hour)\nOR\nEvidence of 51.16822503 (correct calculation of\ngeneration time in minutes)\nOR\nEvidence of 0.8528037505 (correct calculation of\ngeneration time in hours)\nIncorrect reading of graph, 106.4 and 109.3 OR 106.3\nand 109.2\nAccept for 1 mark, calculation carried out correctly\nEvidence of 9.633591475 (correct calculation of\nnumber of generations)\nOR\nEvidence of 1.204198934 (correct calculation of\ngenerations/ hour)\nOR\nEvidence of 49.82565445 (correct calculation of\ngeneration time in minutes)\nOR\nEvidence of 0.8304275742 (correct calculation of\ngeneration time in hours)\nOR\nEvidence of 0.83, with no other working\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_9_3",
+    "question": "Dengue fever is a human disease caused by the dengue virus. Scientists designed an ELISA test to detect antibodies to the dengue virus in a patient’s blood sample. FIGURE 10 shows a diagram of this test and some information about how it works. FIGURE 10 FIGURE 11 shows the negative and positive results that were produced 20 minutes after the use of the test shown in FIGURE 10. FIGURE 11 FIGURE 12 shows a flowchart of how the anti-human antibodies with enzyme attached are produced. FIGURE 12 Inject rabbit with human antibodies Collect blood sample from rabbit Fuse B cells from blood sample with cancer cells Select fused cells that produce anti-human antibodies Culture these cells and extract the secreted antibodies Add enzyme to the antibodies\n\nSuggest why the fused cells allow continuous production of monoclonal antibodies. [2 marks]",
+    "max_marks": 2,
+    "mark_scheme": "1. (Model) Q and\n(Name) Semi-conservative (replication);\nExplanation\n2. (Model) P (is unsupported because)\nThere should be two peaks in generation 1\nOR\n(Only) one peak is shown in generation 1\nOR\nThere should be 3:1 (ratio) of peaks in\ngeneration 2\nOR\nThere should not be an intermediate/15N 14N\npeak in generation 1/2/3\nOR\nThe original/generation 0/15N peak should be in\ngeneration 1/2/3;\n3. (Model) R (is unsupported because)\nThere should be >2 peaks in generation 2/3\nOR\nThere should be one wide/overlapping peak in\ngeneration 3; [3 marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_10_1",
+    "question": "Describe how a quaternary protein is formed from its monomers. DO NOT include the process of translation in your answer. [5 marks]",
+    "max_marks": 5,
+    "mark_scheme": "1. Polymer of nucleotides;\n2. Each nucleotide formed from deoxyribose, a\nphosphate (group) and an organic/nitrogenous base;\n3. Phosphodiester bonds (between nucleotides);\n4. Double helix/2 strands held by hydrogen bonds;\n5. (Hydrogen bonds/pairing) between adenine, thymine\nand cytosine, guanine; [5 marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_10_2",
+    "question": "Describe the structure of DNA and the structure of a chromosome. [6 marks]",
+    "max_marks": 6,
+    "mark_scheme": "1. (Simple) diffusion of small/non-polar molecules down a\nconcentration gradient;\n2. Facilitated diffusion down a concentration gradient via\nprotein carrier/channel;\n3. Osmosis of water down a water potential gradient;\n4. Active transport against a concentration gradient via\nprotein carrier using ATP;\n5. Co-transport of 2 different substances using a carrier\nprotein; [5 marks]\n\nMarking Guidance [Mark marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_a-level_10_3",
+    "question": "Mutation can result in an increase in genetic variation within a species. Describe and explain the OTHER processes that result in increases in genetic variation within a species. [4 marks]",
+    "max_marks": 4,
+    "mark_scheme": "1. Magnification (figures) show A is bigger than B;\n2. A has a nucleus whereas B has free DNA;\n3. A has mitochondria whereas B does not;\n4. A has Golgi body/endoplasmic reticulum whereas B\ndoes not;\n5. A has no cell wall whereas B has a murein/glycoprotein\ncell wall;\n6. A has no capsule whereas B has a capsule;\n7. A has DNA is bound to histones/proteins whereas B\nhas DNA not associated with histones/proteins\nOR\nA has linear DNA whereas B has circular DNA;\n8. A has larger ribosomes; [5 max marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_1_2",
+    "question": "A root is a plant organ. Plant roots contain many different types of tissue.\n\nTissue in the tip of a plant root contains stem cells. Stem cells can differentiate into any type of cell. Name the type of tissue in plants that contains stem cells. [1 mark]",
+    "max_marks": 1,
+    "mark_scheme": "Answer: water mineral ions energy | Extra info: in this order only allow minerals / ions [1 1 1 marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_1_3",
+    "question": "A root is a plant organ. Plant roots contain many different types of tissue. In the past many drugs were extracted from plants.\n\nAspirin is a painkiller. Which plant does aspirin originate from? [1 mark] Scientists have extracted chemical A from the deadly nightshade plant. Chemical A can be used as a painkiller. TABLE 1, on the opposite page, shows information about where chemical A is found.",
+    "max_marks": 1,
+    "mark_scheme": "Answer: root hair (cell) | Extra info: ignore root / hair unqualified [1 marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_1_4",
+    "question": "A root is a plant organ. Plant roots contain many different types of tissue. In the past many drugs were extracted from plants. TABLE 1 | Part of deadly nightshade plant | Mass of chemical A in 100 g of plant tissue in grams | | --- | --- | | Roots | 1.3 | | Leaves | 1.2 | | Berries | 0.7 | Part of deadly nightshade plant Mass of chemical A in 100 g of plant tissue in grams Roots 1.3 Leaves 1.2 Berries 0.7\n\nThe scientists usually extract chemical A from the berries of the deadly nightshade plant. Suggest ONE reason why berries are used instead of leaves or roots. [1 mark]",
+    "max_marks": 1,
+    "mark_scheme": "Answer: large surface / area | Extra info: allow it has a long projection allow the walls are thin allow it has lots of mitochondria [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: large surface / area | Extra info: allow it has a long projection allow the walls are thin allow it has lots of mitochondria",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_1_5",
+    "question": "A root is a plant organ. Plant roots contain many different types of tissue. In the past many drugs were extracted from plants. TABLE 1 | Part of deadly nightshade plant | Mass of chemical A in 100 g of plant tissue in grams | | --- | --- | | Roots | 1.3 | | Leaves | 1.2 | | Berries | 0.7 | Part of deadly nightshade plant Mass of chemical A in 100 g of plant tissue in grams Roots 1.3 Leaves 1.2 Berries 0.7 A deadly nightshade plant has chlorosis (yellow leaves). The mass of chemical A found in the LEAVES of the plant is 60% of the mass shown in TABLE 1. | Part of deadly nightshade plant | Mass of chemical A in 100 g of plant tissue in grams | | --- | --- | | Roots | 1.3 | | Leaves | 1.2 | | Berries | 0.7 | REPEAT OF TABLE 1 Part of deadly nightshade plant Mass of chemical A in 100 g of plant tissue in grams Roots 1.3 Leaves 1.2 Berries 0.7\n\nCalculate the mass of chemical A in 200 g of the LEAVES with chlorosis. Give your answer in mg. [4 marks] Mass of chemical A = mg",
+    "max_marks": 4,
+    "mark_scheme": "do not accept more than one line from a box on the left [1 1 marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_1_6",
+    "question": "A root is a plant organ. Plant roots contain many different types of tissue. In the past many drugs were extracted from plants. TABLE 1 | Part of deadly nightshade plant | Mass of chemical A in 100 g of plant tissue in grams | | --- | --- | | Roots | 1.3 | | Leaves | 1.2 | | Berries | 0.7 | Part of deadly nightshade plant Mass of chemical A in 100 g of plant tissue in grams Roots 1.3 Leaves 1.2 Berries 0.7 A deadly nightshade plant has chlorosis (yellow leaves). The mass of chemical A found in the LEAVES of the plant is 60% of the mass shown in TABLE 1. | Part of deadly nightshade plant | Mass of chemical A in 100 g of plant tissue in grams | | --- | --- | | Roots | 1.3 | | Leaves | 1.2 | | Berries | 0.7 | REPEAT OF TABLE 1 Part of deadly nightshade plant Mass of chemical A in 100 g of plant tissue in grams Roots 1.3 Leaves 1.2 Berries 0.7\n\nSuggest ONE reason why the leaves of the deadly nightshade plant have chlorosis. [1 mark]",
+    "max_marks": 1,
+    "mark_scheme": "Answer: nerve (cell) any one from: • long • has branches • has insulation | Extra info: allow neuron(e) ignore motor / sensory / relay allow myelin / fat [1 1 marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_2_1",
+    "question": "This question is about the circulatory system. FIGURE 1 shows the human heart. FIGURE 1\n\nWhich part of the heart receives oxygenated blood from the lungs? [1 mark] Tick () ONE box. A B C D",
+    "max_marks": 1,
+    "mark_scheme": "Answer: pathogens [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: pathogens",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_2_2",
+    "question": "This question is about the circulatory system. FIGURE 1 shows the human heart. FIGURE 1 REPEAT OF FIGURE 1\n\nWhich part of the heart pumps deoxygenated blood to the lungs? [1 mark] Tick () ONE box. A B C D",
+    "max_marks": 1,
+    "mark_scheme": "Answer: viruses reproduce inside cells, damaging them [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: viruses reproduce inside cells, damaging them",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_2_3",
+    "question": "This question is about the circulatory system. FIGURE 1 shows the human heart. FIGURE 1 REPEAT OF FIGURE 1\n\nA group of cells called the pacemaker controls the resting heart rate. Where in the heart is the pacemaker found? [1 mark] Tick () ONE box. Left atrium Left ventricle Right atrium Right ventricle",
+    "max_marks": 1,
+    "mark_scheme": "Answer: any one from: • they do not have a cell membrane • they do not have cytoplasm • they do not have a nucleus • they do not have mitochondria (like most eukaryotic cells) • they do not have ribosomes | Extra info: do not accept they do not have a cell wall do not accept they do not have chloroplasts / chlorophyll ignore they are not living / alive ignore they can only replicate inside cells ignore virus has a protein coat [1 marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_2_4",
+    "question": "This question is about the circulatory system. FIGURE 1 shows the human heart. FIGURE 1 REPEAT OF FIGURE 1\n\nFIGURE 2 shows a cross section of an artery and of a vein. FIGURE 2 Describe TWO ways that the structure of an artery is different from the structure of a vein. [2 marks]",
+    "max_marks": 2,
+    "mark_scheme": "Answer: a weakened form of a virus [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: a weakened form of a virus",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_2_6",
+    "question": "This question is about the circulatory system. FIGURE 1 shows the human heart. FIGURE 1 REPEAT OF FIGURE 1 REPEAT OF TABLE 2 | Percentage (%) of coronary artery that is blocked | Blood flow in 3 cm /minute | | --- | --- | | 0 | 100 | | 10 | 64 | | 20 | 42 | | 50 | 8 | | 80 | 2 | Percentage (%) of coronary artery that is blocked Blood flow in cm3/minute\n\nComplete FIGURE 3, on the opposite page. You should: • use a suitable scale for the y-axis • plot the data from TABLE 2 • draw a line of best fit. [4 marks]",
+    "max_marks": 4,
+    "mark_scheme": "Answer: leaf [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: leaf",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_2_7",
+    "question": "This question is about the circulatory system. FIGURE 1 shows the human heart. FIGURE 1 REPEAT OF FIGURE 1 REPEAT OF TABLE 2 | Percentage (%) of coronary artery that is blocked | Blood flow in 3 cm /minute | | --- | --- | | 0 | 100 | | 10 | 64 | | 20 | 42 | | 50 | 8 | | 80 | 2 | Percentage (%) of coronary artery that is blocked Blood flow in cm3/minute FIGURE 3\n\nPredict the blood flow in a coronary artery with a 35% blockage. Use FIGURE 3, on page 25. [1 mark] Blood flow = cm3/minute",
+    "max_marks": 1,
+    "mark_scheme": "Answer: y-axis labelled rate of photosynthesis in arbitrary units correct scale all bars plotted correctly all bars correctly labelled | Extra info: allow a tolerance of ± ½ small square allow 2 correct bars for 1 mark allow bars touching allow any width of bars ignore letters [1 1 2 1 marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_2_8",
+    "question": "This question is about the circulatory system. FIGURE 1 shows the human heart. FIGURE 1 REPEAT OF FIGURE 1 REPEAT OF TABLE 2 | Percentage (%) of coronary artery that is blocked | Blood flow in 3 cm /minute | | --- | --- | | 0 | 100 | | 10 | 64 | | 20 | 42 | | 50 | 8 | | 80 | 2 | Percentage (%) of coronary artery that is blocked Blood flow in cm3/minute FIGURE 3\n\nExplain the effect of a partly blocked coronary artery on the human body. [6 marks]",
+    "max_marks": 6,
+    "mark_scheme": "Answer: as the level of infection (with TMV) increases, (the rate of) photosynthesis decreases | Extra info: allow as TMV increases, photosynthesis decreases allow (the rate of) photosynthesis decreases as the level of infection (with TMV) increases allow as infection gets worse, photosynthesis decreases allow TMV reduces photosynthesis [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: as the level of infection (with TMV) increases, (the rate of) photosynthesis decreases | Extra info: allow as TMV increases, photosynthesis decreases allow (the rate of) photosynthesis decreases as the level of infection (with TMV) increases allow as infection gets worse, photosynthesis decreases allow TMV reduces photosynthesis",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_2_9",
+    "question": "This question is about the circulatory system. FIGURE 1 shows the human heart. FIGURE 1 REPEAT OF FIGURE 1 REPEAT OF TABLE 2 | Percentage (%) of coronary artery that is blocked | Blood flow in 3 cm /minute | | --- | --- | | 0 | 100 | | 10 | 64 | | 20 | 42 | | 50 | 8 | | 80 | 2 | Percentage (%) of coronary artery that is blocked Blood flow in cm3/minute FIGURE 3\n\nThere are different treatments for a blockage in a coronary artery. Explain how ONE treatment for a blockage in a coronary artery works. [2 marks]",
+    "max_marks": 2,
+    "mark_scheme": "Answer: less chlorophyll (so) less glucose / starch / protein made | Extra info: allow fewer chloroplasts allow less light absorbed ignore less photosynthesis [1 1 marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_3_1",
+    "question": "‘Salmonella’ bacteria cause outbreaks of food poisoning in humans. To prevent food poisoning in humans, farmers vaccinate their animals against ‘Salmonella’ bacteria.\n\nHow do ‘Salmonella’ bacteria in food cause the symptoms of vomiting and diarrhoea? [1 mark]",
+    "max_marks": 1,
+    "mark_scheme": "Answer: (has) spikes / thorns / prickles | Extra info: allow (has a) tough outer layer [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: (has) spikes / thorns / prickles | Extra info: allow (has a) tough outer layer",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_3_2",
+    "question": "‘Salmonella’ bacteria cause outbreaks of food poisoning in humans. To prevent food poisoning in humans, farmers vaccinate their animals against ‘Salmonella’ bacteria. During a food poisoning outbreak, scientists identified the farm where the food came from. The farmer had NOT vaccinated the farm animals against ‘Salmonella’ bacteria.\n\nThe food poisoning outbreak could have been prevented if the farm animals had been vaccinated. Explain how: • the immune systems of animals respond to a vaccination • the immune response in farm animals prevents an outbreak of food poisoning in humans. [4 marks]",
+    "max_marks": 4,
+    "mark_scheme": "Answer: chemical [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: chemical",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_3_3",
+    "question": "‘Salmonella’ bacteria cause outbreaks of food poisoning in humans. To prevent food poisoning in humans, farmers vaccinate their animals against ‘Salmonella’ bacteria. During a food poisoning outbreak, scientists identified the farm where the food came from. The farmer had NOT vaccinated the farm animals against ‘Salmonella’ bacteria. Most cases of food poisoning do NOT need to be treated with antibiotics. However, some patients may need to take antibiotics to recover. Scientists investigated the effectiveness of five different antibiotics on the ‘Salmonella’ bacteria in the outbreak. Antibiotics A, B, C, D and E were used in the investigation. FIGURE 4, on the opposite page, shows the results. FIGURE 4\n\nDescribe TWO aseptic techniques the scientists should have used in the investigation. [2 marks]",
+    "max_marks": 2,
+    "mark_scheme": "Answer: the plant will not lose as much water [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: the plant will not lose as much water",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_3_4",
+    "question": "‘Salmonella’ bacteria cause outbreaks of food poisoning in humans. To prevent food poisoning in humans, farmers vaccinate their animals against ‘Salmonella’ bacteria. During a food poisoning outbreak, scientists identified the farm where the food came from. The farmer had NOT vaccinated the farm animals against ‘Salmonella’ bacteria. Most cases of food poisoning do NOT need to be treated with antibiotics. However, some patients may need to take antibiotics to recover. Scientists investigated the effectiveness of five different antibiotics on the ‘Salmonella’ bacteria in the outbreak. Antibiotics A, B, C, D and E were used in the investigation. FIGURE 4, on the opposite page, shows the results. FIGURE 4\n\nThe scientists incubated the bacteria at 37 °C. Students in school laboratories incubate bacteria at 25 °C. Explain why scientists use 37 °C but students must use 25 °C to incubate bacteria. [3 marks]",
+    "max_marks": 3,
+    "mark_scheme": "Answer: chlorophyll / chloroplasts [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: chlorophyll / chloroplasts",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_3_5",
+    "question": "‘Salmonella’ bacteria cause outbreaks of food poisoning in humans. To prevent food poisoning in humans, farmers vaccinate their animals against ‘Salmonella’ bacteria. During a food poisoning outbreak, scientists identified the farm where the food came from. The farmer had NOT vaccinated the farm animals against ‘Salmonella’ bacteria. Most cases of food poisoning do NOT need to be treated with antibiotics. However, some patients may need to take antibiotics to recover. Scientists investigated the effectiveness of five different antibiotics on the ‘Salmonella’ bacteria in the outbreak. Antibiotics A, B, C, D and E were used in the investigation. FIGURE 4, on the opposite page, shows the results. FIGURE 4 REPEAT OF FIGURE 4\n\nWhat is the purpose of the paper disc with no antibiotic in FIGURE 4? [1 mark]",
+    "max_marks": 1,
+    "mark_scheme": "Answer: to allow it to photosynthesise or to make sugar / glucose / carbohydrate / starch [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: to allow it to photosynthesise or to make sugar / glucose / carbohydrate / starch",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_3_6",
+    "question": "‘Salmonella’ bacteria cause outbreaks of food poisoning in humans. To prevent food poisoning in humans, farmers vaccinate their animals against ‘Salmonella’ bacteria. During a food poisoning outbreak, scientists identified the farm where the food came from. The farmer had NOT vaccinated the farm animals against ‘Salmonella’ bacteria. Most cases of food poisoning do NOT need to be treated with antibiotics. However, some patients may need to take antibiotics to recover. Scientists investigated the effectiveness of five different antibiotics on the ‘Salmonella’ bacteria in the outbreak. Antibiotics A, B, C, D and E were used in the investigation. FIGURE 4, on the opposite page, shows the results. FIGURE 4 REPEAT OF FIGURE 4\n\nThe scientists concluded that either antibiotic A or antibiotic B should be prescribed to patients with food poisoning. Why should antibiotic A or antibiotic B be prescribed? [1 mark]",
+    "max_marks": 1,
+    "mark_scheme": "Answer: organ [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: organ",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_3_7",
+    "question": "‘Salmonella’ bacteria cause outbreaks of food poisoning in humans. To prevent food poisoning in humans, farmers vaccinate their animals against ‘Salmonella’ bacteria. During a food poisoning outbreak, scientists identified the farm where the food came from. The farmer had NOT vaccinated the farm animals against ‘Salmonella’ bacteria. Most cases of food poisoning do NOT need to be treated with antibiotics. However, some patients may need to take antibiotics to recover. Scientists investigated the effectiveness of five different antibiotics on the ‘Salmonella’ bacteria in the outbreak. Antibiotics A, B, C, D and E were used in the investigation. FIGURE 4, on the opposite page, shows the results. FIGURE 4 REPEAT OF FIGURE 4 REPEAT OF FIGURE 4\n\nThe scientists wanted to be more certain about which antibiotic should be prescribed. Describe how the results in FIGURE 4 could be used to obtain a QUANTITATIVE comparison of antibiotics A and B. [1 mark]",
+    "max_marks": 1,
+    "mark_scheme": "Answer: water / mineral ions | Extra info: allow named mineral ions allow minerals / ions [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: water / mineral ions | Extra info: allow named mineral ions allow minerals / ions",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_3_8",
+    "question": "‘Salmonella’ bacteria cause outbreaks of food poisoning in humans. To prevent food poisoning in humans, farmers vaccinate their animals against ‘Salmonella’ bacteria. During a food poisoning outbreak, scientists identified the farm where the food came from. The farmer had NOT vaccinated the farm animals against ‘Salmonella’ bacteria. Most cases of food poisoning do NOT need to be treated with antibiotics. However, some patients may need to take antibiotics to recover. Scientists investigated the effectiveness of five different antibiotics on the ‘Salmonella’ bacteria in the outbreak. Antibiotics A, B, C, D and E were used in the investigation. FIGURE 4, on the opposite page, shows the results. FIGURE 4 REPEAT OF FIGURE 4 REPEAT OF FIGURE 4\n\nOne year later, there was another outbreak at the farm involving ‘Salmonella’ bacteria. Antibiotic B did NOT have an effect. Suggest why antibiotic B no longer had an effect. [1 mark]",
+    "max_marks": 1,
+    "mark_scheme": "Answer: phloem (tissue) [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: phloem (tissue",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_4_1",
+    "question": "This question is about exercise.\n\nDuring vigorous exercise, anaerobic respiration occurs in a person’s body. Explain TWO effects of anaerobic respiration on the person’s body. [4 marks]",
+    "max_marks": 4,
+    "mark_scheme": "Answer: C H O 6 12 6 [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: C H O 6 12 6",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_4_2",
+    "question": "This question is about exercise.\n\nDesign an investigation to show the effect of different types of exercise on the heart rate of athletes. [6 marks]",
+    "max_marks": 6,
+    "mark_scheme": "Answer: carbohydrase [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: carbohydrase",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_4_3",
+    "question": "This question is about exercise. Anabolic steroids are drugs. Anabolic steroids: • increase muscle mass in humans • are banned in most competitive sports. Some athletes take anabolic steroids to improve their performance in sport.\n\nExplain how taking anabolic steroids could improve an athlete’s performance. [2 marks]",
+    "max_marks": 2,
+    "mark_scheme": "Answer: beaker | Extra info: allow water bath [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: beaker | Extra info: allow water bath",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_4_4",
+    "question": "This question is about exercise. Anabolic steroids are drugs. Anabolic steroids: • increase muscle mass in humans • are banned in most competitive sports. Some athletes take anabolic steroids to improve their performance in sport. Scientists use monoclonal antibodies to test for the presence of anabolic steroids in an athlete’s urine. To produce monoclonal antibodies, a mouse lymphocyte is combined with a tumour cell.\n\nWhat type of cell is created when a mouse lymphocyte and a tumour cell combine? [1 mark] Tick () ONE box. Embryo Hybridoma Phagocyte Stem cell",
+    "max_marks": 1,
+    "mark_scheme": "Answer: so that both solutions could reach 10 °C [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: so that both solutions could reach 10 °C",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_4_5",
+    "question": "This question is about exercise. Anabolic steroids are drugs. Anabolic steroids: • increase muscle mass in humans • are banned in most competitive sports. Some athletes take anabolic steroids to improve their performance in sport. Scientists use monoclonal antibodies to test for the presence of anabolic steroids in an athlete’s urine. To produce monoclonal antibodies, a mouse lymphocyte is combined with a tumour cell.\n\nDescribe how scientists make monoclonal antibodies using the cell created when a mouse lymphocyte and a tumour cell combine. [3 marks]",
+    "max_marks": 3,
+    "mark_scheme": "Answer: 10 / ten (minutes) [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: 10 / ten (minutes",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_4_6",
+    "question": "This question is about exercise. Anabolic steroids are drugs. Anabolic steroids: • increase muscle mass in humans • are banned in most competitive sports. Some athletes take anabolic steroids to improve their performance in sport. Scientists use monoclonal antibodies to test for the presence of anabolic steroids in an athlete’s urine. To produce monoclonal antibodies, a mouse lymphocyte is combined with a tumour cell.\n\nWhat property makes a monoclonal antibody useful in detecting the presence of an anabolic steroid in urine? [1 mark] Tick () ONE box. A monoclonal antibody is quick and easy to produce. A monoclonal antibody is specific to only one person’s urine. A monoclonal antibody only binds to the anabolic steroid. A monoclonal antibody can identify many different drugs at the same time.",
+    "max_marks": 1,
+    "mark_scheme": "Answer: test the mixture with iodine solution every 30 seconds [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: test the mixture with iodine solution every 30 seconds",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_4_7",
+    "question": "This question is about exercise. Anabolic steroids are drugs. Anabolic steroids: • increase muscle mass in humans • are banned in most competitive sports. Some athletes take anabolic steroids to improve their performance in sport. Scientists use monoclonal antibodies to test for the presence of anabolic steroids in an athlete’s urine. To produce monoclonal antibodies, a mouse lymphocyte is combined with a tumour cell. FIGURE 5 shows a test strip that can detect the presence of an anabolic steroid in an athlete’s urine. FIGURE 5 The end of the test strip is dipped in urine. The urine moves up through the test strip. The test area and the control area contain a dye. The dye turns blue when monoclonal antibodies bind to it.\n\nSuggest the purpose of the control area in the test strip. [1 mark]",
+    "max_marks": 1,
+    "mark_scheme": "Answer: 35 °C [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: 35 °C",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_4_8",
+    "question": "This question is about exercise. Anabolic steroids are drugs. Anabolic steroids: • increase muscle mass in humans • are banned in most competitive sports. Some athletes take anabolic steroids to improve their performance in sport. Scientists use monoclonal antibodies to test for the presence of anabolic steroids in an athlete’s urine. To produce monoclonal antibodies, a mouse lymphocyte is combined with a tumour cell. FIGURE 5 shows a test strip that can detect the presence of an anabolic steroid in an athlete’s urine. FIGURE 5 The end of the test strip is dipped in urine. The urine moves up through the test strip. The test area and the control area contain a dye. The dye turns blue when monoclonal antibodies bind to it. FIGURE 6 shows the urine test results of four athletes. FIGURE 6\n\nDescribe the evidence in FIGURE 6, on the opposite page, that shows the test for athlete B has NOT worked. Suggest ONE reason why the test did NOT work. [2 marks] Evidence Reason",
+    "max_marks": 2,
+    "mark_scheme": "Answer: enzyme / amylase is denatured or enzyme / amylase stops working (so) starch is not broken down or starch is still present | Extra info: allow active site / enzyme has changed shape do not accept enzyme / amylase has died [1 1 marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_5_1",
+    "question": "The protist that causes malaria is passed from one person to another person by mosquitos.\n\nWhat term describes an organism that passes a pathogen from one person to another person? [1 mark]",
+    "max_marks": 1,
+    "mark_scheme": "Answer: less blood flows through or less blood flows to the heart (muscle / cells / tissue) less oxygen (reaches the heart muscle) | Extra info: allow less respiration allow less energy released do not accept less energy produced / made / created [1 1 marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_5_2",
+    "question": "The protist that causes malaria is passed from one person to another person by mosquitos.\n\nFIGURE 7 shows the malarial protist. FIGURE 7 The malarial protist is a eukaryotic cell. Describe THREE ways the structure of the malarial protist is different from the structure of a prokaryotic cell. Do NOT refer to size in your answer. [3 marks]",
+    "max_marks": 3,
+    "mark_scheme": "Answer: D [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: D",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_5_3",
+    "question": "The protist that causes malaria is passed from one person to another person by mosquitos.\n\nDuring one stage of malaria infection, the malarial protists enter red blood cells and cause them to burst. Explain why the bursting of red blood cells causes tiredness. [2 marks]",
+    "max_marks": 2,
+    "mark_scheme": "Answer: B [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: B",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_5_4",
+    "question": "The protist that causes malaria is passed from one person to another person by mosquitos.\n\nThe malarial protist reproduces sexually and asexually during a life cycle. Complete TABLE 3, on the opposite page, to give THREE differences between sexual reproduction and asexual reproduction. One difference has been completed for you. [3 marks]",
+    "max_marks": 3,
+    "mark_scheme": "Answer: is more likely to get a blockage (with high cholesterol) or blockage could be biggest | Extra info: ignore has the highest blood cholesterol concentration [1 marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_5_5",
+    "question": "The protist that causes malaria is passed from one person to another person by mosquitos. TABLE 3 | | SEXUAL REPRODUCTION | ASEXUAL REPRODUCTION | | --- | --- | --- | | | Involves two parents | Involves one parent | | 1 | | | | 2 | | | | 3 | | | SEXUAL REPRODUCTION ASEXUAL REPRODUCTION Involves two parents Involves one parent\n\nOne drug for treating malaria prevents mitosis occurring in the malarial protist. The drug stops the synthesis of new DNA bases in the cell. Suggest how the drug prevents mitosis occurring. [1 mark]",
+    "max_marks": 1,
+    "mark_scheme": "Answer: 4 and 5.6 5.6 = 1.4 4 | Extra info: allow correct division using either 5.3 or 5.8 (for person D) [1 1 marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_5_6",
+    "question": "The protist that causes malaria is passed from one person to another person by mosquitos. TABLE 3 | | SEXUAL REPRODUCTION | ASEXUAL REPRODUCTION | | --- | --- | --- | | | Involves two parents | Involves one parent | | 1 | | | | 2 | | | | 3 | | | SEXUAL REPRODUCTION ASEXUAL REPRODUCTION Involves two parents Involves one parent\n\nDescribe the process of cell division by mitosis. [3 marks]",
+    "max_marks": 3,
+    "mark_scheme": "Answer: opens / widens (artery) so (more) blood can flow through | Extra info: allow pushes blockage to the side allow (more) oxygen(ated blood) can flow through [1 1 marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_5_7",
+    "question": "The protist that causes malaria is passed from one person to another person by mosquitos. TABLE 3 | | SEXUAL REPRODUCTION | ASEXUAL REPRODUCTION | | --- | --- | --- | | | Involves two parents | Involves one parent | | 1 | | | | 2 | | | | 3 | | | SEXUAL REPRODUCTION ASEXUAL REPRODUCTION Involves two parents Involves one parent\n\nDifferent types of disease may interact. Scientists studied the incidence of malaria infections in children: • with disorder S • without disorder S. The incidence of malaria in children with disorder S was calculated as a percentage of the incidence in children without disorder S. TABLE 4, on page 72, shows the results. TABLE 4 | Age in years | Calculated percentage (%) incidence of malaria in children with disorder S | | --- | --- | | 2 to < 4 | 69 | | 4 to < 6 | 63 | | 6 to < 8 | 50 | | 8 to 10 | 45 | | > 10 | 73 | Age in years Calculated percentage (%) incidence of malaria in children with disorder S 2 to < 4 4 to < 6 6 to < 8 8 to 10 > 10 Describe what the results in TABLE 4 show about the interaction between disorder S and malaria. [2 marks]",
+    "max_marks": 2,
+    "mark_scheme": "Answer: platelets [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: platelets",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_6_1",
+    "question": "This question is about photosynthesis.\n\nComplete the symbol equation for photosynthesis. [1 mark] + 6 C6H12O6 + 6",
+    "max_marks": 1,
+    "mark_scheme": "Answer: trachea [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: trachea",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_6_2",
+    "question": "This question is about photosynthesis. FIGURE 8 shows how the rate of photosynthesis changes with light intensity. FIGURE 8\n\nWhich part of the graph could be represented by the equation y = mx + c ? [1 mark] Tick () ONE box. From 0 to 5 000 lux From 10 000 to 15 000 lux From 15 000 to 20 000 lux From 20 000 to 25 000 lux",
+    "max_marks": 1,
+    "mark_scheme": "Answer: any two from: • only one air space (per balloon) or alveoli not represented • blood vessels / capillaries not represented • bronchioles not represented • glass tube not flexible (like trachea / bronchi) • bell jar does not move during breathing (like ribs) • ribs have gaps between them • rib cage contains muscles • pleural cavity not represented | Extra info: do not accept bronchi not represented [2 marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_6_3",
+    "question": "This question is about photosynthesis. FIGURE 8 shows how the rate of photosynthesis changes with light intensity. FIGURE 8 A student investigated the effect of colour of light on the rate of photosynthesis in leaves. FIGURE 9 shows how the investigation was set up. FIGURE 9 TABLE 5 shows the results. | COLOUR OF LIGHT | Time taken for 10 leaf discs to reach the surface of the solution in seconds | | --- | --- | | Blue | 115 | | Green | 831 | | Red | 397 | TABLE 5 COLOUR OF LIGHT Time taken for 10 leaf discs to reach the surface of the solution in seconds Blue Green Red\n\nGive ONE way the student could change the colour of the light shining on the leaf discs. [1 mark]",
+    "max_marks": 1,
+    "mark_scheme": "Answer: any two from: • speed (of treadmill) • type of exercise or all were running • (biological) sex or all male • all were non-smokers • time spent running | Extra info: allow ran for 8 minutes ignore reference to time interval for counting breaths [2 marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_6_4",
+    "question": "This question is about photosynthesis. FIGURE 8 shows how the rate of photosynthesis changes with light intensity. FIGURE 8 A student investigated the effect of colour of light on the rate of photosynthesis in leaves. FIGURE 9 shows how the investigation was set up. FIGURE 9 TABLE 5 shows the results. | COLOUR OF LIGHT | Time taken for 10 leaf discs to reach the surface of the solution in seconds | | --- | --- | | Blue | 115 | | Green | 831 | | Red | 397 | TABLE 5 COLOUR OF LIGHT Time taken for 10 leaf discs to reach the surface of the solution in seconds Blue Green Red\n\nGive the independent variable and the dependent variable in this investigation. [2 marks] Independent variable Dependent variable",
+    "max_marks": 2,
+    "mark_scheme": "Answer: 0 minutes = 20 8 minutes = 42 42-20 ÷20 ×100 or (22 ÷ 20 )× 1 00 110 (%) | Extra info: allow value for 8 minutes in the range 41.5 to 42.5 allow correct substitution from incorrect graph readings (i.e. ±1 small square) at 0 minutes and / or 8 minutes allow correct calculation from incorrect graph readings from previous step [1 1 1 marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_6_5",
+    "question": "This question is about photosynthesis. FIGURE 8 shows how the rate of photosynthesis changes with light intensity. FIGURE 8 A student investigated the effect of colour of light on the rate of photosynthesis in leaves. FIGURE 9 shows how the investigation was set up. FIGURE 9 TABLE 5 shows the results. | COLOUR OF LIGHT | Time taken for 10 leaf discs to reach the surface of the solution in seconds | | --- | --- | | Blue | 115 | | Green | 831 | | Red | 397 | TABLE 5 COLOUR OF LIGHT Time taken for 10 leaf discs to reach the surface of the solution in seconds Blue Green Red\n\nAll of the air had to be removed from the leaf discs before placing them in the beaker. Suggest ONE reason why. [1 mark]",
+    "max_marks": 1,
+    "mark_scheme": "Answer: to get more oxygen (into the blood) for use in respiration or for releasing energy (for muscle contraction) or to remove more carbon dioxide (1) produced in respiration (1) | Extra info: allow using more oxygen (in muscles) allow to reduce anaerobic respiration do not accept produces / makes / creates energy [1 1 marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_6_6",
+    "question": "This question is about photosynthesis. FIGURE 8 shows how the rate of photosynthesis changes with light intensity. FIGURE 8 A student investigated the effect of colour of light on the rate of photosynthesis in leaves. FIGURE 9 shows how the investigation was set up. FIGURE 9 TABLE 5 shows the results. | COLOUR OF LIGHT | Time taken for 10 leaf discs to reach the surface of the solution in seconds | | --- | --- | | Blue | 115 | | Green | 831 | | Red | 397 | TABLE 5 COLOUR OF LIGHT Time taken for 10 leaf discs to reach the surface of the solution in seconds Blue Green Red\n\nThe leaf discs were placed in a beaker of sodium hydrogencarbonate (NaHCO3) solution. Explain why sodium hydrogencarbonate solution was used instead of water. [2 marks]",
+    "max_marks": 2,
+    "mark_scheme": "Answer: any one from: • heart / pulse rate • depth / volume of breathing • volume of sweat • body temperature | Extra info: allow heart beat per minute allow amount of sweat allow body mass / measurement [1 marks]",
+    "marking_points": [
+      {
+        "point": "Answer: any one from: • heart / pulse rate • depth / volume of breathing • volume of sweat • body temperature | Extra info: allow heart beat per minute allow amount of sweat allow body mass / measurement",
+        "marks": 1
+      }
+    ]
+  },
+  {
+    "board": "AQA",
+    "subject": "Biology",
+    "question_id": "aqa_biology_gcse_6_7",
+    "question": "This question is about photosynthesis. FIGURE 8 shows how the rate of photosynthesis changes with light intensity. FIGURE 8 A student investigated the effect of colour of light on the rate of photosynthesis in leaves. FIGURE 9 shows how the investigation was set up. FIGURE 9 TABLE 5 shows the results. | COLOUR OF LIGHT | Time taken for 10 leaf discs to reach the surface of the solution in seconds | | --- | --- | | Blue | 115 | | Green | 831 | | Red | 397 | TABLE 5 COLOUR OF LIGHT Time taken for 10 leaf discs to reach the surface of the solution in seconds Blue Green Red\n\nExplain why the leaf discs moved to the surface of the solution during the investigation. [2 marks]",
+    "max_marks": 2,
+    "mark_scheme": "Answer: any one from: • (lung) cancer • increased blood pressure • lung disease • low birth weight in babies of mothers who smoke • increased risk of heart / cardiovascular disease | Extra info: allow named example of lung disease e.g. asthma allow persistent cough ignore cough unqualified [1 marks]",
+    "marking_points": []
+  },
+  {
+    "board": "AQA",
+    "subject": "Chemistry",
+    "question_id": "aqa_chemistry_a-level_4_1",
+    "question": "This question is about some gas mixtures at equilibrium. This reaction can be used to make hydrogen. H2O(g) + CO(g) ⇌ H2(g) + CO2(g) ΔH = –41 kJ mol–1\n\nA mixture of 2.00 mol of H2O(g) and 2.00 mol of CO(g) is allowed to reach equilibrium at a constant temperature in a 20 dm3 container. At equilibrium, there are 0.92 mol of H2(g). Calculate the mole fraction of H2(g) in the equilibrium mixture. [2 marks] Mole fraction of H2(g)",
+    "max_marks": 2,
+    "mark_scheme": "Answer: C=O | Extra info: C–H [C–O marks]\nAnswer: 743 | Extra info: 412 [360 marks]",
+    "marking_points": []
+  }
+]
