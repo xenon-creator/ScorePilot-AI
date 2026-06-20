@@ -77,9 +77,10 @@ def _keyword_fallback_similarity(text_a: str, text_b: str) -> float:
 
 def _hf_inference_similarity(text_a: str, text_b: str) -> float | None:
     """
-    Query Hugging Face Inference API for sentence similarity.
+    Query Hugging Face Inference API for sentence similarity with retries.
     Returns None if the request fails (e.g. rate limit, network issue).
     """
+    import time
     url = "https://api-inference.huggingface.co/models/sentence-transformers/all-MiniLM-L6-v2"
     payload = {
         "inputs": {
@@ -95,17 +96,28 @@ def _hf_inference_similarity(text_a: str, text_b: str) -> float | None:
     if token:
         headers["Authorization"] = f"Bearer {token}"
         
-    try:
-        data = json.dumps(payload).encode("utf-8")
-        req = urllib.request.Request(url, data=data, headers=headers, method="POST")
-        # Keep timeout short (4s) to prevent hanging the response
-        with urllib.request.urlopen(req, timeout=4.0) as response:
-            res = json.loads(response.read().decode("utf-8"))
-            if isinstance(res, list) and len(res) > 0:
-                val = float(res[0])
-                return max(0.0, min(val, 1.0))
-    except Exception as e:
-        logger.warning(f"Hugging Face Inference API similarity failed: {e}")
+    for attempt in range(3):
+        try:
+            data = json.dumps(payload).encode("utf-8")
+            req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+            # Keep timeout short (4s) to prevent hanging the response
+            with urllib.request.urlopen(req, timeout=4.0) as response:
+                res = json.loads(response.read().decode("utf-8"))
+                if isinstance(res, list) and len(res) > 0:
+                    val = float(res[0])
+                    return max(0.0, min(val, 1.0))
+                if isinstance(res, dict) and "error" in res:
+                    err_msg = res.get("error", "")
+                    logger.warning(f"HF API returned error on attempt {attempt + 1}: {err_msg}")
+                    if "loading" in str(err_msg).lower() and attempt < 2:
+                        time.sleep(2.0)
+                        continue
+        except Exception as e:
+            logger.warning(f"Hugging Face Inference API similarity attempt {attempt + 1} failed: {e}")
+            if attempt < 2:
+                time.sleep(1.0)
+            else:
+                break
     return None
 
 

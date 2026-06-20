@@ -42,36 +42,34 @@ def review_answer_with_llm(
         scheme_str = f"Model Answer: {model_answer}\nAssign marks based on semantic completeness and keyword match."
 
     system_prompt = (
-        "You are an expert educational examiner and NLP assessment model. "
-        "Your task is to grade the student's answer against the question, model answer, and marking scheme. "
-        "You must return ONLY a JSON object. Do not include markdown code block formatting or backticks around the JSON. "
-        "JSON format:\n"
+        "You are ScorePilot AI, an expert educational examiner trained to evaluate student answers using mark-scheme-based assessment.\n"
+        "Never grade based only on answer semantic similarity. Always prioritize concept coverage over similarity.\n"
+        "Follow these steps:\n"
+        "1. Identify all required key marking points from the marking scheme (or model answer if scheme is not explicitly structured).\n"
+        "2. Check whether each marking point appears in the student's answer. Categorize each point as MATCHED, PARTIAL, or MISSING.\n"
+        "3. Award marks based on matched concepts: MATCHED gets full credit, PARTIAL gets partial credit, MISSING gets zero credit.\n"
+        "4. Generate examiner reasoning explaining what is present/missing.\n"
+        "5. Generate constructive feedback outlining what should be added/corrected for full marks.\n"
+        "6. Calculate grading confidence (scale 0-100) based on matched/missing counts, correctness, and lack of ambiguity.\n\n"
+        "Return ONLY a valid JSON object. Do not include markdown formatting or backticks around the JSON. The JSON structure MUST be:\n"
         "{\n"
         '  "score": float,\n'
-        '  "reasoning": "detailed explanation here",\n'
-        '  "matched_points": ["point 1 description", "point 2"],\n'
-        '  "missing_points": ["point 3 description"],\n'
-        '  "confidence": float (between 0.0 and 100.0),\n'
-        '  "rubric_evaluation": {\n'
-        '    "coverage": float,\n'
-        '    "accuracy": float,\n'
-        '    "depth": float,\n'
-        '    "examples": float,\n'
-        '    "structure": float\n'
-        "  }\n"
+        '  "max_score": float,\n'
+        '  "matched_points": ["point 1 text", ...],\n'
+        '  "partial_points": ["point 2 text", ...],\n'
+        '  "missing_points": ["point 3 text", ...],\n'
+        '  "confidence": float,\n'
+        '  "reasoning": "detailed explanation of matched/missing concepts",\n'
+        '  "feedback": "constructive examiner feedback"\n'
         "}"
     )
 
     user_prompt = (
-        f"Question Type: {question_type}\n"
-        f"Max Marks: {max_marks}\n\n"
         f"Question:\n{question}\n\n"
-        f"Model Answer:\n{model_answer}\n\n"
-        f"Marking Scheme:\n{scheme_str}\n\n"
+        f"Maximum Marks:\n{max_marks}\n\n"
+        f"Mark Scheme / Model Answer:\n{scheme_str}\n\n"
         f"Student Answer:\n{student_answer}\n\n"
-        "Grade the student's response. Be strict but fair. If points are partially met, you can award partial marks. "
-        "For long/descriptive answers, fill the rubric_evaluation dimensions (each out of 2.0). Otherwise set rubric_evaluation to null. "
-        "Ensure score does not exceed max_marks."
+        "Grade the student's answer strictly following the Examiner instructions. Ensure score does not exceed max_marks."
     )
 
     payload = {
@@ -90,44 +88,54 @@ def review_answer_with_llm(
     if LLM_API_KEY:
         headers["Authorization"] = f"Bearer {LLM_API_KEY}"
 
-    try:
-        data = json.dumps(payload).encode("utf-8")
-        req = urllib.request.Request(LLM_API_URL, data=data, headers=headers, method="POST")
-        with urllib.request.urlopen(req, timeout=10.0) as response:
-            res_body = json.loads(response.read().decode("utf-8"))
-            
-            # Extract assistant's reply
-            choices = res_body.get("choices", [])
-            if not choices:
-                return None
-            
-            reply = choices[0].get("message", {}).get("content", "").strip()
-            
-            # Clean up potential markdown formatting block ```json ... ```
-            if reply.startswith("```"):
-                reply = re.sub(r"^```(?:json)?\n", "", reply)
-                reply = re.sub(r"\n```$", "", reply)
-                reply = reply.strip()
-            
-            res_json = json.loads(reply)
-            
-            # Validate and format result
-            score = float(res_json.get("score", 0.0))
-            score = max(0.0, min(score, max_marks))
-            
-            confidence = float(res_json.get("confidence", 80.0))
-            confidence = max(0.0, min(confidence, 100.0))
-            
-            return {
-                "score": score,
-                "reasoning": str(res_json.get("reasoning", "")),
-                "matched_points": list(res_json.get("matched_points", [])),
-                "missing_points": list(res_json.get("missing_points", [])),
-                "confidence": confidence,
-                "rubric_evaluation": res_json.get("rubric_evaluation")
-            }
-            
-    except Exception as e:
-        logger.warning(f"LLM Reviewer failed: {e}")
-        
+    import time
+    for attempt in range(3):
+        try:
+            data = json.dumps(payload).encode("utf-8")
+            req = urllib.request.Request(LLM_API_URL, data=data, headers=headers, method="POST")
+            with urllib.request.urlopen(req, timeout=10.0) as response:
+                res_body = json.loads(response.read().decode("utf-8"))
+                
+                choices = res_body.get("choices", [])
+                if not choices:
+                    if "error" in res_body:
+                        err_msg = res_body.get("error", "")
+                        logger.warning(f"LLM API returned error on attempt {attempt + 1}: {err_msg}")
+                        if "loading" in str(err_msg).lower() and attempt < 2:
+                            time.sleep(3.0)
+                            continue
+                    return None
+                
+                reply = choices[0].get("message", {}).get("content", "").strip()
+                if reply.startswith("```"):
+                    reply = re.sub(r"^```(?:json)?\n", "", reply)
+                    reply = re.sub(r"\n```$", "", reply)
+                    reply = reply.strip()
+                
+                res_json = json.loads(reply)
+                score = float(res_json.get("score", 0.0))
+                score = max(0.0, min(score, max_marks))
+                
+                confidence = float(res_json.get("confidence", 80.0))
+                confidence = max(0.0, min(confidence, 100.0))
+                
+                return {
+                    "score": score,
+                    "max_score": float(res_json.get("max_score", max_marks)),
+                    "matched_points": list(res_json.get("matched_points", [])),
+                    "partial_points": list(res_json.get("partial_points", [])),
+                    "missing_points": list(res_json.get("missing_points", [])),
+                    "confidence": confidence,
+                    "reasoning": str(res_json.get("reasoning", "")),
+                    "feedback": str(res_json.get("feedback", "")),
+                    "rubric_evaluation": res_json.get("rubric_evaluation", None)
+                }
+                
+        except Exception as e:
+            logger.warning(f"LLM Reviewer attempt {attempt + 1} failed: {e}")
+            if attempt < 2:
+                time.sleep(1.5)
+            else:
+                break
+                
     return None
