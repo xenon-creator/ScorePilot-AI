@@ -585,7 +585,7 @@ async def upload_papers(
             # Perform OCR using the file content and name
             from app.services.ocr_service import OCRService
             res = OCRService.extract_text(contents, file.filename)
-            extracted_text = res.get("extracted_text", "")
+            extracted_text = res.get("extracted_text", "") or res.get("raw_text", "")
             
             # Save local copy reference
             scanned_image_url = f"uploads/{uuid.uuid4()}_{file.filename}"
@@ -593,13 +593,20 @@ async def upload_papers(
             print(f"OCR failed: {e}")
             extracted_text = student_name  # fallback
 
+    # Check 6: Verify OCR
+    ocr_failed = False
+    if not extracted_text or len(extracted_text.strip()) < 10:
+        logger.warning("OCR extraction failed: text length < 10")
+        extracted_text = "OCR extraction failed"
+        ocr_failed = True
+
     # 3. Create submission in database
     submission = Submission(
         id=str(uuid.uuid4()),
         exam_id=exam_id,
         student_name=student_name,
         student_id=student_id or "",
-        status=SubmissionStatus.pending,
+        status=SubmissionStatus.flagged if ocr_failed else SubmissionStatus.pending,
         total_score=0.0,
         ai_confidence=0.0,
         extracted_text=extracted_text,
@@ -610,6 +617,25 @@ async def upload_papers(
     db.add(submission)
     db.commit()
     db.refresh(submission)
+
+    if ocr_failed:
+        try:
+            increment_usage(current_user.id, db)
+        except Exception as e:
+            print(f"Subscription increment failed: {e}")
+            
+        formatted = _format_submission(submission)
+        response_data = {
+            "submission_id": submission.id,
+            "student_name": submission.student_name,
+            "status": "flagged",
+            "total_score": 0.0,
+            "ai_confidence": 0.0,
+            "message": "OCR extraction failed"
+        }
+        response_data.update(formatted)
+        response_data["submission_id"] = submission.id
+        return response_data
 
     # 4. Get questions for this exam
     questions = db.query(Question).filter(
@@ -1664,5 +1690,48 @@ def get_dataset_mark_scheme(
     if not ms:
         raise HTTPException(status_code=404, detail="Mark scheme not found in dataset")
     return ms
+
+
+@app.get("/api/v1/debug/submission/{id}")
+def debug_submission(
+    id: str,
+    db: Session = Depends(get_db),
+    payload: dict = Depends(get_current_user_payload)
+):
+    submission = db.query(Submission).filter(Submission.id == id).first()
+    if not submission:
+        raise HTTPException(status_code=404, detail="Submission not found")
+        
+    answer = db.query(Answer).filter(Answer.submission_id == id).first()
+    if not answer:
+        return {
+            "student_answer": submission.extracted_text or "",
+            "question": "N/A",
+            "mark_scheme": [],
+            "similarities": [],
+            "score": 0.0,
+            "confidence": float(submission.ai_confidence or 0.0) * 100.0
+        }
+        
+    debug_out = (answer.evaluation_metadata or {}).get("debug_output") or {}
+    
+    q_text = answer.question.text if answer.question else ""
+    
+    mark_scheme = debug_out.get("marking_points") or []
+    if not mark_scheme and answer.question and answer.question.marking_scheme:
+        ms = answer.question.marking_scheme
+        if isinstance(ms, dict):
+            mark_scheme = [mp.get("point", "") for mp in ms.get("marking_points", [])]
+        elif isinstance(ms, list):
+            mark_scheme = [mp.get("point", "") for mp in ms]
+            
+    return {
+        "student_answer": answer.student_answer or submission.extracted_text or "",
+        "question": q_text,
+        "mark_scheme": mark_scheme,
+        "similarities": debug_out.get("similarities") or [],
+        "score": answer.ai_score,
+        "confidence": float(answer.ai_confidence or 0.0) * 100.0
+    }
 
 

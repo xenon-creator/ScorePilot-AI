@@ -185,15 +185,28 @@ def get_similarity(text_a: str, text_b: str) -> float:
 
     embeddings = model.encode([text_a.strip(), text_b.strip()], convert_to_numpy=True)
 
+    if embeddings is None or len(embeddings) < 2:
+        logger.error("FAIL IMMEDIATELY: Embeddings are None or empty")
+        raise ValueError("Embeddings are None or empty")
+
     # Cosine similarity
     a, b = embeddings[0], embeddings[1]
-    
-    # Check 3: Print embedding dimensions and norms
+
+    if a is None or b is None or len(a) == 0 or len(b) == 0:
+        logger.error("FAIL IMMEDIATELY: Embedding array is None or empty list")
+        raise ValueError("Embedding array is None or empty list")
+
+    if np.all(a == 0) or np.all(b == 0):
+        logger.error("FAIL IMMEDIATELY: Embeddings are all zeros")
+        raise ValueError("Embeddings are all zeros")
+
     norm_a = float(np.linalg.norm(a))
     norm_b = float(np.linalg.norm(b))
-    print(f"Embedding dimensions: {a.shape}")
-    print(f"Embedding norms - Norm A: {norm_a:.4f}, Norm B: {norm_b:.4f}")
-    logger.info(f"Embedding dimensions: {a.shape}, Norm A: {norm_a:.4f}, Norm B: {norm_b:.4f}")
+
+    # Print requested keys exactly
+    print(f"embedding_shape: {a.shape}")
+    print(f"embedding_norm: {norm_a}")
+    logger.info(f"embedding_shape: {a.shape}, embedding_norm: {norm_a}")
 
     dot = float(np.dot(a, b))
     norm = norm_a * norm_b

@@ -373,7 +373,8 @@ class OCRService:
             "ocr_version": f"{ocr_engine}-Active",
             "average_confidence": final_confidence,
             "blocks": extracted_blocks,
-            "raw_text": raw_text
+            "raw_text": raw_text,
+            "extracted_text": raw_text
         }
 
 
@@ -388,7 +389,7 @@ def extract_text(file_url: str) -> str:
             try:
                 content = download_file_content(file_url)
                 res = OCRService.extract_text(content, file_url)
-                return res.get("extracted_text", "")
+                return res.get("extracted_text", "") or res.get("raw_text", "")
             except Exception:
                 pass
         
@@ -397,7 +398,7 @@ def extract_text(file_url: str) -> str:
             with open(file_url, "rb") as f:
                 content = f.read()
             res = OCRService.extract_text(content, file_url)
-            return res.get("extracted_text", "")
+            return res.get("extracted_text", "") or res.get("raw_text", "")
     except Exception as e:
         logger.error(f"Module-level extract_text failed for {file_url}: {e}")
     return ""

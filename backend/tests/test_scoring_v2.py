@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch
-from app.services.scoring_service import ScoringService, score_answer
+from app.services.scoring_service import ScoringService
+from app.services.scoring_service_v2 import score_answer
 
 class TestScoringV2(unittest.TestCase):
     def test_mcq_exact_match(self):
@@ -182,3 +183,31 @@ class TestScoringV2(unittest.TestCase):
             self.assertEqual(len(res.debug_output["marking_points"]), 5)
             self.assertEqual(res.debug_output["score"], 3.0)
             self.assertTrue(50.0 <= res.debug_output["confidence"] <= 90.0)
+
+    def test_empty_marking_scheme_raises_value_error(self):
+        with patch("app.core.config.settings.USE_V2_GRADING", True):
+            with patch("app.services.dataset_service.DatasetService.get_question", return_value={"question_id": "test", "marking_points": []}):
+                with self.assertRaises(ValueError):
+                    score_answer(
+                        student_answer="Some answer",
+                        model_answer="Some model answer",
+                        question_type="short",
+                        max_marks=5.0,
+                        question_text="Some question",
+                        question_id="test"
+                    )
+
+    def test_missing_dataset_record_returns_error(self):
+        with patch("app.core.config.settings.USE_V2_GRADING", True):
+            with patch("app.services.dataset_service.DatasetService.get_question", return_value=None):
+                with patch("app.services.dataset_service.DatasetService.find_similar_question", return_value=None):
+                    res = score_answer(
+                        student_answer="Some answer",
+                        model_answer="Some model answer",
+                        question_type="short",
+                        max_marks=5.0,
+                        question_text="Some question",
+                        question_id="nonexistent"
+                    )
+                    self.assertIn("error", res)
+                    self.assertEqual(res["error"], "No dataset record found")

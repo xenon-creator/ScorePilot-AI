@@ -153,3 +153,66 @@ def test_api_dataset_endpoints():
     response = client.get("/api/v1/datasets/mark-schemes/aqa-bio-1")
     assert response.status_code == 200
     assert "marking_points" in response.json()
+
+
+def test_debug_api_endpoint():
+    from app.models.database import SessionLocal, Submission, Answer, Question, SubmissionStatus
+    db = SessionLocal()
+    try:
+        # Create a test question
+        q = Question(
+            exam_id="dummy_exam_id",
+            text="What is photosynthesis?",
+            question_type="short",
+            model_answer="Plants make food using sunlight.",
+            max_marks=5.0
+        )
+        db.add(q)
+        db.commit()
+        db.refresh(q)
+
+        # Create a test submission
+        sub = Submission(
+            exam_id="dummy_exam_id",
+            student_name="Test Student",
+            status=SubmissionStatus.graded,
+            ai_confidence=0.85
+        )
+        db.add(sub)
+        db.commit()
+        db.refresh(sub)
+
+        # Create a test answer
+        ans = Answer(
+            submission_id=sub.id,
+            question_id=q.id,
+            student_answer="Plants make food.",
+            ai_score=3.0,
+            ai_confidence=0.85,
+            evaluation_metadata={
+                "debug_output": {
+                    "marking_points": ["Plants make food", "using sunlight"],
+                    "similarities": [0.95, 0.20],
+                    "score": 3.0,
+                    "confidence": 85.0
+                }
+            }
+        )
+        db.add(ans)
+        db.commit()
+        
+        response = client.get(f"/api/v1/debug/submission/{sub.id}")
+        assert response.status_code == 200
+        res = response.json()
+        assert res["student_answer"] == "Plants make food."
+        assert res["score"] == 3.0
+        assert res["confidence"] == 85.0
+        assert res["question"] == "What is photosynthesis?"
+        assert res["mark_scheme"] == ["Plants make food", "using sunlight"]
+        
+        db.delete(ans)
+        db.delete(sub)
+        db.delete(q)
+        db.commit()
+    finally:
+        db.close()

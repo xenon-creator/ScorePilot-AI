@@ -79,7 +79,17 @@ def process_and_score_submission(submission_id: str, object_key: str, filename: 
             language=exam_lang
         )
         
-        submission.extracted_text = ocr_result.get("raw_text", "")
+        extracted_text = ocr_result.get("raw_text", "") or ocr_result.get("extracted_text", "")
+        if not extracted_text or len(extracted_text.strip()) < 10:
+            submission.extracted_text = "OCR extraction failed"
+            submission.raw_text = "OCR extraction failed"
+            submission.status = SubmissionStatus.flagged
+            submission.ai_confidence = 0.0
+            db.commit()
+            return {"status": "success", "submission_id": submission.id, "warning": "OCR extraction failed"}
+
+        submission.extracted_text = extracted_text
+        submission.raw_text = extracted_text
         ocr_blocks = {b["question_number"]: b for b in ocr_result.get("blocks", [])}
 
         total_score = 0.0
@@ -335,12 +345,15 @@ def run_grading_pipeline(submission_id: str, db=None, file_bytes: bytes = None, 
             except Exception as e:
                 print(f"OCR error from URL/key: {e}")
                 
-        # If no text from OCR, use student_answer field or placeholder
-        if not extracted_text:
-            extracted_text = getattr(submission, 'raw_text', '') or \
-                            getattr(submission, 'extracted_text', '') or \
-                            f"Student answer for {submission.student_name}"
-                            
+        # Check 6: Verify OCR
+        if not extracted_text or len(extracted_text.strip()) < 10:
+            submission.extracted_text = "OCR extraction failed"
+            submission.raw_text = "OCR extraction failed"
+            submission.status = SubmissionStatus.flagged
+            submission.ai_confidence = 0.0
+            db.commit()
+            return {"status": "success", "submission_id": submission_id, "warning": "OCR extraction failed"}
+
         # Save extracted text to both columns so other features work
         submission.extracted_text = extracted_text
         submission.raw_text = extracted_text

@@ -9,6 +9,7 @@ from app.services.dataset_service import DatasetService
 from app.services.scoring_service import ScoringService
 
 logger = logging.getLogger(__name__)
+LOGGER = logger
 
 # Import the Dataset Engine structurer dynamically by appending its parent to path
 try:
@@ -36,8 +37,8 @@ def score_answer_v2(
     Uses sentence-level similarity embeddings to compare marking points.
     """
     # Check 1: Verify OCR/extracted student answer before grading
-    logger.info(f"student_answer: {student_answer}")
-    print(f"student_answer: {student_answer}")
+    LOGGER.info(f"Student Answer: {student_answer}")
+    print(f"Student Answer: {student_answer}")
 
     if not student_answer or not student_answer.strip():
         return {
@@ -63,52 +64,41 @@ def score_answer_v2(
     if not dataset_q and question_text:
         dataset_q = DatasetService.find_similar_question(question_text, threshold=0.85)
 
+    # Step 3: Print dataset lookup result
+    dataset_record_found = dataset_q is not None
+    LOGGER.info(f"Dataset Lookup - question_id: {question_id}, question_text: {question_text}, dataset_record_found: {dataset_record_found}")
+    print(f"Dataset Lookup - question_id: {question_id}, question_text: {question_text}, dataset_record_found: {dataset_record_found}")
+
+    if not dataset_record_found:
+        return {
+            "error": "No dataset record found",
+            "score": 0.0,
+            "max_marks": max_marks,
+            "matched_points": [],
+            "partial_points": [],
+            "missing_points": [],
+            "confidence": 0.0,
+            "feedback": "Grading failed: No dataset record found.",
+            "reasoning": "Grading failed: No dataset record found.",
+            "flagged_for_review": True,
+            "evaluation_metadata": {
+                "error": "No dataset record found",
+                "matched_points": [],
+                "missing_points": []
+            }
+        }
+
+    # Extract marking points from dataset record
     if dataset_q and dataset_q.get("marking_points"):
         logger.info(f"Loaded structured marking scheme from Dataset Engine for: {dataset_q.get('question_id')}")
         marking_points = dataset_q["marking_points"]
-    else:
-        # Fall back to Question DB marking scheme
-        parsed_scheme = None
-        if marking_scheme:
-            if isinstance(marking_scheme, dict):
-                parsed_scheme = marking_scheme
-            elif isinstance(marking_scheme, str):
-                try:
-                    parsed_scheme = json.loads(marking_scheme)
-                except Exception:
-                    pass
-                    
-        if parsed_scheme and "marking_points" in parsed_scheme:
-            marking_points = parsed_scheme["marking_points"]
-        elif model_answer:
-            # Fall back to structuring model_answer using Dataset Engine structurer on-the-fly
-            try:
-                # Only try LLM structuring if OpenAI key is present
-                if os.environ.get("OPENAI_API_KEY"):
-                    logger.info("Structuring raw model answer on-the-fly using MarkSchemeStructurer.")
-                    structurer = MarkSchemeStructurer()
-                    res = structurer.structure(model_answer)
-                    if res and "marking_points" in res:
-                        marking_points = res["marking_points"]
-            except Exception as e:
-                logger.warning(f"On-the-fly structuring failed: {e}")
 
-            if not marking_points:
-                # Direct sentence split fallback
-                logger.info("Falling back to sentence splitting of model answer.")
-                sentences = _split_sentences(model_answer)
-                if not sentences:
-                    sentences = [model_answer.strip()]
-                share = max_marks / len(sentences)
-                for i, sent in enumerate(sentences):
-                    marking_points.append({
-                        "point": sent,
-                        "marks": round(share, 2)
-                    })
-
-    # Check 2: Verify marking points loaded before scoring
-    logger.info(f"marking_points: {marking_points}")
-    print(f"marking_points: {marking_points}")
+    # Step 2: Print loaded mark scheme. If empty, FAIL IMMEDIATELY.
+    LOGGER.info(f"Mark Scheme: {marking_points}")
+    print(f"Mark Scheme: {marking_points}")
+    if not marking_points:
+        LOGGER.error("FAIL IMMEDIATELY: Mark scheme is empty.")
+        raise ValueError("Mark scheme is empty")
 
     # 2. Perform point-by-point semantic comparisons
     student_sentences = _split_sentences(student_answer)
