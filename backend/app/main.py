@@ -301,7 +301,7 @@ def _format_submission(sub: Submission, exam: Optional[Exam] = None) -> dict:
                 "ai_generated_score": a.ai_score or 0.0,
                 "ai_confidence": a.ai_confidence or 0.0,
                 "feedback": a.ai_reasoning or "",
-                "criteria_matched": {},
+                "criteria_matched": a.evaluation_metadata or {},
             }
             for a in sub.answers
         ],
