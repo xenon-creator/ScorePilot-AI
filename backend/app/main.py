@@ -649,7 +649,7 @@ async def upload_papers(
                     student_answer=(extracted_text or student_name)[:500],
                     ai_score=float(result.get('score', 0)),
                     final_score=float(result.get('score', 0)),
-                    ai_confidence=float(result.get('confidence', 0)),
+                    ai_confidence=float(result.get('confidence', 0)) / 100.0,
                     ai_reasoning=str(result.get('reasoning', '')),
                     flagged_for_review=bool(result.get('flagged_for_review', False)),
                     evaluation_metadata=result.get('evaluation_metadata'),
@@ -669,7 +669,7 @@ async def upload_papers(
 
         n = max(len(questions), 1)
         submission.total_score = round(total_score, 2)
-        submission.ai_confidence = round(total_confidence / n, 2)
+        submission.ai_confidence = round((total_confidence / n) / 100.0, 4)
         submission.status = SubmissionStatus.flagged if any_flagged else SubmissionStatus.graded
         db.commit()
 
@@ -957,7 +957,7 @@ def regrade_pending(db: Session = Depends(get_db)):
                         student_answer=sub.student_name or "student",
                         ai_score=float(result.get('score',0)),
                         final_score=float(result.get('score',0)),
-                        ai_confidence=float(result.get('confidence',0)),
+                        ai_confidence=float(result.get('confidence',0)) / 100.0,
                         ai_reasoning=str(result.get('reasoning','')),
                         flagged_for_review=bool(
                             result.get('flagged_for_review',False)),
@@ -974,7 +974,7 @@ def regrade_pending(db: Session = Depends(get_db)):
             
             n = max(len(questions), 1)
             sub.total_score = round(total_score, 2)
-            sub.ai_confidence = round(total_confidence/n, 2)
+            sub.ai_confidence = round((total_confidence/n) / 100.0, 4)
             sub.status = 'flagged' if any_flagged else 'graded'
             db.commit()
             regraded += 1

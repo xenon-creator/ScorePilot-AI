@@ -126,3 +126,59 @@ class TestScoringV2(unittest.TestCase):
                 self.assertEqual(result["confidence"], 90.0)
                 self.assertTrue(result["evaluation_metadata"]["llm_reviewed"])
                 mock_llm.assert_called_once()
+
+    def test_photosynthesis_grading(self):
+        scheme = {
+            "marking_points": [
+                {"id": 1, "point": "carbon dioxide is absorbed", "marks": 1.0},
+                {"id": 2, "point": "water is absorbed", "marks": 1.0},
+                {"id": 3, "point": "light energy is utilized", "marks": 1.0},
+                {"id": 4, "point": "glucose is produced", "marks": 1.0},
+                {"id": 5, "point": "oxygen is released", "marks": 1.0}
+            ]
+        }
+        student_answer = "Photosynthesis uses carbon dioxide and light energy to produce oxygen."
+        
+        # We mock get_similarity:
+        # Match point 1: "carbon dioxide is absorbed" -> 0.85 (matched)
+        # Match point 2: "water is absorbed" -> 0.20 (missing)
+        # Match point 3: "light energy is utilized" -> 0.80 (matched)
+        # Match point 4: "glucose is produced" -> 0.15 (missing)
+        # Match point 5: "oxygen is released" -> 0.82 (matched)
+        def mock_similarity(a, b):
+            a_lower = a.lower()
+            if "carbon dioxide" in a_lower:
+                return 0.85
+            if "light energy" in a_lower:
+                return 0.80
+            if "oxygen" in a_lower:
+                return 0.82
+            if "water" in a_lower:
+                return 0.20
+            if "glucose" in a_lower:
+                return 0.15
+            return 0.10
+
+        with patch("app.services.scoring_service.get_similarity", side_effect=mock_similarity):
+            res = ScoringService.evaluate_short_answer(
+                student_answer=student_answer,
+                model_answer="Photosynthesis requires carbon dioxide, water, and light energy to yield glucose and oxygen.",
+                max_marks=5.0,
+                marking_scheme=scheme
+            )
+            
+            # Assertions
+            self.assertEqual(res.score, 3.0)
+            self.assertTrue(50.0 <= res.confidence <= 90.0)
+            self.assertIn("carbon dioxide is absorbed", res.criteria_matched["matched_points"])
+            self.assertIn("light energy is utilized", res.criteria_matched["matched_points"])
+            self.assertIn("oxygen is released", res.criteria_matched["matched_points"])
+            self.assertIn("water is absorbed", res.criteria_matched["missing_points"])
+            self.assertIn("glucose is produced", res.criteria_matched["missing_points"])
+            
+            # Check debug output exists and is populated correctly
+            self.assertIsNotNone(res.debug_output)
+            self.assertEqual(res.debug_output["student_answer"], student_answer)
+            self.assertEqual(len(res.debug_output["marking_points"]), 5)
+            self.assertEqual(res.debug_output["score"], 3.0)
+            self.assertTrue(50.0 <= res.debug_output["confidence"] <= 90.0)

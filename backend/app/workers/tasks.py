@@ -122,7 +122,7 @@ def process_and_score_submission(submission_id: str, object_key: str, filename: 
                 student_answer=student_text,
                 ai_score=result.score,
                 final_score=result.score,
-                ai_confidence=blended_conf,
+                ai_confidence=blended_conf / 100.0,
                 ai_reasoning=result.reasoning,
                 flagged_for_review=result.flagged_for_review,
                 scored_at=datetime.datetime.now(datetime.UTC),
@@ -132,7 +132,7 @@ def process_and_score_submission(submission_id: str, object_key: str, filename: 
         # Update submission state
         num_questions = len(exam.questions) or 1
         submission.total_score = round(total_score, 2)
-        submission.ai_confidence = round(total_confidence / num_questions, 2)
+        submission.ai_confidence = round((total_confidence / num_questions) / 100.0, 4)
         submission.status = SubmissionStatus.flagged if any_flagged else SubmissionStatus.graded
 
         # Add Audit log entry
@@ -396,7 +396,7 @@ def run_grading_pipeline(submission_id: str, db=None, file_bytes: bytes = None, 
                 student_answer=answer_text[:500],
                 ai_score=ai_score,
                 final_score=ai_score,
-                ai_confidence=confidence,
+                ai_confidence=confidence / 100.0,
                 ai_reasoning=reasoning,
                 flagged_for_review=flagged,
                 evaluation_metadata=eval_metadata,
@@ -413,7 +413,7 @@ def run_grading_pipeline(submission_id: str, db=None, file_bytes: bytes = None, 
         num_questions = len(questions)
         submission.total_score = round(total_score, 2)
         submission.ai_confidence = round(
-            total_confidence / num_questions if num_questions > 0 else 0, 2
+            (total_confidence / num_questions if num_questions > 0 else 0) / 100.0, 4
         )
         submission.status = SubmissionStatus.flagged if any_flagged else SubmissionStatus.graded
         

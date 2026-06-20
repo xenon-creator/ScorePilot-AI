@@ -65,14 +65,51 @@ def _load_model():
 
 
 def _keyword_fallback_similarity(text_a: str, text_b: str) -> float:
-    """Simple keyword overlap similarity when the ML model is unavailable."""
-    words_a = set(re.findall(r'[a-zA-Z]{3,}', text_a.lower()))
-    words_b = set(re.findall(r'[a-zA-Z]{3,}', text_b.lower()))
-    if not words_a or not words_b:
+    """
+    Concept-coverage-oriented keyword overlap similarity when the ML model is unavailable.
+    Measures what fraction of the marking point (text_a) keywords are covered by the student response (text_b).
+    """
+    stop_words = {
+        'the', 'is', 'are', 'was', 'were', 'be', 'been', 'being',
+        'a', 'an', 'and', 'or', 'but', 'if', 'because', 'as', 'until', 'while',
+        'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into',
+        'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from',
+        'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further',
+        'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all',
+        'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such',
+        'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very',
+        's', 't', 'can', 'will', 'just', 'don', 'should', 'now', 'this', 'that',
+        'these', 'those', 'it', 'its', 'they', 'them', 'their', 'he', 'him',
+        'his', 'she', 'her', 'hers', 'we', 'us', 'our', 'you', 'your', 'yours'
+    }
+    
+    # Helper to clean and stem/normalize words
+    def get_clean_words(text: str) -> set:
+        words = re.findall(r'[a-zA-Z]{2,}', text.lower())
+        cleaned = set()
+        for w in words:
+            if w in stop_words:
+                continue
+            # Simple stemming rules to handle plural and verb endings
+            if w.endswith('es') and len(w) > 4:
+                w = w[:-2]
+            elif w.endswith('s') and not w.endswith('ss') and len(w) > 3:
+                w = w[:-1]
+            elif w.endswith('ed') and len(w) > 4:
+                w = w[:-2]
+            elif w.endswith('ing') and len(w) > 5:
+                w = w[:-3]
+            cleaned.add(w)
+        return cleaned
+
+    words_a = get_clean_words(text_a)
+    words_b = get_clean_words(text_b)
+    
+    if not words_a:
         return 0.0
+        
     intersection = words_a & words_b
-    union = words_a | words_b
-    return len(intersection) / len(union) if union else 0.0
+    return len(intersection) / len(words_a)
 
 
 def _hf_inference_similarity(text_a: str, text_b: str) -> float | None:
@@ -150,8 +187,16 @@ def get_similarity(text_a: str, text_b: str) -> float:
 
     # Cosine similarity
     a, b = embeddings[0], embeddings[1]
+    
+    # Check 3: Print embedding dimensions and norms
+    norm_a = float(np.linalg.norm(a))
+    norm_b = float(np.linalg.norm(b))
+    print(f"Embedding dimensions: {a.shape}")
+    print(f"Embedding norms - Norm A: {norm_a:.4f}, Norm B: {norm_b:.4f}")
+    logger.info(f"Embedding dimensions: {a.shape}, Norm A: {norm_a:.4f}, Norm B: {norm_b:.4f}")
+
     dot = float(np.dot(a, b))
-    norm = float(np.linalg.norm(a) * np.linalg.norm(b))
+    norm = norm_a * norm_b
     if norm == 0:
         return 0.0
 

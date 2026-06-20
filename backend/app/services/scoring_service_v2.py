@@ -35,6 +35,10 @@ def score_answer_v2(
     Grades student answers using structured marking points from the Dataset Engine.
     Uses sentence-level similarity embeddings to compare marking points.
     """
+    # Check 1: Verify OCR/extracted student answer before grading
+    logger.info(f"student_answer: {student_answer}")
+    print(f"student_answer: {student_answer}")
+
     if not student_answer or not student_answer.strip():
         return {
             "score": 0.0,
@@ -102,6 +106,10 @@ def score_answer_v2(
                         "marks": round(share, 2)
                     })
 
+    # Check 2: Verify marking points loaded before scoring
+    logger.info(f"marking_points: {marking_points}")
+    print(f"marking_points: {marking_points}")
+
     # 2. Perform point-by-point semantic comparisons
     student_sentences = _split_sentences(student_answer)
     if not student_sentences:
@@ -124,18 +132,28 @@ def score_answer_v2(
                 best_sim = sim
                 
         similarities.append(best_sim)
+
+        # Check 4: Verify cosine similarity values for every marking point
+        sim_data = {"point": mp_text, "similarity": round(best_sim, 2)}
+        print(json.dumps(sim_data, indent=2))
+        logger.info(f"Cosine similarity: {sim_data}")
         
-        # Matches thresholds
+        # Check 5: Verify thresholds: >= 0.75 full, 0.55 - 0.75 partial, < 0.55 missing
         if best_sim >= 0.75:
             score_awarded += mp_marks
             matched_pts.append(mp_text)
-        elif best_sim >= 0.50:
+        elif best_sim >= 0.55:
             score_awarded += round(mp_marks * 0.5, 2)
             partial_pts.append(mp_text)
         else:
             missing_pts.append(mp_text)
 
+    # Check 6: Verify score calculation
+    raw_score = score_awarded
     score_awarded = max(0.0, min(round(score_awarded, 2), max_marks))
+    print(f"Score calculation - Raw: {raw_score}, Capped: {score_awarded}")
+    logger.info(f"Score calculation - Raw: {raw_score}, Capped: {score_awarded}")
+
     avg_similarity = sum(similarities) / len(similarities) if similarities else 0.0
 
     # 3. Calculate confidence and compile feedback
@@ -145,7 +163,11 @@ def score_answer_v2(
     len_ratio = min(student_words / expected_words, 1.0)
     
     confidence = (0.4 * avg_similarity * 100) + (0.4 * match_ratio * 100) + (0.2 * len_ratio * 100)
+    
+    # Check 7: Verify confidence calculation (0 <= confidence <= 100)
     confidence = max(0.0, min(round(confidence, 1), 100.0))
+    print(f"Confidence calculation: {confidence}")
+    logger.info(f"Confidence calculation: {confidence}")
 
     feedback_parts = []
     if score_awarded == max_marks:
@@ -165,6 +187,17 @@ def score_answer_v2(
 
     feedback = " ".join(feedback_parts)
 
+    # Check 8: Return debugging output dictionary
+    debug_dict = {
+        "student_answer": student_answer,
+        "marking_points": [mp.get("point", "") for mp in marking_points],
+        "similarities": [round(s, 2) for s in similarities],
+        "matched_points": matched_pts,
+        "missing_points": missing_pts,
+        "score": score_awarded,
+        "confidence": confidence
+    }
+
     return {
         "score": score_awarded,
         "max_marks": max_marks,
@@ -173,6 +206,7 @@ def score_answer_v2(
         "missing_points": missing_pts,
         "confidence": confidence,
         "feedback": feedback,
+        "debug_output": debug_dict,
         
         # Compatibility keys for existing ScorePilot V1 pipelines
         "reasoning": feedback,
@@ -182,7 +216,8 @@ def score_answer_v2(
             "partial_points": partial_pts,
             "missing_points": missing_pts,
             "confidence": confidence,
-            "feedback": feedback
+            "feedback": feedback,
+            "debug_output": debug_dict
         }
     }
 
@@ -217,7 +252,8 @@ def score_answer(
                 "feedback": res.reasoning,
                 "reasoning": res.reasoning,
                 "flagged_for_review": res.flagged_for_review,
-                "evaluation_metadata": res.criteria_matched or {}
+                "evaluation_metadata": res.criteria_matched or {},
+                "debug_output": res.debug_output if hasattr(res, "debug_output") else None
             }
         
         return score_answer_v2(

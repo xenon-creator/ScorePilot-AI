@@ -43,6 +43,7 @@ class ScoringResult:
     reasoning: str
     flagged_for_review: bool = False
     criteria_matched: Dict[str, Any] = None
+    debug_output: Dict[str, Any] = None
 
     def __post_init__(self):
         if self.criteria_matched is None:
@@ -220,8 +221,9 @@ class ScoringService:
         marking_scheme: Dict[str, Any] | None = None
     ) -> ScoringResult:
         """Point-by-point marking scheme evaluations for CBSE/AQA short answers."""
-        if not student_answer or not student_answer.strip():
-            return ScoringResult(score=0.0, confidence=100.0, reasoning="No answer provided.")
+        # Check 1: Verify student_answer before grading
+        logger.info(f"student_answer: {student_answer}")
+        print(f"student_answer: {student_answer}")
 
         student_sentences = _split_sentences(student_answer)
         if not student_sentences:
@@ -245,6 +247,10 @@ class ScoringService:
                     "marks": round(share, 2)
                 })
 
+        # Check 2: Verify marking points loaded before scoring
+        logger.info(f"marking_points: {marking_points}")
+        print(f"marking_points: {marking_points}")
+
         # 2. Evaluate each marking point independently
         score_awarded = 0.0
         matched_points = []
@@ -263,23 +269,34 @@ class ScoringService:
                     best_sim = sim
 
             similarities.append(best_sim)
+            
+            # Check 4: Verify cosine similarity values for every marking point
+            sim_data = {"point": mp_text, "similarity": round(best_sim, 2)}
+            print(json.dumps(sim_data, indent=2))
+            logger.info(f"Cosine similarity: {sim_data}")
+
             keywords = _extract_keywords(mp_text, top_n=3)
             
             # Check for negation/contradiction of this point's keywords
             if _detect_contradictions(student_answer, keywords):
                 contradiction_flag = True
 
-            # Match thresholds: >=0.75 full, >=0.50 partial
+            # Check 5: Verify thresholds: >=0.75 full, 0.55 - 0.75 partial, < 0.55 missing
             if best_sim >= 0.75:
                 score_awarded += mp_marks
                 matched_points.append(mp_text)
-            elif best_sim >= 0.50:
+            elif best_sim >= 0.55:
                 score_awarded += round(mp_marks * 0.5, 2)
                 matched_points.append(f"{mp_text} (Partial)")
             else:
                 missing_points.append(mp_text)
 
+        # Check 6: Verify score calculation
+        raw_score = score_awarded
         score_awarded = max(0.0, min(score_awarded, max_marks))
+        print(f"Score calculation - Raw: {raw_score}, Capped: {score_awarded}")
+        logger.info(f"Score calculation - Raw: {raw_score}, Capped: {score_awarded}")
+
         avg_similarity = sum(similarities) / len(similarities) if similarities else 0.0
 
         # Calculate confidence
@@ -294,6 +311,11 @@ class ScoringService:
             contradiction_detected=contradiction_flag,
             question_type="short"
         )
+        
+        # Check 7: Verify confidence calculation (0 <= confidence <= 100)
+        confidence = max(0.0, min(confidence, 100.0))
+        print(f"Confidence calculation: {confidence}")
+        logger.info(f"Confidence calculation: {confidence}")
 
         reasoning = (
             f"Awarded {score_awarded}/{max_marks} marks based on mark scheme. "
@@ -302,6 +324,17 @@ class ScoringService:
         )
 
         flagged = confidence < 70.0 or contradiction_flag or student_words < 3
+
+        # Check 8: Return debugging output dictionary
+        debug_dict = {
+            "student_answer": student_answer,
+            "marking_points": [mp.get("point", "") for mp in marking_points],
+            "similarities": [round(s, 2) for s in similarities],
+            "matched_points": matched_points,
+            "missing_points": missing_points,
+            "score": score_awarded,
+            "confidence": confidence
+        }
 
         return ScoringResult(
             score=score_awarded,
@@ -312,8 +345,10 @@ class ScoringService:
                 "matched_points": matched_points,
                 "missing_points": missing_points,
                 "contradiction_detected": contradiction_flag,
-                "average_similarity": avg_similarity
-            }
+                "average_similarity": avg_similarity,
+                "debug_output": debug_dict
+            },
+            debug_output=debug_dict
         )
 
     @staticmethod
@@ -323,17 +358,45 @@ class ScoringService:
         max_marks: float,
         marking_scheme: Dict[str, Any] | None = None
     ) -> ScoringResult:
-        """Evaluates subjective essays and descriptive long answers via rubric dimensions."""
+        # Check 1: Verify OCR output is not empty
+        logger.info(f"student_answer: {student_answer}")
+        print(f"student_answer: {student_answer}")
+
+        model_sentences = _split_sentences(model_answer)
+        if not model_sentences:
+            model_sentences = [model_answer.strip()]
+
         if not student_answer or not student_answer.strip():
-            return ScoringResult(score=0.0, confidence=100.0, reasoning="No answer provided.")
+            debug_dict = {
+                "student_answer": student_answer or "",
+                "marking_points": model_sentences,
+                "similarities": [0.0] * len(model_sentences),
+                "matched_points": [],
+                "missing_points": model_sentences,
+                "score": 0.0,
+                "confidence": 100.0
+            }
+            return ScoringResult(
+                score=0.0,
+                confidence=100.0,
+                reasoning="No answer provided.",
+                flagged_for_review=True,
+                criteria_matched={
+                    "matched_points": [],
+                    "missing_points": model_sentences,
+                    "contradiction_detected": False,
+                    "debug_output": debug_dict
+                },
+                debug_output=debug_dict
+            )
 
         student_sentences = _split_sentences(student_answer)
         if not student_sentences:
             student_sentences = [student_answer.strip()]
 
-        model_sentences = _split_sentences(model_answer)
-        if not model_sentences:
-            model_sentences = [model_answer.strip()]
+        # Check 2: Verify mark scheme points are loaded
+        logger.info(f"marking_points (model sentences): {model_sentences}")
+        print(f"marking_points (model sentences): {model_sentences}")
 
         # 1. Rubric evaluations (Coverage, Accuracy, Depth, Examples, Structure)
         # Coverage: keyword overlap ratio
@@ -376,6 +439,12 @@ class ScoringService:
                 if sim > best_sim:
                     best_sim = sim
             best_similarities.append(best_sim)
+            
+            # Check 4: Verify cosine similarity values for every marking point
+            sim_data = {"point": m_sent, "similarity": round(best_sim, 2)}
+            print(json.dumps(sim_data, indent=2))
+            logger.info(f"Cosine similarity: {sim_data}")
+
         avg_similarity = sum(best_similarities) / len(best_similarities) if best_similarities else 0.0
 
         # Calculate confidence
@@ -397,11 +466,40 @@ class ScoringService:
             f"Structure: {structure_score}/2)."
         )
 
-        # Compile missing points and matched points
-        matched_points = [m_sent for idx, m_sent in enumerate(model_sentences) if idx < len(best_similarities) and best_similarities[idx] >= 0.6]
-        missing_points = [m_sent for idx, m_sent in enumerate(model_sentences) if idx < len(best_similarities) and best_similarities[idx] < 0.6]
+        # Check 5: Verify thresholds: >=0.75 full, 0.55 - 0.75 partial, < 0.55 missing
+        matched_points = []
+        missing_points = []
+        for idx, m_sent in enumerate(model_sentences):
+            if idx < len(best_similarities):
+                best_sim = best_similarities[idx]
+                if best_sim >= 0.75:
+                    matched_points.append(m_sent)
+                elif best_sim >= 0.55:
+                    matched_points.append(f"{m_sent} (Partial)")
+                else:
+                    missing_points.append(m_sent)
+
+        # Check 7: Verify confidence calculation (0 <= confidence <= 100)
+        confidence = max(0.0, min(confidence, 100.0))
+        print(f"Confidence calculation: {confidence}")
+        logger.info(f"Confidence calculation: {confidence}")
 
         flagged = confidence < 70.0 or contradiction_detected or student_words < 15
+
+        # Check 8: Return debugging output dictionary
+        debug_dict = {
+            "student_answer": student_answer,
+            "marking_points": model_sentences,
+            "similarities": [round(s, 2) for s in best_similarities],
+            "matched_points": matched_points,
+            "missing_points": missing_points,
+            "score": score_awarded,
+            "confidence": confidence
+        }
+
+        # Check 6: Verify score calculation
+        print(f"Score calculation - Raw: {rubric_totals / 10.0 * max_marks}, Capped: {score_awarded}")
+        logger.info(f"Score calculation - Raw: {rubric_totals / 10.0 * max_marks}, Capped: {score_awarded}")
 
         return ScoringResult(
             score=score_awarded,
@@ -418,8 +516,10 @@ class ScoringService:
                     "examples": examples_score,
                     "structure": structure_score
                 },
-                "contradiction_detected": contradiction_detected
-            }
+                "contradiction_detected": contradiction_detected,
+                "debug_output": debug_dict
+            },
+            debug_output=debug_dict
         )
 
 
@@ -507,13 +607,26 @@ def score_answer(
                     "llm_reviewed": True,
                     "contradiction_detected": evaluation_metadata.get("contradiction_detected", False)
                 }
+                # Create debug output for LLM review path
+                debug_dict = {
+                    "student_answer": student_answer,
+                    "marking_points": list(llm_result["matched_points"]) + list(llm_result["missing_points"]),
+                    "similarities": [],
+                    "matched_points": llm_result["matched_points"],
+                    "missing_points": llm_result["missing_points"],
+                    "score": score,
+                    "confidence": confidence
+                }
+                evaluation_metadata["debug_output"] = debug_dict
                 # If LLM confidence is still low, keep flagged
                 flagged = confidence < 70.0 or flagged
 
+    debug_val = evaluation_metadata.get("debug_output") or (res.debug_output if hasattr(res, "debug_output") else None)
     return {
         "score": score,
         "confidence": confidence,
         "reasoning": reasoning,
         "flagged_for_review": flagged,
-        "evaluation_metadata": evaluation_metadata
+        "evaluation_metadata": evaluation_metadata,
+        "debug_output": debug_val
     }
