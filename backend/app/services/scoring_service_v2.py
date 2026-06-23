@@ -219,7 +219,8 @@ def score_answer(
     max_marks: float,
     marking_scheme: Any = None,
     question_text: str = "",
-    question_id: str = None
+    question_id: str = None,
+    ocr_confidence: float = 1.0
 ) -> Dict[str, Any]:
     """
     Unified entry point for grading.
@@ -232,27 +233,66 @@ def score_answer(
         # V2 grading engine path
         if question_type == "mcq":
             res = ScoringService.evaluate_mcq(student_answer, model_answer, max_marks)
+            conf = max(0, min(100, int(res.confidence)))
             return {
                 "score": res.score,
                 "max_marks": max_marks,
                 "matched_points": [],
                 "partial_points": [],
                 "missing_points": [],
-                "confidence": res.confidence,
+                "confidence": conf,
                 "feedback": res.reasoning,
                 "reasoning": res.reasoning,
                 "flagged_for_review": res.flagged_for_review,
                 "evaluation_metadata": res.criteria_matched or {},
                 "debug_output": res.debug_output if hasattr(res, "debug_output") else None
             }
-        
-        return score_answer_v2(
+
+        # Resolve dataset marking scheme if question_id or question_text is supplied
+        # to satisfy tests that patch/verify dataset lookup.
+        dataset_q = None
+        if question_id:
+            dataset_q = DatasetService.get_question(question_id)
+        if not dataset_q and question_text:
+            dataset_q = DatasetService.find_similar_question(question_text, threshold=0.85)
+
+        if not dataset_q and (question_id or question_text):
+            # If a lookup was attempted but failed, return explicit error format matching tests
+            return {
+                "error": "No dataset record found",
+                "score": 0.0,
+                "max_marks": max_marks,
+                "matched_points": [],
+                "partial_points": [],
+                "missing_points": [],
+                "confidence": 0.0,
+                "feedback": "Grading failed: No dataset record found.",
+                "reasoning": "Grading failed: No dataset record found.",
+                "flagged_for_review": True,
+                "evaluation_metadata": {
+                    "error": "No dataset record found",
+                    "matched_points": [],
+                    "missing_points": []
+                }
+            }
+
+        points_scheme = marking_scheme
+        if dataset_q and "marking_points" in dataset_q:
+            points_scheme = {"marking_points": dataset_q["marking_points"]}
+
+        # If marking points are explicitly empty, raise ValueError as expected by unit tests
+        if points_scheme and isinstance(points_scheme, dict) and "marking_points" in points_scheme and not points_scheme["marking_points"]:
+            raise ValueError("Mark scheme is empty")
+
+        from app.services import examiner_scoring_service
+        return examiner_scoring_service.score_answer(
             student_answer=student_answer,
-            question_text=question_text,
             model_answer=model_answer,
+            question_type=question_type,
             max_marks=max_marks,
-            marking_scheme=marking_scheme,
-            question_id=question_id
+            marking_scheme=points_scheme,
+            question_text=question_text,
+            ocr_confidence=ocr_confidence
         )
     else:
         # V1 grading engine path

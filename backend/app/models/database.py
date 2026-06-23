@@ -4,7 +4,7 @@ import datetime
 
 from sqlalchemy import (
     create_engine, Column, String, Float, Integer, Text, DateTime,
-    ForeignKey, Enum as SAEnum, Boolean, func, JSON
+    ForeignKey, Enum as SAEnum, Boolean, func, JSON, CheckConstraint
 )
 from sqlalchemy.orm import (
     DeclarativeBase, sessionmaker, relationship, Session
@@ -157,6 +157,10 @@ class Submission(Base):
     raw_text = Column(Text, nullable=True)
     scanned_image_url = Column(String, nullable=True, default="")
     uploaded_at = Column(DateTime, default=lambda: datetime.datetime.now(datetime.UTC))
+    point_scores = Column(JSON, nullable=True)
+    holistic_adjustment = Column(Float, nullable=True, default=0.0)
+    match_details = Column(JSON, nullable=True)
+    confidence_score = Column(Integer, CheckConstraint('confidence_score >= 0 AND confidence_score <= 100'), nullable=True, default=70)
 
     # Relationships
     exam = relationship("Exam", back_populates="submissions")

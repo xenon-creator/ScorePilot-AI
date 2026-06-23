@@ -290,7 +290,7 @@ def _format_submission(sub: Submission, exam: Optional[Exam] = None) -> dict:
         "extracted_text": sub.extracted_text or "",
         "status": status_map.get(sub.status, "Scored"),
         "total_score": sub.total_score or 0.0,
-        "ai_confidence": sub.ai_confidence or 0.0,
+        "ai_confidence": sub.confidence_score if sub.confidence_score is not None else int((sub.ai_confidence or 0.0) * 100.0),
         "created_at": sub.uploaded_at.isoformat() + "Z" if sub.uploaded_at else "",
         "scores": [
             {
@@ -299,7 +299,7 @@ def _format_submission(sub: Submission, exam: Optional[Exam] = None) -> dict:
                 "raw_score": a.ai_score or 0.0,
                 "final_score": a.final_score or 0.0,
                 "ai_generated_score": a.ai_score or 0.0,
-                "ai_confidence": a.ai_confidence or 0.0,
+                "ai_confidence": int((a.ai_confidence or 0.0) * 100.0),
                 "feedback": a.ai_reasoning or "",
                 "criteria_matched": a.evaluation_metadata or {},
             }
@@ -650,6 +650,8 @@ async def upload_papers(
         total_score = 0.0
         total_confidence = 0.0
         any_flagged = False
+        ocr_conf = float(res.get("confidence", 1.0)) if ('res' in locals() and res) else 1.0
+        results_list = []
 
         for i, question in enumerate(questions):
             try:
@@ -664,8 +666,10 @@ async def upload_papers(
                     max_marks=float(question.max_marks or 10),
                     marking_scheme=question.marking_scheme,
                     question_text=question.text or "",
-                    question_id=getattr(question, "dataset_question_id", None)
+                    question_id=getattr(question, "dataset_question_id", None),
+                    ocr_confidence=ocr_conf
                 )
+                results_list.append(result)
 
                 answer = Answer(
                     id=str(uuid.uuid4()),
@@ -694,9 +698,30 @@ async def upload_papers(
                 traceback.print_exc()
 
         n = max(len(questions), 1)
+        avg_conf = total_confidence / n
         submission.total_score = round(total_score, 2)
-        submission.ai_confidence = round((total_confidence / n) / 100.0, 4)
-        submission.status = SubmissionStatus.flagged if any_flagged else SubmissionStatus.graded
+        submission.ai_confidence = round(avg_conf / 100.0, 4)
+        submission.confidence_score = max(0, min(100, int(avg_conf)))
+        
+        # Save redesign-specific details
+        if len(questions) == 1 and results_list:
+            submission.point_scores = results_list[0].get('point_scores')
+            submission.holistic_adjustment = float(results_list[0].get('holistic_adjustment', 0.0))
+            submission.match_details = results_list[0].get('match_details')
+        elif results_list:
+            submission.point_scores = [r.get('point_scores') for r in results_list]
+            submission.holistic_adjustment = sum(float(r.get('holistic_adjustment', 0.0)) for r in results_list)
+            submission.match_details = {"questions": [r.get('match_details') for r in results_list]}
+
+        # New auto-status logic
+        if submission.confidence_score >= 80 and total_score >= 0:
+            submission.status = SubmissionStatus.graded
+        else:
+            submission.status = SubmissionStatus.flagged
+            
+        if extracted_text and len(extracted_text.strip()) > 50 and total_score == 0:
+            submission.status = SubmissionStatus.flagged
+
         db.commit()
 
     # Log initial submission upload event
@@ -960,27 +985,33 @@ def regrade_pending(db: Session = Depends(get_db)):
             total_score = 0.0
             total_confidence = 0.0
             any_flagged = False
+            results_list = []
             
             for i, q in enumerate(questions):
                 try:
                     q_type = q.question_type.value \
                              if hasattr(q.question_type, 'value') \
                              else str(q.question_type)
+                    
+                    student_ans = sub.extracted_text or sub.raw_text or sub.student_name or "student"
                     result = score_answer(
-                        student_answer=sub.student_name or "student",
+                        student_answer=student_ans,
                         model_answer=q.model_answer or "",
                         question_type=q_type,
                         max_marks=float(q.max_marks or 10),
                         marking_scheme=q.marking_scheme,
                         question_text=q.text or "",
-                        question_id=getattr(q, "dataset_question_id", None)
+                        question_id=getattr(q, "dataset_question_id", None),
+                        ocr_confidence=1.0
                     )
+                    results_list.append(result)
+                    
                     answer = Answer(
                         id=str(uuid.uuid4()),
                         submission_id=sub.id,
                         question_id=q.id,
                         question_number=i+1,
-                        student_answer=sub.student_name or "student",
+                        student_answer=student_ans[:500],
                         ai_score=float(result.get('score',0)),
                         final_score=float(result.get('score',0)),
                         ai_confidence=float(result.get('confidence',0)) / 100.0,
@@ -999,9 +1030,31 @@ def regrade_pending(db: Session = Depends(get_db)):
                     print(f"Score error: {e}")
             
             n = max(len(questions), 1)
+            avg_conf = total_confidence / n
             sub.total_score = round(total_score, 2)
-            sub.ai_confidence = round((total_confidence/n) / 100.0, 4)
-            sub.status = 'flagged' if any_flagged else 'graded'
+            sub.ai_confidence = round(avg_conf / 100.0, 4)
+            sub.confidence_score = max(0, min(100, int(avg_conf)))
+            
+            # Save redesign-specific details
+            if len(questions) == 1 and results_list:
+                sub.point_scores = results_list[0].get('point_scores')
+                sub.holistic_adjustment = float(results_list[0].get('holistic_adjustment', 0.0))
+                sub.match_details = results_list[0].get('match_details')
+            elif results_list:
+                sub.point_scores = [r.get('point_scores') for r in results_list]
+                sub.holistic_adjustment = sum(float(r.get('holistic_adjustment', 0.0)) for r in results_list)
+                sub.match_details = {"questions": [r.get('match_details') for r in results_list]}
+
+            # New auto-status logic
+            if sub.confidence_score >= 80 and total_score >= 0:
+                sub.status = SubmissionStatus.graded
+            else:
+                sub.status = SubmissionStatus.flagged
+                
+            ans_text = sub.extracted_text or sub.raw_text or ""
+            if len(ans_text.strip()) > 50 and total_score == 0:
+                sub.status = SubmissionStatus.flagged
+
             db.commit()
             regraded += 1
         except Exception as e:
@@ -1710,7 +1763,7 @@ def debug_submission(
             "mark_scheme": [],
             "similarities": [],
             "score": 0.0,
-            "confidence": float(submission.ai_confidence or 0.0) * 100.0
+            "confidence": submission.confidence_score if submission.confidence_score is not None else float(submission.ai_confidence or 0.0) * 100.0
         }
         
     debug_out = (answer.evaluation_metadata or {}).get("debug_output") or {}
@@ -1731,7 +1784,7 @@ def debug_submission(
         "mark_scheme": mark_scheme,
         "similarities": debug_out.get("similarities") or [],
         "score": answer.ai_score,
-        "confidence": float(answer.ai_confidence or 0.0) * 100.0
+        "confidence": int((answer.ai_confidence or 0.0) * 100.0)
     }
 
 

@@ -428,7 +428,14 @@ export default function DashboardPage() {
   const flaggedCount = submissions.filter(s => s.status === 'Flagged').length
   const approvedCount = submissions.filter(s => s.status === 'Approved').length
   const avgConfidence = submissions.length > 0
-    ? (submissions.reduce((a, s) => a + s.ai_confidence, 0) / submissions.length * 100).toFixed(1)
+    ? (() => {
+        const sum = submissions.reduce((a, s) => {
+          const rawConf = s.ai_confidence;
+          const confidence = rawConf > 1.0 ? rawConf : rawConf * 100;
+          return a + confidence;
+        }, 0);
+        return (sum / submissions.length).toFixed(1);
+      })()
     : '0'
 
   return (
@@ -1516,7 +1523,17 @@ export default function DashboardPage() {
                             </div>
                             <div className="text-right">
                               <p className="text-2xl font-bold text-white">{sub.total_score}</p>
-                              <p className="text-xs text-slate-500">AI Confidence: {(sub.ai_confidence * 100).toFixed(0)}%</p>
+                              {(() => {
+                                const rawConf = sub.ai_confidence;
+                                const confidence = Math.min(100, Math.max(0, Math.round(rawConf > 1.0 ? rawConf : rawConf * 100)));
+                                const colorClass = confidence >= 80 ? 'text-emerald-400' : confidence >= 50 ? 'text-yellow-400' : 'text-red-500';
+                                const label = confidence >= 80 ? 'High' : confidence >= 50 ? 'Review' : 'Low';
+                                return (
+                                  <p className={cn("text-xs font-semibold", colorClass)}>
+                                    AI Confidence: {confidence}% ({label})
+                                  </p>
+                                );
+                              })()}
                             </div>
                           </div>
 
@@ -1530,13 +1547,16 @@ export default function DashboardPage() {
                                 </div>
                                 <div className="flex items-center gap-4 shrink-0">
                                   <span className="text-sm font-semibold text-white">{sc.final_score}</span>
-                                  <span className={cn(
-                                    'text-[10px] font-mono',
-                                    sc.ai_confidence >= 0.9 ? 'text-emerald-400' :
-                                    sc.ai_confidence >= 0.7 ? 'text-yellow-400' : 'text-orange-400'
-                                  )}>
-                                    {(sc.ai_confidence * 100).toFixed(0)}%
-                                  </span>
+                                    {(() => {
+                                      const rawConf = sc.ai_confidence;
+                                      const confidence = Math.min(100, Math.max(0, Math.round(rawConf > 1.0 ? rawConf : rawConf * 100)));
+                                      const colorClass = confidence >= 80 ? 'text-emerald-400' : confidence >= 50 ? 'text-yellow-400' : 'text-red-500';
+                                      return (
+                                        <span className={cn('text-[10px] font-mono', colorClass)}>
+                                          {confidence}%
+                                        </span>
+                                      );
+                                    })()}
                                 </div>
                               </div>
                             ))}
