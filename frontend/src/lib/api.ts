@@ -128,18 +128,38 @@ export interface AnalyticsData {
 // FETCH HELPER
 // ============================================
 
-class ApiError extends Error {
-  status: number
-  constructor(message: string, status: number) {
-    super(message)
-    this.status = status
+export class NetworkError extends Error {
+  constructor() {
+    super('Could not connect to server')
+    this.name = 'NetworkError'
   }
 }
 
-export async function apiFetch<T>(
+export class ApiError extends Error {
+  status: number
+  constructor(status: number, message: string) {
+    super(message)
+    this.status = status
+    this.name = 'ApiError'
+  }
+}
+
+export async function isBackendReachable(): Promise<boolean> {
+  try {
+    const res = await fetch('/api/v1/health', {
+      method: 'GET',
+      signal: AbortSignal.timeout(5000),
+    })
+    return res.ok
+  } catch {
+    return false
+  }
+}
+
+export async function apiFetchRaw(
   path: string,
   options: RequestInit = {}
-): Promise<T> {
+): Promise<Response> {
   const token = typeof window !== 'undefined' ? localStorage.getItem('sp_token') : null
 
   const headers: Record<string, string> = {
@@ -155,16 +175,32 @@ export async function apiFetch<T>(
     headers['Authorization'] = `Bearer ${token}`
   }
 
-  const res = await fetchWithRetry(`${API_BASE}${path}`, {
-    ...options,
-    headers,
-  })
+  let res: Response
+  try {
+    res = await fetchWithRetry(`${API_BASE}${path}`, {
+      ...options,
+      headers,
+    })
+  } catch (err) {
+    throw new NetworkError()
+  }
 
   if (!res.ok) {
     const body = await res.json().catch(() => ({ detail: res.statusText }))
-    throw new ApiError(body.detail || 'API Error', res.status)
+    throw new ApiError(
+      res.status,
+      body.detail || body.message || `Request failed: ${res.status}`
+    )
   }
 
+  return res
+}
+
+export async function apiFetch<T>(
+  path: string,
+  options: RequestInit = {}
+): Promise<T> {
+  const res = await apiFetchRaw(path, options)
   return res.json()
 }
 
@@ -309,13 +345,7 @@ export async function apiGetAuditLogs(): Promise<AuditLog[]> {
 // ============================================
 
 export async function apiExportExamCsv(examId: string, examTitle: string): Promise<void> {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('sp_token') : null
-  const headers: Record<string, string> = {}
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`
-  }
-  const res = await fetchWithRetry(`${API_BASE}/api/v1/exams/${examId}/export/csv`, { headers })
-  if (!res.ok) throw new Error('Failed to export CSV')
+  const res = await apiFetchRaw(`/api/v1/exams/${examId}/export/csv`)
   const blob = await res.blob()
   const url = window.URL.createObjectURL(blob)
   const a = document.createElement('a')
@@ -328,13 +358,7 @@ export async function apiExportExamCsv(examId: string, examTitle: string): Promi
 }
 
 export async function apiExportSubmissionPdf(submissionId: string, studentName: string): Promise<void> {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('sp_token') : null
-  const headers: Record<string, string> = {}
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`
-  }
-  const res = await fetchWithRetry(`${API_BASE}/api/v1/submissions/${submissionId}/export/pdf`, { headers })
-  if (!res.ok) throw new Error('Failed to export PDF')
+  const res = await apiFetchRaw(`/api/v1/submissions/${submissionId}/export/pdf`)
   const blob = await res.blob()
   const url = window.URL.createObjectURL(blob)
   const a = document.createElement('a')

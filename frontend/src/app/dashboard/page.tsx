@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/lib/auth-context'
 import {
-  apiGetExams, apiGetSubmissions, apiGetAnalytics, apiGetAuditLogs, apiUploadPaper, apiOverrideScores,
+  apiGetExams, apiGetSubmissions, apiGetStudentSubmissions, apiGetAnalytics, apiGetAuditLogs, apiUploadPaper, apiOverrideScores,
   apiExportExamCsv, apiExportSubmissionPdf, apiCreateExam, apiDeleteExam, apiDeleteSubmission,
   apiGetLmsSettings, apiSaveLmsSettings, apiGetLmsCourses, apiSyncExamGradesToLms,
+  NetworkError, ApiError, isBackendReachable,
   type Exam, type Submission, type AnalyticsData, type AuditLog, type LmsSettings, type LmsCourse
 } from '@/lib/api'
 import { Button } from '@/components/ui/button'
@@ -54,19 +55,13 @@ export default function DashboardPage() {
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null)
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [showError, setShowError] = useState(false)
+  const [connectionError, setConnectionError] = useState(false)
+  const [apiError, setApiError] = useState<string | null>(null)
   const [showUptimeBanner, setShowUptimeBanner] = useState(false)
 
-  // Only show error after 3 seconds of trying
-  useEffect(() => {
-    if (error) {
-      const timer = setTimeout(() => setShowError(true), 3000)
-      return () => clearTimeout(timer)
-    } else {
-      setShowError(false)
-    }
-  }, [error])
+  const setError = useCallback((msg: string) => {
+    setApiError(msg || null)
+  }, [])
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -167,82 +162,133 @@ export default function DashboardPage() {
     }
   }, [authLoading, isAuthenticated, router])
 
+  const fetchExams = useCallback(async (): Promise<Exam[]> => {
+    try {
+      const data = await apiGetExams()
+      setExams(data)
+      return data
+    } catch (err) {
+      if (err instanceof NetworkError) {
+        const reachable = await isBackendReachable()
+        if (!reachable) {
+          setConnectionError(true)
+        } else {
+          console.error('Exams endpoint failed but backend is alive:', err)
+        }
+      } else if (err instanceof ApiError) {
+        console.error(`Exams fetch failed (API Error ${err.status}):`, err.message)
+        setApiError(`Failed to load exams: ${err.message}`)
+      } else {
+        console.error('Unexpected error fetching exams:', err)
+        setApiError(err instanceof Error ? err.message : 'Unexpected error fetching exams')
+      }
+      return []
+    }
+  }, [])
+
+  const fetchSubmissions = useCallback(async () => {
+    try {
+      const isStudent = user?.role?.toLowerCase() === 'student'
+      const data = isStudent ? await apiGetStudentSubmissions() : await apiGetSubmissions()
+      setSubmissions(data)
+    } catch (err) {
+      if (err instanceof NetworkError) {
+        const reachable = await isBackendReachable()
+        if (!reachable) {
+          setConnectionError(true)
+        } else {
+          console.error('Submissions endpoint failed but backend is alive:', err)
+        }
+      } else if (err instanceof ApiError) {
+        console.error(`Submissions fetch failed (API Error ${err.status}):`, err.message)
+        setApiError(`Failed to load submissions: ${err.message}`)
+      } else {
+        console.error('Unexpected error fetching submissions:', err)
+        setApiError(err instanceof Error ? err.message : 'Unexpected error fetching submissions')
+      }
+    }
+  }, [user])
+
+  const fetchSubStatus = useCallback(async () => {
+    try {
+      const { apiFetch: subFetch } = await import('@/lib/api')
+      const subData = await subFetch<{
+        plan: string
+        papers_used: number
+        papers_limit: number
+        can_grade: boolean
+        upgrade_required: boolean
+        status: string
+      }>('/api/v1/subscription/status')
+      setSubStatus(subData)
+    } catch (err) {
+      console.error("Subscription status fetch failed:", err)
+    }
+  }, [])
+
+  const fetchAnalytics = useCallback(async (examId: string) => {
+    try {
+      const analyticsData = await apiGetAnalytics(examId)
+      setAnalytics(analyticsData)
+    } catch (err) {
+      console.error("Analytics fetch failed:", err)
+    }
+  }, [])
+
+  const fetchAuditLogs = useCallback(async () => {
+    try {
+      const logs = await apiGetAuditLogs()
+      setAuditLogs(logs)
+    } catch (err) {
+      console.error("Audit logs fetch failed:", err)
+    }
+  }, [])
+
+  const fetchLmsSettings = useCallback(async () => {
+    try {
+      const lmsSet = await apiGetLmsSettings()
+      setLmsConfigured(lmsSet.configured)
+      if (lmsSet.configured) {
+        setLmsType(lmsSet.lms_type || 'canvas')
+        setLmsUrl(lmsSet.api_url || '')
+        const coursesData = await apiGetLmsCourses()
+        setLmsCourses(coursesData)
+      }
+    } catch (err) {
+      console.error("LMS config fetch failed:", err)
+    }
+  }, [])
+
   // Fetch data on mount
   const fetchData = useCallback(async () => {
     if (!user) return
     setLoading(true)
-    setError('')
-    try {
-      const isStudent = user.role.toLowerCase() === 'student'
-      if (isStudent) {
-        const { apiGetStudentSubmissions } = await import('@/lib/api')
-        const [examsData, subsData] = await Promise.all([
-          apiGetExams(),
-          apiGetStudentSubmissions(),
-        ])
-        setExams(examsData)
-        setSubmissions(subsData)
-      } else {
-        const [examsData, subsData] = await Promise.all([
-          apiGetExams(),
-          apiGetSubmissions(),
-        ])
-        setExams(examsData)
-        setSubmissions(subsData)
-
-        // Fetch subscription status (via proxy, not direct)
-        try {
-          const { apiFetch: subFetch } = await import('@/lib/api')
-          const subData = await subFetch<{
-            plan: string
-            papers_used: number
-            papers_limit: number
-            can_grade: boolean
-            upgrade_required: boolean
-            status: string
-          }>('/api/v1/subscription/status')
-          setSubStatus(subData)
-        } catch (subErr) {
-          console.error("Subscription status fetch failed:", subErr)
-        }
-
-
-        if (examsData.length > 0) {
-          try {
-            const analyticsData = await apiGetAnalytics(examsData[0].id)
-            setAnalytics(analyticsData)
-          } catch (analyticsErr) {
-            console.error("Analytics fetch failed:", analyticsErr)
-          }
-        }
-
-        try {
-          const logs = await apiGetAuditLogs()
-          setAuditLogs(logs)
-        } catch {
-          // User may not have permission for audit logs
-        }
-
-        // Fetch LMS settings
-        try {
-          const lmsSet = await apiGetLmsSettings()
-          setLmsConfigured(lmsSet.configured)
-          if (lmsSet.configured) {
-            setLmsType(lmsSet.lms_type || 'canvas')
-            setLmsUrl(lmsSet.api_url || '')
-            const coursesData = await apiGetLmsCourses()
-            setLmsCourses(coursesData)
-          }
-        } catch (lmsErr) {
-          console.error("LMS config fetch failed:", lmsErr)
-        }
+    setConnectionError(false)
+    setApiError(null)
+    
+    const isStudent = user.role.toLowerCase() === 'student'
+    
+    if (isStudent) {
+      await Promise.all([
+        fetchExams(),
+        fetchSubmissions()
+      ])
+    } else {
+      const [examsData] = await Promise.all([
+        fetchExams(),
+        fetchSubmissions()
+      ])
+      
+      // Load non-critical data
+      fetchSubStatus()
+      if (examsData && examsData.length > 0) {
+        fetchAnalytics(examsData[0].id)
       }
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Failed to load data')
-    } finally {
-      setLoading(false)
+      fetchAuditLogs()
+      fetchLmsSettings()
     }
-  }, [user])
+    setLoading(false)
+  }, [user, fetchExams, fetchSubmissions, fetchSubStatus, fetchAnalytics, fetchAuditLogs, fetchLmsSettings])
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -659,26 +705,44 @@ export default function DashboardPage() {
             </div>
           )}
 
-          {error && showError && (
-            <div className="flex items-center justify-between bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 mb-4">
+          {/* Only show for TRUE network failures */}
+          {connectionError && (
+            <div className="bg-red-900/30 border border-red-600 rounded-lg p-3 mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="text-red-400 text-sm">
-                  ⚠️ Could not connect to server
+                <span className="text-red-400">⚠</span>
+                <span className="text-red-300 text-sm">
+                  Could not connect to server. 
+                  Backend may be starting up — please wait 30 seconds and retry.
                 </span>
               </div>
               <button
                 onClick={() => {
-                  setError('')
-                  fetchData()  // re-trigger the data fetch
+                  setConnectionError(false)
+                  fetchData()
                 }}
-                className="text-xs text-cyan-400 hover:text-cyan-300 underline underline-offset-2"
+                className="text-cyan-400 text-sm underline ml-4 hover:text-cyan-300 cursor-pointer"
               >
                 Retry →
               </button>
             </div>
           )}
 
-          {loading || (error && !showError) ? (
+          {/* Subtle banner for API/endpoint errors — not scary */}
+          {apiError && (
+            <div className="bg-yellow-900/20 border border-yellow-700/50 rounded-lg p-3 mb-4 flex items-center justify-between">
+              <span className="text-yellow-400/80 text-sm">
+                ⚠ {apiError}
+              </span>
+              <button
+                onClick={() => setApiError(null)}
+                className="text-yellow-400/60 text-sm ml-4 cursor-pointer hover:text-yellow-400"
+              >
+                ✕
+              </button>
+            </div>
+          )}
+
+          {loading ? (
             <LoadingSkeleton />
           ) : (
             <>
