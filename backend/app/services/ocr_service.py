@@ -33,6 +33,72 @@ class OCRService:
         Returns: {"extracted_text": str, "confidence": float, "lang": str}
         Raises RuntimeError if Tesseract is not installed/accessible.
         """
+        # Try Claude Vision OCR first for images if ANTHROPIC_API_KEY is available
+        ext = filename.split(".")[-1].lower() if "." in filename else ""
+        if ext in ("jpg", "jpeg", "png", "webp", "gif"):
+            api_key = os.getenv("ANTHROPIC_API_KEY")
+            if api_key:
+                try:
+                    import base64
+                    import urllib.request
+                    import json
+                    
+                    media_type = "image/jpeg" if ext in ("jpg", "jpeg") else f"image/{ext}"
+                    base64_image = base64.b64encode(file_content).decode("utf-8")
+                    
+                    url = "https://api.anthropic.com/v1/messages"
+                    headers = {
+                        "x-api-key": api_key,
+                        "anthropic-version": "2023-06-01",
+                        "content-type": "application/json"
+                    }
+                    payload = {
+                        "model": "claude-3-5-sonnet-20241022",
+                        "max_tokens": 1500,
+                        "system": (
+                            "You are an expert handwritten exam sheet transcriber.\n"
+                            "Transcribe all readable handwritten text from the uploaded image.\n"
+                            "Format the transcription clearly. Do not add headers, notes, or descriptions. "
+                            "Output ONLY the transcribed text."
+                        ),
+                        "messages": [
+                            {
+                                "role": "user",
+                                "content": [
+                                    {
+                                        "type": "image",
+                                        "source": {
+                                            "type": "base64",
+                                            "media_type": media_type,
+                                            "data": base64_image
+                                        }
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "Please transcribe this handwritten answer sheet."
+                                    }
+                                ]
+                            }
+                        ],
+                        "temperature": 0.1
+                    }
+                    
+                    data = json.dumps(payload).encode("utf-8")
+                    req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+                    with urllib.request.urlopen(req, timeout=30.0) as response:
+                        res_body = json.loads(response.read().decode("utf-8"))
+                        if "content" in res_body and len(res_body["content"]) > 0:
+                            transcribed_text = res_body["content"][0]["text"].strip()
+                            if len(transcribed_text) > 5:
+                                logger.info(f"Claude Vision OCR successfully transcribed image: {filename}")
+                                return {
+                                    "extracted_text": cls.clean_text(transcribed_text),
+                                    "confidence": 0.95,
+                                    "lang": lang
+                                }
+                except Exception as claude_err:
+                    logger.warning(f"Claude Vision OCR failed: {claude_err}. Falling back to Tesseract...")
+
         import io
         from PIL import Image
         import pytesseract
