@@ -10,6 +10,9 @@ from fastapi import FastAPI, Depends, HTTPException, status, UploadFile, File, F
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, EmailStr
+import logging
+
+logger = logging.getLogger(__name__)
 
 from app.core.config import settings
 from app.core.security import hash_password, verify_password, create_access_token, RoleChecker, get_current_user_payload
