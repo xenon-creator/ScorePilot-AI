@@ -533,6 +533,13 @@ def delete_exam(
         "submissions_deleted": submissions_count,
     })
 
+    from app.models.database import Answer, Submission
+    # Delete answers for all submissions of this exam first to avoid FK constraint violations
+    submission_ids = [s.id for s in exam.submissions]
+    if submission_ids:
+        db.query(Answer).filter(Answer.submission_id.in_(submission_ids)).delete(synchronize_session=False)
+        db.query(Submission).filter(Submission.exam_id == exam_id).delete(synchronize_session=False)
+
     db.delete(exam)
     db.commit()
 
@@ -870,6 +877,10 @@ def delete_submission(
         "exam_id": exam_id,
         "answers_deleted": answers_count,
     })
+
+    from app.models.database import Answer
+    # Delete answers associated with this submission first to avoid FK constraint violations
+    db.query(Answer).filter(Answer.submission_id == submission_id).delete(synchronize_session=False)
 
     db.delete(submission)
     db.commit()
