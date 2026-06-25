@@ -5,6 +5,7 @@ import uuid
 import json
 import datetime
 import os
+import re
 from typing import Dict, Any, List, Optional
 from fastapi import FastAPI, Depends, HTTPException, status, UploadFile, File, Form, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -182,6 +183,9 @@ class ReviewOverrideItemModel(BaseModel):
 class ReviewSubmissionOverrideModel(BaseModel):
     submission_id: str
     overrides: List[ReviewOverrideItemModel]
+
+class ResetSubmissionReviewModel(BaseModel):
+    submission_id: str
 
 
 class LMSSettingsCreateModel(BaseModel):
@@ -1018,6 +1022,94 @@ def override_scores(
     result["reviewer_id"] = payload["sub"]
     result["reviewed_at"] = datetime.datetime.now(datetime.UTC).isoformat() + "Z"
     return result
+
+
+@app.post("/api/v1/review/reset")
+def reset_submission_review(
+    data: ResetSubmissionReviewModel,
+    db: Session = Depends(get_db),
+    payload: dict = Depends(RoleChecker(["Teacher", "Reviewer", "Admin"])),
+):
+    submission = db.query(Submission).filter(Submission.id == data.submission_id).first()
+    if not submission:
+        raise HTTPException(status_code=404, detail="Submission not found")
+
+    reviewer = db.query(User).filter(User.name == payload["sub"]).first()
+    reviewer_id = reviewer.id if reviewer else None
+
+    # Reset each answer
+    total_score = 0.0
+    for answer in submission.answers:
+        answer.final_score = answer.ai_score
+        answer.overridden_by = None
+        if answer.ai_reasoning:
+            answer.ai_reasoning = re.sub(r'\s*\[Override:[^\]]*\]', '', answer.ai_reasoning).strip()
+        total_score += answer.ai_score or 0.0
+
+    submission.total_score = round(total_score, 2)
+    
+    # Re-apply automatic status logic
+    if submission.confidence_score >= 80 and total_score >= 0:
+        submission.status = SubmissionStatus.graded
+    else:
+        submission.status = SubmissionStatus.flagged
+        
+    if submission.extracted_text and len(submission.extracted_text.strip()) > 50 and total_score == 0:
+        submission.status = SubmissionStatus.flagged
+
+    _audit(db, reviewer_id, "Human Grading Reset", {
+        "submission_id": data.submission_id,
+        "student_name": submission.student_name,
+        "new_total": submission.total_score,
+    })
+    db.commit()
+    db.refresh(submission)
+    return {"success": True, "message": "Submission review reset successfully", "total_score": submission.total_score, "status": submission.status.value if hasattr(submission.status, 'value') else str(submission.status)}
+
+
+@app.post("/api/v1/admin/reset-all-reviews")
+def reset_all_reviews(
+    db: Session = Depends(get_db),
+    payload: dict = Depends(RoleChecker(["Admin"])),
+):
+    from sqlalchemy import or_
+    submissions = db.query(Submission).all()
+    
+    admin_user = db.query(User).filter(User.name == payload["sub"]).first()
+    admin_id = admin_user.id if admin_user else None
+
+    reset_count = 0
+    for sub in submissions:
+        has_overrides = False
+        total_score = 0.0
+        for answer in sub.answers:
+            if answer.overridden_by is not None:
+                has_overrides = True
+                answer.final_score = answer.ai_score
+                answer.overridden_by = None
+                if answer.ai_reasoning:
+                    answer.ai_reasoning = re.sub(r'\s*\[Override:[^\]]*\]', '', answer.ai_reasoning).strip()
+            total_score += answer.ai_score or 0.0
+        
+        if has_overrides or sub.status == SubmissionStatus.reviewed:
+            sub.total_score = round(total_score, 2)
+            if sub.confidence_score >= 80 and total_score >= 0:
+                sub.status = SubmissionStatus.graded
+            else:
+                sub.status = SubmissionStatus.flagged
+                
+            if sub.extracted_text and len(sub.extracted_text.strip()) > 50 and total_score == 0:
+                sub.status = SubmissionStatus.flagged
+                
+            _audit(db, admin_id, "Human Grading Reset", {
+                "submission_id": sub.id,
+                "student_name": sub.student_name,
+                "new_total": sub.total_score,
+            })
+            reset_count += 1
+            
+    db.commit()
+    return {"success": True, "message": "All submission reviews reset successfully", "reset_count": reset_count}
 
 
 @app.post("/api/v1/admin/regrade-pending")
