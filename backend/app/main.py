@@ -46,6 +46,9 @@ async def lifespan(app: FastAPI):
                 conn.execute(text("ALTER TABLE submissions ADD COLUMN IF NOT EXISTS student_id VARCHAR;"))
                 conn.execute(text("ALTER TABLE submissions ADD COLUMN IF NOT EXISTS raw_text TEXT;"))
                 conn.execute(text("ALTER TABLE submissions ADD COLUMN IF NOT EXISTS extracted_text TEXT;"))
+                conn.execute(text("ALTER TABLE submissions ADD COLUMN IF NOT EXISTS cleaned_text TEXT;"))
+                conn.execute(text("ALTER TABLE submissions ADD COLUMN IF NOT EXISTS ocr_engine VARCHAR;"))
+                conn.execute(text("ALTER TABLE submissions ADD COLUMN IF NOT EXISTS ocr_confidence FLOAT;"))
                 conn.execute(text("ALTER TABLE submissions ADD COLUMN IF NOT EXISTS scanned_image_url VARCHAR;"))
                 conn.execute(text("ALTER TABLE submissions ADD COLUMN IF NOT EXISTS point_scores JSON;"))
                 conn.execute(text("ALTER TABLE submissions ADD COLUMN IF NOT EXISTS holistic_adjustment FLOAT;"))
@@ -295,6 +298,10 @@ def _format_submission(sub: Submission, exam: Optional[Exam] = None) -> dict:
         "student_name": sub.student_name,
         "scanned_image_url": generate_presigned_view_url(sub.scanned_image_url) if sub.scanned_image_url else "",
         "extracted_text": sub.extracted_text or "",
+        "raw_text": getattr(sub, "raw_text", None) or sub.extracted_text or "",
+        "cleaned_text": getattr(sub, "cleaned_text", None) or "",
+        "ocr_engine": getattr(sub, "ocr_engine", None) or "",
+        "ocr_confidence": getattr(sub, "ocr_confidence", None) or 0.0,
         "status": status_map.get(sub.status, "Scored"),
         "total_score": sub.total_score or 0.0,
         "ai_confidence": sub.confidence_score if sub.confidence_score is not None else int((sub.ai_confidence or 0.0) * 100.0),
@@ -591,21 +598,40 @@ async def upload_papers(
 
     # 2. Extract text from file if provided
     extracted_text = ""
+    raw_text = ""
+    cleaned_text = ""
+    ocr_engine = "None"
+    ocr_confidence = 0.0
     scanned_image_url = ""
     filename = file.filename if file else ""
     if file and file.filename:
         try:
             contents = await file.read()
             # Perform OCR using the file content and name
-            from app.services.ocr_service import OCRService
-            res = OCRService.extract_text(contents, file.filename)
-            extracted_text = res.get("extracted_text", "") or res.get("raw_text", "")
+            from app.services.surya_ocr_service import SuryaOCRService
+            res = SuryaOCRService.extract_text(contents, file.filename)
+            if res.get("success", False):
+                extracted_text = res.get("text", "") or res.get("cleaned_text", "")
+                raw_text = res.get("raw_text", "")
+                cleaned_text = res.get("cleaned_text", "")
+                ocr_engine = res.get("ocr_engine", "Surya")
+                ocr_confidence = res.get("ocr_confidence", 0.0)
+            else:
+                extracted_text = ""
+                raw_text = ""
+                cleaned_text = ""
+                ocr_engine = "Failed"
+                ocr_confidence = 0.0
             
             # Save local copy reference
             scanned_image_url = f"uploads/{uuid.uuid4()}_{file.filename}"
         except Exception as e:
             print(f"OCR failed: {e}")
             extracted_text = student_name  # fallback
+            raw_text = student_name
+            cleaned_text = student_name
+            ocr_engine = "Error"
+            ocr_confidence = 0.0
 
     # Check 6: Verify OCR
     ocr_failed = False
@@ -624,7 +650,10 @@ async def upload_papers(
         total_score=0.0,
         ai_confidence=0.0,
         extracted_text=extracted_text,
-        raw_text=extracted_text,
+        raw_text=raw_text,
+        cleaned_text=cleaned_text,
+        ocr_engine=ocr_engine,
+        ocr_confidence=ocr_confidence,
         scanned_image_url=scanned_image_url,
         uploaded_at=datetime.datetime.now(datetime.UTC)
     )
@@ -664,7 +693,7 @@ async def upload_papers(
         total_score = 0.0
         total_confidence = 0.0
         any_flagged = False
-        ocr_conf = float(res.get("confidence", 1.0)) if ('res' in locals() and res) else 1.0
+        ocr_conf = float(ocr_confidence) if ('ocr_confidence' in locals()) else 1.0
         results_list = []
 
         for i, question in enumerate(questions):
@@ -722,6 +751,18 @@ async def upload_papers(
             submission.point_scores = results_list[0].get('point_scores')
             submission.holistic_adjustment = float(results_list[0].get('holistic_adjustment', 0.0))
             submission.match_details = results_list[0].get('match_details')
+            
+            result = results_list[0]
+            if hasattr(submission, 'score'):
+                submission.score = result.get('score', 0.0)
+            if hasattr(submission, 'feedback'):
+                submission.feedback = result.get('feedback', '')
+            if hasattr(submission, 'matched_points'):
+                submission.matched_points = result.get('matched_points', [])
+            if hasattr(submission, 'missing_points'):
+                submission.missing_points = result.get('missing_points', [])
+            if hasattr(submission, 'reasoning'):
+                submission.reasoning = result.get('reasoning', '')
         elif results_list:
             submission.point_scores = [r.get('point_scores') for r in results_list]
             submission.holistic_adjustment = sum(float(r.get('holistic_adjustment', 0.0)) for r in results_list)
@@ -1058,6 +1099,18 @@ def regrade_pending(db: Session = Depends(get_db)):
                 sub.point_scores = results_list[0].get('point_scores')
                 sub.holistic_adjustment = float(results_list[0].get('holistic_adjustment', 0.0))
                 sub.match_details = results_list[0].get('match_details')
+                
+                result = results_list[0]
+                if hasattr(sub, 'score'):
+                    sub.score = result.get('score', 0.0)
+                if hasattr(sub, 'feedback'):
+                    sub.feedback = result.get('feedback', '')
+                if hasattr(sub, 'matched_points'):
+                    sub.matched_points = result.get('matched_points', [])
+                if hasattr(sub, 'missing_points'):
+                    sub.missing_points = result.get('missing_points', [])
+                if hasattr(sub, 'reasoning'):
+                    sub.reasoning = result.get('reasoning', '')
             elif results_list:
                 sub.point_scores = [r.get('point_scores') for r in results_list]
                 sub.holistic_adjustment = sum(float(r.get('holistic_adjustment', 0.0)) for r in results_list)

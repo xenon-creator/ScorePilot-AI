@@ -27,5 +27,13 @@ razorpay==1.4.2
 python-dotenv>=1.0.0
 pandas==2.2.2
 
+# Surya & Paddle OCR Pipeline
+surya-ocr>=0.4.0
+paddleocr>=2.7.0
+paddlepaddle>=2.5.0
+torch>=2.2.0
+torchvision>=0.17.0
+
+
 
 
