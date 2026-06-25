@@ -324,6 +324,38 @@ export async function apiOverrideScores(data: {
   })
 }
 
+export async function apiResetSubmissionReview(submissionId: string): Promise<{
+  success: boolean
+  message: string
+  total_score: number
+  status: string
+}> {
+  return apiFetch<{
+    success: boolean
+    message: string
+    total_score: number
+    status: string
+  }>('/api/v1/review/reset', {
+    method: 'POST',
+    body: JSON.stringify({ submission_id: submissionId }),
+  })
+}
+
+export async function apiResetAllReviews(): Promise<{
+  success: boolean
+  message: string
+  reset_count: number
+}> {
+  return apiFetch<{
+    success: boolean
+    message: string
+    reset_count: number
+  }>('/api/v1/admin/reset-all-reviews', {
+    method: 'POST',
+  })
+}
+
+
 // ============================================
 // ANALYTICS
 // ============================================

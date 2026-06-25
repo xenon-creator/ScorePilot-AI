@@ -8,6 +8,7 @@ import {
   apiGetExams, apiGetSubmissions, apiGetStudentSubmissions, apiGetAnalytics, apiGetAuditLogs, apiUploadPaper, apiOverrideScores,
   apiExportExamCsv, apiExportSubmissionPdf, apiCreateExam, apiDeleteExam, apiDeleteSubmission,
   apiGetLmsSettings, apiSaveLmsSettings, apiGetLmsCourses, apiSyncExamGradesToLms,
+  apiResetSubmissionReview, apiResetAllReviews,
   NetworkError, ApiError, isBackendReachable,
   type Exam, type Submission, type AnalyticsData, type AuditLog, type LmsSettings, type LmsCourse
 } from '@/lib/api'
@@ -1425,6 +1426,26 @@ export default function DashboardPage() {
                           Bulk Upload
                         </Button>
                       )}
+                      {user?.role?.toLowerCase() === 'admin' && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="border-red-500/20 text-red-400 hover:bg-red-500/10 hover:text-red-300 cursor-pointer"
+                          onClick={async () => {
+                            if (!window.confirm("WARNING: You are about to reset ALL human grading reviews globally for all submissions! This will revert every overridden score to its original AI grading state and is irreversible. Proceed?")) return
+                            try {
+                              const res = await apiResetAllReviews()
+                              await fetchData()
+                              alert(`Successfully reset reviews for ${res.reset_count} submission(s).`)
+                            } catch (err: any) {
+                              setError(err.message || 'Failed to reset all reviews')
+                            }
+                          }}
+                        >
+                          <Clock className="h-4 w-4 mr-2" />
+                          Reset All Reviews
+                        </Button>
+                      )}
                     </div>
                   </div>
 
@@ -1654,8 +1675,30 @@ export default function DashboardPage() {
                                 </Button>
                               </>
                             )}
-                            {sub.status === 'Approved' && sub.reviewer_id && (
-                              <p className="text-xs text-slate-600 self-center">Reviewed by {sub.reviewer_id} on {sub.reviewed_at ? new Date(sub.reviewed_at).toLocaleString() : 'N/A'}</p>
+                            {sub.status === 'Approved' && (
+                              <>
+                                {sub.reviewer_id && (
+                                  <p className="text-xs text-slate-600 self-center mr-2">Reviewed by {sub.reviewer_id} on {sub.reviewed_at ? new Date(sub.reviewed_at).toLocaleString() : 'N/A'}</p>
+                                )}
+                                {(user?.role?.toLowerCase() === 'teacher' || user?.role?.toLowerCase() === 'admin' || user?.role?.toLowerCase() === 'reviewer') && (
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="border-amber-500/20 text-amber-400 hover:bg-amber-500/10 hover:text-amber-300 cursor-pointer"
+                                    onClick={async () => {
+                                      if (!window.confirm(`Reset human grading review for "${sub.student_name}"? This will revert all overridden scores and reasons to their original AI grading states.`)) return
+                                      try {
+                                        await apiResetSubmissionReview(sub.id)
+                                        await fetchData()
+                                      } catch (err: any) {
+                                        setError(err.message || 'Failed to reset review')
+                                      }
+                                    }}
+                                  >
+                                    <Clock className="h-4 w-4 mr-1.5" /> Reset Review
+                                  </Button>
+                                )}
+                              </>
                             )}
                             {(user?.role?.toLowerCase() === 'teacher' || user?.role?.toLowerCase() === 'admin') && (
                               <Button
