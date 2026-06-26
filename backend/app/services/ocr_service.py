@@ -468,3 +468,20 @@ def extract_text(file_url: str) -> str:
     except Exception as e:
         logger.error(f"Module-level extract_text failed for {file_url}: {e}")
     return ""
+
+
+def extract_text_from_image(image_path: str) -> str:
+    """Extract text from image. Returns empty string if OCR unavailable."""
+    try:
+        import pytesseract
+        from PIL import Image
+        img = Image.open(image_path)
+        text = pytesseract.image_to_string(img)
+        return text.strip()
+    except ImportError:
+        logger.warning("pytesseract not installed — OCR unavailable")
+        return ""
+    except Exception as e:
+        logger.warning(f"OCR failed: {e} — continuing without OCR")
+        return ""
+

@@ -171,9 +171,46 @@ async def grade_with_examiner(
     student_answer: str
 ) -> dict:
     """
-    Direct asynchronous examiner call to Claude API as requested by prompt.
+    Direct asynchronous examiner call to Claude API with thread offloading and a 25-second timeout.
     """
-    return grade_with_examiner_sync(question, max_marks, mark_scheme, student_answer)
+    import asyncio
+    try:
+        result = await asyncio.wait_for(
+            asyncio.to_thread(
+                grade_with_examiner_sync,
+                question,
+                max_marks,
+                mark_scheme,
+                student_answer
+            ),
+            timeout=25.0
+        )
+        return result
+    except asyncio.TimeoutError:
+        logger.error("Claude API timed out after 25 seconds")
+        return {
+            "score": 0.0,
+            "max_score": float(max_marks),
+            "matched_points": [],
+            "partial_points": [],
+            "missing_points": [],
+            "confidence": 0,
+            "reasoning": "AI grading timed out after 25 seconds. Human review required.",
+            "feedback": "Your submission was received. A teacher will review it manually."
+        }
+    except Exception as e:
+        logger.error(f"Claude API error: {e}")
+        return {
+            "score": 0.0,
+            "max_score": float(max_marks),
+            "matched_points": [],
+            "partial_points": [],
+            "missing_points": [],
+            "confidence": 0,
+            "reasoning": f"AI grading failed: {e}. Human review required.",
+            "feedback": "Your submission was received. A teacher will review it manually."
+        }
+
 
 def grade_with_examiner_sync(
     question: str,

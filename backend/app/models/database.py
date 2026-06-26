@@ -164,6 +164,12 @@ class Submission(Base):
     holistic_adjustment = Column(Float, nullable=True, default=0.0)
     match_details = Column(JSON, nullable=True)
     confidence_score = Column(Integer, CheckConstraint('confidence_score >= 0 AND confidence_score <= 100'), nullable=True, default=70)
+    feedback = Column(Text, nullable=True)
+    reasoning = Column(Text, nullable=True)
+    matched_points = Column(JSON, nullable=True)
+    partial_points = Column(JSON, nullable=True)
+    missing_points = Column(JSON, nullable=True)
+    score = Column(Float, nullable=True, default=0.0)
 
     # Relationships
     exam = relationship("Exam", back_populates="submissions")

@@ -55,6 +55,12 @@ async def lifespan(app: FastAPI):
                 conn.execute(text("ALTER TABLE submissions ADD COLUMN IF NOT EXISTS holistic_adjustment FLOAT;"))
                 conn.execute(text("ALTER TABLE submissions ADD COLUMN IF NOT EXISTS match_details JSON;"))
                 conn.execute(text("ALTER TABLE submissions ADD COLUMN IF NOT EXISTS confidence_score INTEGER;"))
+                conn.execute(text("ALTER TABLE submissions ADD COLUMN IF NOT EXISTS feedback TEXT;"))
+                conn.execute(text("ALTER TABLE submissions ADD COLUMN IF NOT EXISTS reasoning TEXT;"))
+                conn.execute(text("ALTER TABLE submissions ADD COLUMN IF NOT EXISTS matched_points JSON;"))
+                conn.execute(text("ALTER TABLE submissions ADD COLUMN IF NOT EXISTS partial_points JSON;"))
+                conn.execute(text("ALTER TABLE submissions ADD COLUMN IF NOT EXISTS missing_points JSON;"))
+                conn.execute(text("ALTER TABLE submissions ADD COLUMN IF NOT EXISTS score FLOAT;"))
                 conn.execute(text("ALTER TABLE questions ADD COLUMN IF NOT EXISTS marking_scheme JSON;"))
                 conn.execute(text("ALTER TABLE questions ADD COLUMN IF NOT EXISTS dataset_question_id VARCHAR;"))
                 conn.execute(text("ALTER TABLE answers ADD COLUMN IF NOT EXISTS evaluation_metadata JSON;"))
@@ -573,248 +579,259 @@ async def upload_papers(
     db: Session = Depends(get_db),
     payload: dict = Depends(get_current_user_payload),
 ):
-    from app.services.subscription_service import check_usage_limit, increment_usage
-    import uuid, datetime
-    from app.models.database import Submission, Question, Answer
-    from app.services.scoring_service_v2 import score_answer
-
-    # 1. Retrieve current user and check subscription usage limit
-    current_user = db.query(User).filter(User.name == payload["sub"]).first()
-    if not current_user:
-        raise HTTPException(status_code=404, detail="User not found")
-
     try:
-        usage = check_usage_limit(current_user.id, db)
-    except Exception as e:
-        print(f"Subscription check failed: {e}")
-        usage = {"can_grade": True, "papers_used": 0, "papers_limit": 5, "upgrade_required": False}
+        from app.services.subscription_service import check_usage_limit, increment_usage
+        import uuid, datetime
+        from app.models.database import Submission, Question, Answer
+        from app.services.scoring_service_v2 import score_answer
 
-    if not usage["can_grade"]:
-        raise HTTPException(
-            status_code=402,
-            detail={
-                "error": "usage_limit_reached",
-                "message": "You've used all 5 free papers this month. Upgrade to continue.",
-                "papers_used": usage["papers_used"],
-                "papers_limit": usage["papers_limit"]
-            }
-        )
+        # 1. Retrieve current user and check subscription usage limit
+        current_user = db.query(User).filter(User.name == payload["sub"]).first()
+        if not current_user:
+            raise HTTPException(status_code=404, detail="User not found")
 
-    # 2. Extract text from file if provided
-    extracted_text = ""
-    raw_text = ""
-    cleaned_text = ""
-    ocr_engine = "None"
-    ocr_confidence = 0.0
-    scanned_image_url = ""
-    filename = file.filename if file else ""
-    if file and file.filename:
         try:
-            contents = await file.read()
-            # Perform OCR using the file content and name
-            from app.services.surya_ocr_service import SuryaOCRService
-            res = SuryaOCRService.extract_text(contents, file.filename)
-            if res.get("success", False):
-                extracted_text = res.get("text", "") or res.get("cleaned_text", "")
-                raw_text = res.get("raw_text", "")
-                cleaned_text = res.get("cleaned_text", "")
-                ocr_engine = res.get("ocr_engine", "Surya")
-                ocr_confidence = res.get("ocr_confidence", 0.0)
-            else:
-                extracted_text = ""
-                raw_text = ""
-                cleaned_text = ""
-                ocr_engine = "Failed"
-                ocr_confidence = 0.0
-            
-            # Save local copy reference
-            scanned_image_url = f"uploads/{uuid.uuid4()}_{file.filename}"
+            usage = check_usage_limit(current_user.id, db)
         except Exception as e:
-            print(f"OCR failed: {e}")
-            extracted_text = student_name  # fallback
-            raw_text = student_name
-            cleaned_text = student_name
-            ocr_engine = "Error"
-            ocr_confidence = 0.0
+            print(f"Subscription check failed: {e}")
+            usage = {"can_grade": True, "papers_used": 0, "papers_limit": 5, "upgrade_required": False}
 
-    # Check 6: Verify OCR
-    ocr_failed = False
-    if not extracted_text or len(extracted_text.strip()) < 10:
-        logger.warning("OCR extraction failed: text length < 10")
-        extracted_text = "OCR extraction failed"
-        ocr_failed = True
+        if not usage["can_grade"]:
+            raise HTTPException(
+                status_code=402,
+                detail={
+                    "error": "usage_limit_reached",
+                    "message": "You've used all 5 free papers this month. Upgrade to continue.",
+                    "papers_used": usage["papers_used"],
+                    "papers_limit": usage["papers_limit"]
+                }
+            )
 
-    # 3. Create submission in database
-    submission = Submission(
-        id=str(uuid.uuid4()),
-        exam_id=exam_id,
-        student_name=student_name,
-        student_id=student_id or "",
-        status=SubmissionStatus.flagged if ocr_failed else SubmissionStatus.pending,
-        total_score=0.0,
-        ai_confidence=0.0,
-        extracted_text=extracted_text,
-        raw_text=raw_text,
-        cleaned_text=cleaned_text,
-        ocr_engine=ocr_engine,
-        ocr_confidence=ocr_confidence,
-        scanned_image_url=scanned_image_url,
-        uploaded_at=datetime.datetime.now(datetime.UTC)
-    )
-    db.add(submission)
-    db.commit()
-    db.refresh(submission)
+        # 2. Extract text from file if provided
+        extracted_text = ""
+        raw_text = ""
+        cleaned_text = ""
+        ocr_engine = "None"
+        ocr_confidence = 0.0
+        scanned_image_url = ""
+        filename = file.filename if file else ""
+        if file and file.filename:
+            try:
+                contents = await file.read()
+                # Perform OCR using the file content and name
+                from app.services.surya_ocr_service import SuryaOCRService
+                res = SuryaOCRService.extract_text(contents, file.filename)
+                if res.get("success", False):
+                    extracted_text = res.get("text", "") or res.get("cleaned_text", "")
+                    raw_text = res.get("raw_text", "")
+                    cleaned_text = res.get("cleaned_text", "")
+                    ocr_engine = res.get("ocr_engine", "Surya")
+                    ocr_confidence = res.get("ocr_confidence", 0.0)
+                else:
+                    extracted_text = ""
+                    raw_text = ""
+                    cleaned_text = ""
+                    ocr_engine = "Failed"
+                    ocr_confidence = 0.0
+                
+                # Save local copy reference
+                scanned_image_url = f"uploads/{uuid.uuid4()}_{file.filename}"
+            except Exception as e:
+                print(f"OCR failed: {e}")
+                extracted_text = student_name  # fallback
+                raw_text = student_name
+                cleaned_text = student_name
+                ocr_engine = "Error"
+                ocr_confidence = 0.0
 
-    if ocr_failed:
+        # Check 6: Verify OCR
+        ocr_failed = False
+        if not extracted_text or len(extracted_text.strip()) < 10 or extracted_text == "OCR extraction failed":
+            logger.warning("OCR extraction failed or too short")
+            extracted_text = "[Image uploaded — OCR not available on this server. Manual review required.]"
+            ocr_failed = True
+
+        # 3. Create submission in database
+        submission = Submission(
+            id=str(uuid.uuid4()),
+            exam_id=exam_id,
+            student_name=student_name,
+            student_id=student_id or "",
+            status=SubmissionStatus.flagged if ocr_failed else SubmissionStatus.pending,
+            total_score=0.0,
+            ai_confidence=0.0,
+            extracted_text=extracted_text,
+            raw_text=raw_text,
+            cleaned_text=cleaned_text,
+            ocr_engine=ocr_engine,
+            ocr_confidence=ocr_confidence,
+            scanned_image_url=scanned_image_url,
+            uploaded_at=datetime.datetime.now(datetime.UTC)
+        )
+        db.add(submission)
+        db.commit()
+        db.refresh(submission)
+
+        if ocr_failed:
+            try:
+                increment_usage(current_user.id, db)
+            except Exception as e:
+                print(f"Subscription increment failed: {e}")
+                
+            formatted = _format_submission(submission)
+            response_data = {
+                "submission_id": submission.id,
+                "student_name": submission.student_name,
+                "status": "flagged",
+                "total_score": 0.0,
+                "ai_confidence": 0.0,
+                "message": "OCR extraction failed"
+            }
+            response_data.update(formatted)
+            response_data["submission_id"] = submission.id
+            return response_data
+
+        # 4. Get questions for this exam
+        questions = db.query(Question).filter(
+            Question.exam_id == exam_id
+        ).all()
+
+        if not questions:
+            submission.status = SubmissionStatus.graded
+            db.commit()
+        else:
+            # Score each question
+            total_score = 0.0
+            total_confidence = 0.0
+            any_flagged = False
+            ocr_conf = float(ocr_confidence) if ('ocr_confidence' in locals()) else 1.0
+            results_list = []
+
+            for i, question in enumerate(questions):
+                try:
+                    q_type = question.question_type.value \
+                             if hasattr(question.question_type, 'value') \
+                             else str(question.question_type)
+                    
+                    result = score_answer(
+                        student_answer=extracted_text or f"Answer by {student_name}",
+                        model_answer=question.model_answer or "",
+                        question_type=q_type,
+                        max_marks=float(question.max_marks or 10),
+                        marking_scheme=question.marking_scheme,
+                        question_text=question.text or "",
+                        question_id=getattr(question, "dataset_question_id", None),
+                        ocr_confidence=ocr_conf
+                    )
+                    results_list.append(result)
+
+                    answer = Answer(
+                        id=str(uuid.uuid4()),
+                        submission_id=submission.id,
+                        question_id=question.id,
+                        question_number=i + 1,
+                        student_answer=(extracted_text or student_name)[:500],
+                        ai_score=float(result.get('score', 0)),
+                        final_score=float(result.get('score', 0)),
+                        ai_confidence=float(result.get('confidence', 0)) / 100.0,
+                        ai_reasoning=str(result.get('reasoning', '')),
+                        flagged_for_review=bool(result.get('flagged_for_review', False)),
+                        evaluation_metadata=result.get('evaluation_metadata'),
+                        scored_at=datetime.datetime.now(datetime.UTC)
+                    )
+                    db.add(answer)
+
+                    total_score += float(result.get('score', 0))
+                    total_confidence += float(result.get('confidence', 0))
+                    if result.get('flagged_for_review'):
+                        any_flagged = True
+
+                except Exception as e:
+                    import traceback
+                    print(f"Error scoring question {i}: {type(e).__name__}: {e}")
+                    traceback.print_exc()
+
+            n = max(len(questions), 1)
+            avg_conf = total_confidence / n
+            submission.total_score = round(total_score, 2)
+            submission.ai_confidence = round(avg_conf / 100.0, 4)
+            submission.confidence_score = max(0, min(100, int(avg_conf)))
+            
+            # Save redesign-specific details
+            if len(questions) == 1 and results_list:
+                submission.point_scores = results_list[0].get('point_scores')
+                submission.holistic_adjustment = float(results_list[0].get('holistic_adjustment', 0.0))
+                submission.match_details = results_list[0].get('match_details')
+                
+                result = results_list[0]
+                if hasattr(submission, 'score'):
+                    submission.score = result.get('score', 0.0)
+                if hasattr(submission, 'feedback'):
+                    submission.feedback = result.get('feedback', '')
+                if hasattr(submission, 'matched_points'):
+                    submission.matched_points = result.get('matched_points', [])
+                if hasattr(submission, 'partial_points'):
+                    submission.partial_points = result.get('partial_points', [])
+                if hasattr(submission, 'missing_points'):
+                    submission.missing_points = result.get('missing_points', [])
+                if hasattr(submission, 'reasoning'):
+                    submission.reasoning = result.get('reasoning', '')
+            elif results_list:
+                submission.point_scores = [r.get('point_scores') for r in results_list]
+                submission.holistic_adjustment = sum(float(r.get('holistic_adjustment', 0.0)) for r in results_list)
+                submission.match_details = {"questions": [r.get('match_details') for r in results_list]}
+
+            # New auto-status logic
+            if submission.confidence_score >= 80 and total_score >= 0:
+                submission.status = SubmissionStatus.graded
+            else:
+                submission.status = SubmissionStatus.flagged
+                
+            if extracted_text and len(extracted_text.strip()) > 50 and total_score == 0:
+                submission.status = SubmissionStatus.flagged
+
+            db.commit()
+
+        # Log initial submission upload event
+        try:
+            _audit(db, current_user.id, "Submission Uploaded", {
+                "submission_id": submission.id,
+                "student_name": submission.student_name,
+                "filename": filename,
+            })
+            db.commit()
+        except Exception as audit_err:
+            print(f"Audit log failed: {audit_err}")
+
+        # Increment subscription usage count
         try:
             increment_usage(current_user.id, db)
         except Exception as e:
             print(f"Subscription increment failed: {e}")
-            
+
+        # Return standard formatted response combined with specific keys from user's template
         formatted = _format_submission(submission)
         response_data = {
             "submission_id": submission.id,
             "student_name": submission.student_name,
-            "status": "flagged",
-            "total_score": 0.0,
-            "ai_confidence": 0.0,
-            "message": "OCR extraction failed"
+            "status": submission.status.value if hasattr(submission.status, 'value') else str(submission.status),
+            "total_score": submission.total_score,
+            "ai_confidence": submission.ai_confidence,
+            "message": "Graded successfully"
         }
         response_data.update(formatted)
+        # Ensure both submission_id and message are preserved in the response dict
         response_data["submission_id"] = submission.id
+        response_data["message"] = "Graded successfully"
         return response_data
-
-    # 4. Get questions for this exam
-    questions = db.query(Question).filter(
-        Question.exam_id == exam_id
-    ).all()
-
-    if not questions:
-        submission.status = SubmissionStatus.graded
-        db.commit()
-    else:
-        # Score each question
-        total_score = 0.0
-        total_confidence = 0.0
-        any_flagged = False
-        ocr_conf = float(ocr_confidence) if ('ocr_confidence' in locals()) else 1.0
-        results_list = []
-
-        for i, question in enumerate(questions):
-            try:
-                q_type = question.question_type.value \
-                         if hasattr(question.question_type, 'value') \
-                         else str(question.question_type)
-                
-                result = score_answer(
-                    student_answer=extracted_text or f"Answer by {student_name}",
-                    model_answer=question.model_answer or "",
-                    question_type=q_type,
-                    max_marks=float(question.max_marks or 10),
-                    marking_scheme=question.marking_scheme,
-                    question_text=question.text or "",
-                    question_id=getattr(question, "dataset_question_id", None),
-                    ocr_confidence=ocr_conf
-                )
-                results_list.append(result)
-
-                answer = Answer(
-                    id=str(uuid.uuid4()),
-                    submission_id=submission.id,
-                    question_id=question.id,
-                    question_number=i + 1,
-                    student_answer=(extracted_text or student_name)[:500],
-                    ai_score=float(result.get('score', 0)),
-                    final_score=float(result.get('score', 0)),
-                    ai_confidence=float(result.get('confidence', 0)) / 100.0,
-                    ai_reasoning=str(result.get('reasoning', '')),
-                    flagged_for_review=bool(result.get('flagged_for_review', False)),
-                    evaluation_metadata=result.get('evaluation_metadata'),
-                    scored_at=datetime.datetime.now(datetime.UTC)
-                )
-                db.add(answer)
-
-                total_score += float(result.get('score', 0))
-                total_confidence += float(result.get('confidence', 0))
-                if result.get('flagged_for_review'):
-                    any_flagged = True
-
-            except Exception as e:
-                import traceback
-                print(f"Error scoring question {i}: {type(e).__name__}: {e}")
-                traceback.print_exc()
-
-        n = max(len(questions), 1)
-        avg_conf = total_confidence / n
-        submission.total_score = round(total_score, 2)
-        submission.ai_confidence = round(avg_conf / 100.0, 4)
-        submission.confidence_score = max(0, min(100, int(avg_conf)))
-        
-        # Save redesign-specific details
-        if len(questions) == 1 and results_list:
-            submission.point_scores = results_list[0].get('point_scores')
-            submission.holistic_adjustment = float(results_list[0].get('holistic_adjustment', 0.0))
-            submission.match_details = results_list[0].get('match_details')
-            
-            result = results_list[0]
-            if hasattr(submission, 'score'):
-                submission.score = result.get('score', 0.0)
-            if hasattr(submission, 'feedback'):
-                submission.feedback = result.get('feedback', '')
-            if hasattr(submission, 'matched_points'):
-                submission.matched_points = result.get('matched_points', [])
-            if hasattr(submission, 'missing_points'):
-                submission.missing_points = result.get('missing_points', [])
-            if hasattr(submission, 'reasoning'):
-                submission.reasoning = result.get('reasoning', '')
-        elif results_list:
-            submission.point_scores = [r.get('point_scores') for r in results_list]
-            submission.holistic_adjustment = sum(float(r.get('holistic_adjustment', 0.0)) for r in results_list)
-            submission.match_details = {"questions": [r.get('match_details') for r in results_list]}
-
-        # New auto-status logic
-        if submission.confidence_score >= 80 and total_score >= 0:
-            submission.status = SubmissionStatus.graded
-        else:
-            submission.status = SubmissionStatus.flagged
-            
-        if extracted_text and len(extracted_text.strip()) > 50 and total_score == 0:
-            submission.status = SubmissionStatus.flagged
-
-        db.commit()
-
-    # Log initial submission upload event
-    try:
-        _audit(db, current_user.id, "Submission Uploaded", {
-            "submission_id": submission.id,
-            "student_name": submission.student_name,
-            "filename": filename,
-        })
-        db.commit()
-    except Exception as audit_err:
-        print(f"Audit log failed: {audit_err}")
-
-    # Increment subscription usage count
-    try:
-        increment_usage(current_user.id, db)
+    except HTTPException:
+        raise
     except Exception as e:
-        print(f"Subscription increment failed: {e}")
-
-    # Return standard formatted response combined with specific keys from user's template
-    formatted = _format_submission(submission)
-    response_data = {
-        "submission_id": submission.id,
-        "student_name": submission.student_name,
-        "status": submission.status.value if hasattr(submission.status, 'value') else str(submission.status),
-        "total_score": submission.total_score,
-        "ai_confidence": submission.ai_confidence,
-        "message": "Graded successfully"
-    }
-    response_data.update(formatted)
-    # Ensure both submission_id and message are preserved in the response dict
-    response_data["submission_id"] = submission.id
-    response_data["message"] = "Graded successfully"
-    return response_data
+        logger.error(f"Upload endpoint crashed: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Upload failed: {str(e)}"
+        )
 
 
 
